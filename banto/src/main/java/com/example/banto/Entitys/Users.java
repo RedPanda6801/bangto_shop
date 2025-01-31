@@ -1,17 +1,20 @@
 package com.example.banto.Entitys;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.OneToMany;
+import lombok.Builder;
 import lombok.Data;
 
 @Entity
 @Data
+@Builder
 public class Users {
 
 	@Id
@@ -42,4 +45,26 @@ public class Users {
 	
 	@Column(name="SNS_AUTH", nullable=false)
 	private Boolean snsAuth = false;
+	
+	// 참조 객체
+	@OneToMany(mappedBy="user")
+	private ArrayList<SellerAuths> sellers = new ArrayList<>();
+	
+	@OneToMany(mappedBy="user")
+	private ArrayList<Stores> stores = new ArrayList<>();
+	
+	@OneToMany(mappedBy="user")
+	private ArrayList<Comments> comments = new ArrayList<>();
+	
+	@OneToMany(mappedBy="user")
+	private ArrayList<Favorites> favorites = new ArrayList<>();
+	
+	@OneToMany(mappedBy="user")
+	private ArrayList<GroupChatRooms> groupChatRooms = new ArrayList<>();
+	
+	@OneToMany(mappedBy="user")
+	private ArrayList<GroupChatMsgs> msgs = new ArrayList<>();
+
+	@OneToMany(mappedBy="user")
+	private ArrayList<Carts> carts = new ArrayList<>();
 }
