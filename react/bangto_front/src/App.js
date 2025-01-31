@@ -1,11 +1,18 @@
 import logo from './logo.svg';
 import './App.css';
-import TestComponent from './Components/TestComponent';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import UserMainComponent from './Components/UserMainComponent';
+import UserLoginComponent from './Components/UserLoginComponent';
 
 function App() {
   return (
     <div className="App">
-      <TestComponent/>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<UserMainComponent />} />
+          <Route path="/login" element={<UserLoginComponent />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }

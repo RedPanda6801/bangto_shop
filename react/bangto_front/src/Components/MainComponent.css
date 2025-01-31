@@ -1,0 +1,24 @@
+.layout_Content
+{
+	min-width: 1500px;
+	max-width: 1900px;
+	margin: auto;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	grid-template-rows: repeat(23, 40px);
+    border: 1px solid black;
+}
+
+.layout_Top
+{	
+	grid-column: 1 / 4;
+	grid-row: 1 / 3;
+	border: 1px solid blue;
+}
+
+.layout_Footer
+{	
+	grid-column: 1 / 4;
+	grid-row: 21 / 24;
+	border: 1px solid red;
+}
