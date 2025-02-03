@@ -2,6 +2,7 @@ package com.example.banto.Entitys;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,11 +10,15 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class GroupBuys {
 	@Id
@@ -28,7 +33,7 @@ public class GroupBuys {
 	private LocalDateTime endDate;
 	
 	@OneToMany(mappedBy="event")
-	private ArrayList<GroupBuyItems> items = new ArrayList<>();
+	private List<GroupBuyItems> items;
 	
 	
 }
