@@ -4,6 +4,68 @@
   grid-row: 6 / 18;
   
   border-radius: 10px;
-
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
   border: 1px solid black;
+}
+
+.input_email, .input_pw
+{
+  width: 300px;
+  height: 30px;
+	outline: none;
+	font-size: 20px;
+	padding: 10px;
+  border: 1px solid black;
+}
+
+.input_email
+{
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.input_pw
+{
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  margin-top: -7px;
+  margin-bottom: 50px;
+}
+
+.input_email:focus,
+.input_pw:focus
+{ 
+  position: relative;
+  z-index: 10; 
+  border: 1px solid #FF3636;
+}
+
+.btn_login
+{
+  width: 219px;
+  height: 54px;
+  border: none;
+  background-color: #FF3636;
+  color: white;
+  font-size: 17px;
+  font-weight: 700;
+  border-radius: 7px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.btn_social
+{
+  margin-bottom: 10px;
+  width: 219px;
+  height: 54px;
+}
+
+.btn_join
+{
+  
+  cursor: pointer;
 }
