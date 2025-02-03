@@ -1,7 +1,14 @@
-.box_login 
+.layout_Login
+{  
+	margin: auto;
+	display: grid;
+	grid-template-columns: repeat(19, 100px);
+	grid-template-rows: repeat(24, 30px);
+}
+.box_Login 
 {
-  grid-column: 2 / 3;
-  grid-row: 6 / 18;
+  grid-column: 8 / 13;
+  grid-row: 5 / 21;
   
   border-radius: 10px;
   display: flex;
@@ -11,7 +18,7 @@
   border: 1px solid black;
 }
 
-.input_email, .input_pw
+.input_Email, .input_Pw
 {
   width: 300px;
   height: 30px;
@@ -21,13 +28,13 @@
   border: 1px solid black;
 }
 
-.input_email
+.input_Email
 {
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 }
 
-.input_pw
+.input_Pw
 {
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
@@ -35,15 +42,15 @@
   margin-bottom: 50px;
 }
 
-.input_email:focus,
-.input_pw:focus
+.input_Email:focus,
+.input_Pw:focus
 { 
   position: relative;
   z-index: 10; 
   border: 1px solid #FF3636;
 }
 
-.btn_login
+.btn_Login
 {
   width: 219px;
   height: 54px;
@@ -57,15 +64,23 @@
   cursor: pointer;
 }
 
-.btn_social
+.btn_Social
 {
   margin-bottom: 10px;
   width: 219px;
   height: 54px;
 }
 
-.btn_join
+.btn_Join
 {
   
   cursor: pointer;
+}
+
+.error_Message
+{
+  color: red;
+  position: absolute;
+  top: 390px;
+  font-size: 16px;
 }
