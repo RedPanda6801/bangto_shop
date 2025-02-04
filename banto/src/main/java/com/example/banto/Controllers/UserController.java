@@ -14,6 +14,7 @@ public class UserController {
 	@Autowired
 	UserService userService;
 	
+	// 회원가입 기능
 	@PostMapping("/sign")
 	public ResponseEntity sign(@RequestBody UserDTO dto) {
 		try {
@@ -24,6 +25,7 @@ public class UserController {
 		}
 	}
 	
+	// 로그인 기능
 	@PostMapping("/login")
 	public ResponseEntity login(@RequestBody UserDTO dto) {
 		try {
@@ -34,4 +36,18 @@ public class UserController {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
+	
+	// 내 정보 조회
+	
+	// 내 정보 수정
+	
+	// 내 정보 삭제
+	
+	// 유저 전체 정보 조회(관리자)
+	
+	// 유저 단일 조회(관리자)
+	
+	// 유저 단일 수정(관리자)
+	
+	// 유저 단일 삭제(관리자)
 }

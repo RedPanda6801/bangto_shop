@@ -2,6 +2,8 @@ package com.example.banto.Entitys;
 
 import java.util.List;
 
+import com.example.banto.DTOs.SellerDTO;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -34,4 +36,11 @@ public class Sellers {
 	    @OneToOne(cascade = CascadeType.ALL)  // 모든 cascade 동작을 원한다면 CascadeType.ALL을 사용하는 것이 좋습니다.
 	    @JoinColumn(name = "USER_PK")
 	    private Users user;
+	    
+	    public static Sellers toEntity(SellerDTO dto) {
+	        return Sellers.builder()
+	                .id(dto.getId())
+	                .user(dto.getUser())
+	                .build();
+	    }
 }

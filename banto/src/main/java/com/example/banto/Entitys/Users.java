@@ -85,4 +85,13 @@ public class Users {
                 .build();
     }
     
+    public Users setSeller(int id, String email, String name, String addr, String phone) {
+    	return Users.builder()
+    			.id(id)
+    			.email(email)
+    			.name(name)
+    			.addr(addr)
+    			.phone(phone)
+    			.build();
+    }
 }
