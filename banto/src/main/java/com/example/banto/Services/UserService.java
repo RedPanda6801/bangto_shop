@@ -26,4 +26,15 @@ public class UserService {
 			throw e;
 		}
 	}
+	
+	public UserDTO login(UserDTO dto) throws Exception {
+		if(dto.getEmail() == null || dto.getPw() == null) {
+			throw new Exception("입력 오류");
+		}
+		try {
+			return userDAO.login(dto.getEmail(), dto.getPw());
+		}catch(Exception e) {
+			throw e;
+		}
+	}
 }

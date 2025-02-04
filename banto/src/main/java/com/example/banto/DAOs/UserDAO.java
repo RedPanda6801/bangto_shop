@@ -28,6 +28,26 @@ public class UserDAO {
 				throw e;
 			}
 		}
-
+	}
+	
+	public UserDTO login(String email, String pw) throws Exception{
+		try {
+			Optional<Users> userOpt = userRepository.findByEmail(email);
+			if(userOpt.isEmpty()) {
+				throw new Exception("존재하지 않는 회원입니다.");
+			}
+			else {
+				Users user = userOpt.get();
+				// 비밀번호 불일치 시 예외
+				if(!user.getPw().equals(pw)) {
+					throw new Exception("비밀번호 불일치");
+				}
+				else {
+					return UserDTO.toDto(user);
+				}
+			}
+		}catch(Exception e) {
+			throw e;
+		}
 	}
 }
