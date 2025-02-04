@@ -23,4 +23,15 @@ public class UserController {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
+	
+	@PostMapping("/login")
+	public ResponseEntity login(@RequestBody UserDTO dto) {
+		try {
+			// 단순히 유저 찾기에 불과, JWT 토큰 또는 세션이나 비밀번호 해시화에 대해 넣을 필요가 있음
+			userService.login(dto);
+			return ResponseEntity.ok().body(null);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
 }
