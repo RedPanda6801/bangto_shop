@@ -13,6 +13,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -46,9 +47,6 @@ public class Users {
     @Column(name="PHONE", nullable=true)
     private String phone;
 
-    @Column(name="SELLER_STATE", nullable=false)
-    private Boolean sellerState;
-
     @Column(name = "REG_DATE", nullable=false, insertable = false, columnDefinition = "date default sysdate")
     private LocalDateTime regDate;
 
@@ -58,9 +56,6 @@ public class Users {
     // 참조 객체
     @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<SellerAuths> sellers;
-
-    @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Stores> stores;
 
     @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Comments> comments;
@@ -85,7 +80,6 @@ public class Users {
                 .name(dto.getName())
                 .addr(dto.getAddr())
                 .phone(dto.getPhone())
-                .sellerState(dto.getSellerState())
                 .regDate(dto.getRegDate())
                 .snsAuth(dto.getSnsAuth())
                 .build();

@@ -17,7 +17,6 @@ public class UserService {
 		}
 		// SNS 로그인이 아님
 		dto.setSnsAuth(false);
-		dto.setSellerState(false);
 		// 비밀번호 해시화 해야함(security 사용?)
 		//dto.setPw(securityConfig.passwordEncoder().encode(dto.getPw()));
 		try {

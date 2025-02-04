@@ -17,7 +17,6 @@ public class UserDTO {
     private String name;
     private String addr;
     private String phone;
-    private Boolean sellerState;
     private LocalDateTime regDate;
     private Boolean snsAuth;
 
@@ -29,7 +28,6 @@ public class UserDTO {
                 .name(entity.getName())
                 .addr(entity.getAddr())
                 .phone(entity.getPhone())
-                .sellerState(entity.getSellerState())
                 .regDate(entity.getRegDate())
                 .snsAuth(entity.getSnsAuth())
                 .build();
