@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import './MainComponent.css';
+import './LayoutComponent.css';
 import './UserLoginComponent.css'; 
 
 const UserMainComponent = () => 
