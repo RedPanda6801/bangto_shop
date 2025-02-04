@@ -1,6 +1,7 @@
-package com.example.banto.Entitys;
+package com.example.banto.DTOs;
 
-import com.example.banto.DTOs.WalletDTO;
+import com.example.banto.Entitys.Users;
+import com.example.banto.Entitys.Wallets;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -20,28 +21,28 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Wallets {
+public class WalletDTO {
     @Id
     @Column(name="ID")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     @Column(name="CASH", nullable=true)
-    private Integer cash = 0;  // 기본값 0 설정
+    private Integer cash;  // 기본값 0 설정
 
     @Column(name="CASH_BACK", nullable=true)
-    private Integer cashBack = 0;  // 기본값 0 설정
+    private Integer cashBack;  // 기본값 0 설정
 
     @OneToOne(cascade = CascadeType.ALL)  // 모든 cascade 동작을 원한다면 CascadeType.ALL을 사용하는 것이 좋습니다.
     @JoinColumn(name = "OWNER_PK")
     private Users user;
     
-    public static Wallets toEntity(WalletDTO dto) {
-        return Wallets.builder()
-                .id(dto.getId())
-                .cash((dto.getCash() != null) ? dto.getCash() : 0)
-                .cashBack((dto.getCashBack() != null) ? dto.getCashBack() : 0)
-                .user(dto.getUser())
+    public static WalletDTO toDTO(Wallets entity) {
+        return WalletDTO.builder()
+                .id(entity.getId())
+                .cash(entity.getCash())
+                .cashBack(entity.getCashBack())
+                .user(entity.getUser())
                 .build();
     }
 }
