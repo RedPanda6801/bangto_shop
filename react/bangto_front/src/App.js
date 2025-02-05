@@ -2,13 +2,52 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import UserMainComponent from './Components/UserMainComponent';
 import UserLoginComponent from './Components/UserLoginComponent';
 import './Components/LayoutComponent.css';
+import axios from 'axios';
+import { useState } from 'react';
 
 function App() {
+  const [userName, setUserName] = useState("");
+  const logout = () => {
+    //카카오톡 소셜 로그인 사용자일 경우
+    if(localStorage.getItem("kakaoAccessToken") !== null) {
+      // 1. 기본 로그아웃
+      // axios.post(
+      //   "https://kapi.kakao.com/v1/user/logout", {},
+      //   {
+      //     headers: {
+      //       "Authorization": `Bearer ${localStorage.getItem("kakaoAccessToken")}`,
+      //     }
+      //   }
+      // );
+      // 2. 카카오 계정과 함께 로그아웃(무슨 차이지?)
+      // axios.get(
+      //   "https://kauth.kakao.com/oauth/logout",
+      //   {
+      //     params: {
+      //       client_id: process.env.REACT_APP_API_KEY,
+      //       logout_redirect_uri: process.env.REACT_APP_LOGOUT_REDIRECT_URI
+      //     }
+      //   }
+      // );
+      // 3. 연결 끊기(회원 탈퇴인 듯?)
+      axios.post(
+        "https://kapi.kakao.com/v1/user/unlink", {},
+        {
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem("kakaoAccessToken")}`,
+          }
+        }
+      )
+      localStorage.removeItem("kakaoAccessToken");
+      setUserName("");
+    }
+  }
+
   return (  
     <div className="layout_Main">
       <div className="layout_Header">
         <button className="header_Logo" onClick={() => (window.location.href = '/')}>
-          <img src={`${process.env.PUBLIC_URL}/images/01_logo/logo_01.jpg`} alt="로고 이미지" />
+          <img src={`/images/01_logo/logo_01.jpg`} alt="로고 이미지" />
         </button>
         <div className="header_Menu">카테고리1</div>
         <div className="header_Menu">카테고리2</div>
@@ -16,27 +55,29 @@ function App() {
         <div className="header_Menu">카테고리4</div>
         <div className="header_Menu">카테고리5</div>
         <div className="header_Menu">공동구매</div>
-          {/* {userName ? (
+        {userName !== "" ? (
             <div>
               <div>{userName}님 환영합니다.</div>
               <button onClick={logout}>로그아웃</button>
             </div>
-          ) : ( */}
-              <div
-                className="header_User header_User_First"
-                onClick={() => (window.location.href = '/login')}>
-                로그인
-              </div>
-              <div 
-                className="header_User" 
-                onClick={() => (window.location.href = '/join')}>
-                회원가입
-              </div>
-          {/* )} */}
+          ) : (
+              <>
+                <div
+                  className="header_User header_User_First"
+                  onClick={() => (window.location.href = '/login')}>
+                  로그인
+                </div>
+                <div 
+                  className="header_User" 
+                  onClick={() => (window.location.href = '/join')}>
+                  회원가입
+                </div>
+              </>
+          )}
       </div>
       <Routes>
         <Route path="/" element={<UserMainComponent />} />
-        <Route path="/login" element={<UserLoginComponent />} />
+        <Route path="/login" element={<UserLoginComponent setUserName={setUserName} />} />
       </Routes>
 
         <div className="layout_Footer_Buttons">
