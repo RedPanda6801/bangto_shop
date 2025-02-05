@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import UserMainComponent from './Components/UserMainComponent';
-import UserLoginComponent from './Components/UserLoginComponent';
+import UserAuthComponent from './Components/UserAuthComponent';
+import UserSignComponent from './Components/UserSignComponent';
 import './Components/LayoutComponent.css';
 import axios from 'axios';
 import { useState } from 'react';
@@ -69,7 +70,7 @@ function App() {
                 </div>
                 <div 
                   className="header_User" 
-                  onClick={() => (window.location.href = '/join')}>
+                onClick={() => (window.location.href = '/sign')}>
                   회원가입
                 </div>
               </>
@@ -77,7 +78,8 @@ function App() {
       </div>
       <Routes>
         <Route path="/" element={<UserMainComponent />} />
-        <Route path="/login" element={<UserLoginComponent setUserName={setUserName} />} />
+        <Route path="/login" element={<UserAuthComponent setUserName={setUserName} />} />
+        <Route path="/sign" element={<UserSignComponent />} />
       </Routes>
 
         <div className="layout_Footer_Buttons">

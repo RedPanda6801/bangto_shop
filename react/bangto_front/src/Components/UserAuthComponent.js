@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import './LayoutComponent.css';
-import './UserLoginComponent.css'; 
+import './UserAuthComponent.css'; 
 import { useNavigate } from 'react-router-dom';
 
-const UserLoginComponent = (props) => 
+const UserAuthComponent = (props) => 
 {  
   const [userEmail, setUserEmail] = useState("");
   const [pw, setPw] = useState("");
@@ -12,11 +11,11 @@ const UserLoginComponent = (props) =>
   const code = new URLSearchParams(window.location.search).get("code");
   const navigate = useNavigate();
 
-  const handleLogin = async () => 
+  const handleAuth = async () => 
   {
     try 
     {
-      const response = await axios.post("http://localhost:9000/login", 
+      const response = await axios.post("http://localhost:9000/auth", 
         { userEmail, pw}, {withCredentials : true});
       if (response.status == 200) 
       {
@@ -73,13 +72,13 @@ const UserLoginComponent = (props) =>
   }, [code]);
 
   return (
-    <div className="layout_Login">
-        <div className="box_Login">
-            <table className="table_Login">
+    <div className="layout_Auth">
+      <div className="box_Auth">
+      <table>
               <tr>
                 <td>
                   <input
-                    className="input_Email"
+                className="Auth_Email"
                     type="email"
                     placeholder="이메일"
                     value={userEmail}
@@ -87,24 +86,25 @@ const UserLoginComponent = (props) =>
                 </td>
               </tr>
             </table>
-            <table className="table_Login">
+        <table>
               <tr>
                 <td>
                   <input
-                    className="input_Pw"
+                className="Auth_Pw"
                     type="password"
                     placeholder="비밀번호"
                     value={pw}
-                    onChange={(e) => setPw(e.target.value)}/>
+                onChange={(e) => setPw(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter') { handleAuth(); } }}/>
                 </td>
               </tr>
             </table>
             {errorMessage && <p className="error_Message">{errorMessage}</p>}
             <input 
-              className="btn_Login"
+          className="btn_Auth"
               type="button" 
               value="로그인"
-              onClick={handleLogin}/>
+          onClick={handleAuth}/>
             <a href={`https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_API_KEY}&redirect_uri=${process.env.REACT_APP_LOGIN_REDIRECT_URI}&response_type=code`}>
             <img
               className="btn_Social"
@@ -121,4 +121,4 @@ const UserLoginComponent = (props) =>
     );
 }
 
-export default UserLoginComponent;
+export default UserAuthComponent;
