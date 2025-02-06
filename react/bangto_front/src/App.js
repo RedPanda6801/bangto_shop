@@ -58,8 +58,15 @@ function App() {
         <div className="header_Menu">공동구매</div>
         {userName !== "" ? (
             <div>
-              <div>{userName}님 환영합니다.</div>
-              <button onClick={logout}>로그아웃</button>
+              <div
+                className="header_User_Text">
+                {userName}님 환영합니다.
+              </div>
+              <div 
+                className="header_User header_User_Logout"
+                onClick={logout}>
+                로그아웃
+              </div>
             </div>
           ) : (
               <>

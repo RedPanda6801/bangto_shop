@@ -113,7 +113,7 @@ const UserAuthComponent = (props) =>
           </a>
           <div
             className="btn_Join"
-            onClick={() => (window.location.href = '/join')}>
+            onClick={() => (window.location.href = '/sign')}>
             회원가입
           </div>
         </div>
