@@ -1,11 +1,13 @@
-.layout_Login
+.layout_Auth
 {  
 	margin: auto;
 	display: grid;
 	grid-template-columns: repeat(19, 100px);
 	grid-template-rows: repeat(24, 30px);
+  padding-top: 75px;
 }
-.box_Login 
+
+.box_Auth
 {
   grid-column: 8 / 13;
   grid-row: 5 / 21;
@@ -18,7 +20,7 @@
   border: 1px solid black;
 }
 
-.input_Email, .input_Pw
+.Auth_Email, .Auth_Pw
 {
   width: 300px;
   height: 30px;
@@ -28,13 +30,13 @@
   border: 1px solid black;
 }
 
-.input_Email
+.Auth_Email
 {
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 }
 
-.input_Pw
+.Auth_Pw
 {
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
@@ -42,15 +44,15 @@
   margin-bottom: 50px;
 }
 
-.input_Email:focus,
-.input_Pw:focus
+.Auth_Email:focus,
+.Auth_Pw:focus
 { 
   position: relative;
   z-index: 10; 
   border: 1px solid #FF3636;
 }
 
-.btn_Login
+.btn_Auth
 {
   width: 219px;
   height: 54px;
