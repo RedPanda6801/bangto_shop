@@ -20,7 +20,7 @@ public class UserDTO {
     private LocalDateTime regDate;
     private Boolean snsAuth;
 
-    public static UserDTO toDto(Users entity) {
+    public static UserDTO toDTO(Users entity) {
         return UserDTO.builder()
                 .id(entity.getId())
                 .email(entity.getEmail())
