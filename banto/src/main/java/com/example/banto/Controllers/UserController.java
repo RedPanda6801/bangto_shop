@@ -11,6 +11,7 @@ import com.example.banto.Services.UserService;
 
 @Controller
 public class UserController {
+	
 	@Autowired
 	UserService userService;
 	
