@@ -48,16 +48,33 @@ public class UserController {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
-	
-	// 내 정보 조회
-
-	// 내 정보 수정
-	
+	// 내정보 조회
+	@GetMapping("/user/get-info/{userId}")
+	public ResponseEntity getUser(@PathVariable("userId") Integer userId) {
+		try {
+			// 토큰 인증으로 바뀔 예정
+			UserDTO user = userService.getUser(userId);
+			return ResponseEntity.ok().body(user);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	// 내정보 수정
+	@PostMapping("/user/modify/{userId}")
+	public ResponseEntity modifyUser(@PathVariable("userId") Integer userId, @RequestBody UserDTO dto) {
+		try {
+			// 토큰 인증으로 바뀔 예정
+			userService.modifyUser(userId, dto);
+			return ResponseEntity.ok().body(null);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
 	// 내 정보 삭제
 	
 	// 유저 전체 정보 조회(관리자)
 	@GetMapping("/manager/user/get-list/{rootId}/{page}")
-	public ResponseEntity getUserList(@PathVariable("rootId") Integer rootId, @PathVariable("page") Integer page) {
+	public ResponseEntity getUserListManager(@PathVariable("rootId") Integer rootId, @PathVariable("page") Integer page) {
 		try {
 			// 토큰 인증으로 바뀔 예정
 			List<UserDTO> user = userService.getUserListForRoot(rootId, page);
@@ -68,7 +85,7 @@ public class UserController {
 	}
 	// 유저 단일 조회(관리자)
 	@GetMapping("/manager/user/get-info/{rootId}/{userId}")
-	public ResponseEntity getUser(@PathVariable("rootId") Integer rootId, @PathVariable("userId") Integer userId) {
+	public ResponseEntity getUserManager(@PathVariable("rootId") Integer rootId, @PathVariable("userId") Integer userId) {
 		try {
 			// 토큰 인증으로 바뀔 예정
 			UserDTO user = userService.getUserForRoot(rootId, userId);
@@ -78,6 +95,15 @@ public class UserController {
 		}
 	}
 	// 유저 단일 수정(관리자)
-	
+	@PostMapping("/manager/user/modify/{rootId}/{userId}")
+	public ResponseEntity modifyUserManager(@PathVariable("rootId") Integer rootId, @PathVariable("userId") Integer userId, @RequestBody UserDTO dto) {
+		try {
+			// 토큰 인증으로 바뀔 예정
+			userService.modifyUserForRoot(rootId, userId, dto);
+			return ResponseEntity.ok().body(null);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
 	// 유저 단일 삭제(관리자)
 }
