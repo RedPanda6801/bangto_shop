@@ -28,6 +28,8 @@ public class UserDAO {
 	UserRepository userRepository;
 	@Autowired
 	WalletRepository walletRepository;
+	@Autowired
+	AuthDAO authDAO;
 	
 	@Transactional
 	public void sign(UserDTO dto) throws Exception{
@@ -96,6 +98,35 @@ public class UserDAO {
 			throw e;
 		}
 	}
+	
+	public UserDTO getUser(Integer userId) throws Exception{
+		try {
+			return UserDTO.toDTO(authDAO.auth(userId));
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+	
+	@Transactional
+	public void modifyUser(Integer userId, UserDTO dto) throws Exception{
+		try {
+			Users user = authDAO.auth(userId);
+			// 수정 로직
+			user.setEmail((dto.getEmail() != null && !dto.getEmail().equals("")) ?
+					dto.getEmail() : user.getEmail());
+			user.setName((dto.getName() != null && !dto.getName().equals("")) ?
+					dto.getName() : user.getName());
+			user.setPw((dto.getPw() != null && !dto.getPw().equals("")) ?
+					dto.getPw() : user.getPw());
+			user.setPhone((dto.getPhone() != null && !dto.getPhone().equals("")) ?
+					dto.getPhone() : user.getPhone());
+			user.setAddr((dto.getAddr() != null && !dto.getAddr().equals("")) ?
+					dto.getAddr() : user.getAddr());
+			userRepository.save(user);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
 
 	public UserDTO getUserForRoot(Integer rootId, Integer userId) throws Exception{
 		try {
@@ -113,6 +144,40 @@ public class UserDAO {
 				}
 				
 				return UserDTO.toDTO(user.get());
+			}
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+	
+	@Transactional
+	public void modifyUserForRoot(Integer rootId, Integer userId, UserDTO dto) throws Exception{
+		try {
+			Optional<Users> rootOpt = userRepository.findById(rootId);
+			if(rootOpt.isEmpty()) {
+				throw new Exception("존재하지 않는 회원입니다.");
+			}
+			else if(!rootOpt.get().getName().equals("root")) {
+				throw new Exception("관리자가 아닙니다.");
+			}
+			else {
+				Optional<Users>userOpt = userRepository.findById(userId);
+				if(userOpt.isEmpty()) {
+					throw new Exception("조회할 유저가 없음");
+				}
+				Users user = userOpt.get();
+				// 수정 로직
+				user.setEmail((dto.getEmail() != null && !dto.getEmail().equals("")) ?
+						dto.getEmail() : user.getEmail());
+				user.setName((dto.getName() != null && !dto.getName().equals("")) ?
+						dto.getName() : user.getName());
+				user.setPw((dto.getPw() != null && !dto.getPw().equals("")) ?
+						dto.getPw() : user.getPw());
+				user.setPhone((dto.getPhone() != null && !dto.getPhone().equals("")) ?
+						dto.getPhone() : user.getPhone());
+				user.setAddr((dto.getAddr() != null && !dto.getAddr().equals("")) ?
+						dto.getAddr() : user.getAddr());
+				userRepository.save(user);
 			}
 		}catch(Exception e) {
 			throw e;
