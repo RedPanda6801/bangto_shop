@@ -1,12 +1,20 @@
 package com.example.banto.DAOs;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
+import com.example.banto.DTOs.ItemDTO;
 import com.example.banto.DTOs.UserDTO;
 import com.example.banto.DTOs.WalletDTO;
+import com.example.banto.Entitys.Items;
 import com.example.banto.Entitys.Users;
 import com.example.banto.Entitys.Wallets;
 import com.example.banto.Repositorys.UserRepository;
@@ -55,8 +63,56 @@ public class UserDAO {
 					throw new Exception("비밀번호 불일치");
 				}
 				else {
-					return UserDTO.toDto(user);
+					return UserDTO.toDTO(user);
 				}
+			}
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+	
+	public List<UserDTO> getUserListForRoot(Integer rootId, Integer page) throws Exception{
+		try {
+			Optional<Users> userOpt = userRepository.findById(rootId);
+			if(userOpt.isEmpty()) {
+				throw new Exception("존재하지 않는 회원입니다.");
+			}
+			else if(!userOpt.get().getName().equals("root")) {
+				throw new Exception("관리자가 아닙니다.");
+			}
+			else {
+				// 10명씩 끊기
+				Pageable pageable = PageRequest.of(page-1, 10, Sort.by("id").ascending());
+				Page<Users>users = userRepository.findAll(pageable);
+				List<UserDTO>userList = new ArrayList<UserDTO>();
+				for(Users user : users) {
+					UserDTO dto = UserDTO.toDTO(user);
+					userList.add(dto);
+				}
+				
+				return userList;
+			}
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+
+	public UserDTO getUserForRoot(Integer rootId, Integer userId) throws Exception{
+		try {
+			Optional<Users> userOpt = userRepository.findById(rootId);
+			if(userOpt.isEmpty()) {
+				throw new Exception("존재하지 않는 회원입니다.");
+			}
+			else if(!userOpt.get().getName().equals("root")) {
+				throw new Exception("관리자가 아닙니다.");
+			}
+			else {
+				Optional<Users>user = userRepository.findById(userId);
+				if(user.isEmpty()) {
+					throw new Exception("조회할 유저가 없음");
+				}
+				
+				return UserDTO.toDTO(user.get());
 			}
 		}catch(Exception e) {
 			throw e;
