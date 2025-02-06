@@ -105,6 +105,19 @@
 	margin-left: 53px;
 }
 
+.header_User_Text
+{
+	font-size: 13px;
+	font-weight: 500;
+	margin-top: 10px;	
+	margin-left: 53px;
+}
+
+.header_User_Logout
+{
+	margin-left: 122px;
+}
+
 .footer_Btn
 {
 	color: black;
@@ -148,4 +161,22 @@
 .footer_Info td
 {
 	padding: 12px;
+}
+
+::-webkit-scrollbar 
+{
+	width: 10px;
+	height: 10px;
+}
+
+::-webkit-scrollbar-track 
+{
+	background: white;
+	border-radius: 10px;
+}
+  
+::-webkit-scrollbar-thumb 
+{
+	background: gray;
+	border-radius: 10px;
 }

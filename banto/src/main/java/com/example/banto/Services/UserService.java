@@ -1,8 +1,11 @@
 package com.example.banto.Services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.banto.DAOs.UserDAO;
+import com.example.banto.DTOs.ItemDTO;
 import com.example.banto.DTOs.UserDTO;
 
 @Service
@@ -32,6 +35,22 @@ public class UserService {
 		}
 		try {
 			return userDAO.login(dto.getEmail(), dto.getPw());
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+	
+	public List<UserDTO> getUserListForRoot(Integer rootId, Integer page) throws Exception {
+		try {
+				return userDAO.getUserListForRoot(rootId, page);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+	
+	public UserDTO getUserForRoot(Integer rootId, Integer userId) throws Exception {
+		try {
+				return userDAO.getUserForRoot(rootId, userId);
 		}catch(Exception e) {
 			throw e;
 		}

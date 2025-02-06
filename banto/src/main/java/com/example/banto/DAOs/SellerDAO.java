@@ -16,23 +16,19 @@ public class SellerDAO {
 	@Autowired
 	SellerRepository sellerRepository;
 	@Autowired
-	UserRepository	userRepository;
+	AuthDAO authDAO;
 	
 	public SellerDTO findSeller(Integer userId) throws Exception{
-		try {
-			Optional<Users> userOpt = userRepository.findById(userId);
-			if(userOpt.isEmpty()) {
-				throw new Exception("권한 없음");
+	try {
+			// 인증 유효 확인
+			authDAO.auth(userId);
+			Optional<Sellers>sellerOpt =  sellerRepository.findByUser_Id(userId);
+			if(sellerOpt.isEmpty()) {
+				throw new Exception("데이터 조회 오류");
 			}
 			else {
-				Optional<Sellers>sellerOpt =  sellerRepository.findByUser_Id(userId);
-				if(sellerOpt.isEmpty()) {
-					throw new Exception("데이터 조회 오류");
-				}
-				else {
-					Sellers seller = sellerOpt.get();
-					return SellerDTO.toDTO(seller);
-				}
+				Sellers seller = sellerOpt.get();
+				return SellerDTO.toDTO(seller);
 			}
 		}catch(Exception e) {
 			throw e;

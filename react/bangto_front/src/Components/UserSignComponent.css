@@ -159,19 +159,29 @@
 	background-color: #b82323;
 }
 
-.modal_Addr 
+.modal_Addr			,
+.modal_Membership 
 {
 	position: fixed;
-	top: 50%;
+	top: 55%;
 	left: 50%;
 	transform: translate(-50%, -50%);
 	z-index: 9999;
 	background-color: white;
 	border-radius: 10px;
 	width: 640px;
-	height: 589px;
 	overflow-y: auto;
 	padding-top: 5px;
+}
+
+.modal_Addr
+{
+	height: 589px;
+}
+
+.modal_Membership 
+{
+	height: 697px;
 }
 
 .modal_Addr_Close
@@ -225,7 +235,8 @@
 	text-align: center;
 }
 
-.modal_Overlay_Addr 
+.modal_Overlay_Addr	,
+.modal_Overlay_Membership
 {
 	position: fixed;
 	top: 0;
@@ -255,4 +266,91 @@
 .pagination_Addr button:hover 
 {
 	color: #FF3636;
+}
+
+.table_membership
+{
+	padding: 20px;
+	padding-bottom: 0px;
+}
+
+.membership_text
+{
+	width: 520px;      
+	max-height: 65px;
+	padding: 5px;     
+	overflow-y: auto;
+	border: 1px solid black;
+	border-radius: 5px;
+}
+
+.table_membership tr:nth-child(odd) td:nth-child(even) 
+{
+	font-size: 16px;
+	font-weight: 700;
+	padding: 5px;
+}
+
+.table_membership tr:nth-child(even) td:nth-child(even) 
+{
+	font-size: 13px;
+	padding: 0px 5px;
+	padding-bottom: 15px;
+}
+
+.table_membership tr:nth-child(2) td:nth-child(2) 
+{
+	padding-left: 11px;
+	padding-right: 15px;
+}
+
+.button_Agree
+{
+	cursor: pointer;
+}
+
+.button_Agree img
+{
+	background-color: white;
+	margin-top: 7px;
+	width: 24px;
+	cursor: pointer;
+}
+
+.button_Agree button
+{
+	border: none;
+	background-color: white;
+}
+
+.button_sign
+{
+	border: none;
+	border-radius: 10px;
+	background-color: white;
+	cursor: pointer;
+	height: 35px;
+	width: 270px;
+	background-color: #FF3636;
+	color: white;
+	font-size: 20px;
+	margin-left: 67px;
+	margin-right: 45px;
+	margin-top: 13px;
+}
+
+.button_auth
+{	
+	border: 1px solid black;
+	border-radius: 10px;
+	background-color: white;
+	cursor: pointer;
+	height: 35px;
+	width: 217px;
+	font-size: 16px;
+}
+  
+.button_sign:disabled
+{
+	background-color: #b82323;
 }
