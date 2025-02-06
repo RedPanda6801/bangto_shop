@@ -47,10 +47,30 @@ public class UserService {
 			throw e;
 		}
 	}
-	
+	public UserDTO getUser(Integer userId) throws Exception {
+		try {
+				return userDAO.getUser(userId);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+	public void modifyUser(Integer userId, UserDTO dto) throws Exception {
+		try {
+				userDAO.modifyUser(userId, dto);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
 	public UserDTO getUserForRoot(Integer rootId, Integer userId) throws Exception {
 		try {
 				return userDAO.getUserForRoot(rootId, userId);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+	public void modifyUserForRoot(Integer rootId, Integer userId, UserDTO dto) throws Exception {
+		try {
+				userDAO.modifyUserForRoot(rootId, userId, dto);
 		}catch(Exception e) {
 			throw e;
 		}
