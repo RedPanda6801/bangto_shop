@@ -1,33 +1,52 @@
-package com.exmaple.banto.JWTs;
+package com.example.banto.JWTs;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.example.banto.Configs.EnvConfig;
+import com.example.banto.Entitys.Users;
+import com.example.banto.Repositorys.UserRepository;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 
+@Component
 public class JwtUtil {
 	EnvConfig envConfig = new EnvConfig();
 	String SECRET_KEY = envConfig.get("JWT_SECRET");
 	Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+	//토큰 유효 시간 : 30분
+	long expireTime = 1000 * 60 * 30;
+	UserRepository userRepository;
+
+    public JwtUtil(UserRepository userRepository) {  // ✅ 생성자로 주입
+        this.userRepository = userRepository;
+    }
+
+    public Optional<Users> getUserById(Integer id) {
+        return userRepository.findById(id);
+    }
 	
-	//토큰 발급(별명 파라미터 필요, 토큰 문자열 반환)
-	public String generateToken(String username) {
+	//토큰 발급(이메일 파라미터 필요, 토큰 문자열 반환)
+	public String generateToken(String email) {
 		return Jwts.builder()
-                .setSubject(username)
+                .setSubject(email)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+                .setExpiration(new Date(System.currentTimeMillis() + expireTime))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 	}
 	
-	//토큰 검증(토큰 파라미터 필요, 토큰 내부의 별명 반환)
-	public String validateToken(String token) {
+	//토큰 분석(토큰 파라미터 필요, 토큰 내부의 이메일 반환)
+	public String parseToken(String token) {
         try {
             return Jwts.parser()
                     .setSigningKey(key)
@@ -49,8 +68,52 @@ public class JwtUtil {
         return null;
     }
 	
-	//토큰 추출 후 검증
-	public String tokenValidation(HttpServletRequest request) {
-		return validateToken(extractToken(request));
+	//토큰 만료 여부 확인
+	public boolean isTokenExpired(String token) {
+        try {
+            Date expiration = Jwts.parser()
+                    .setSigningKey(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()))
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getExpiration();
+            return expiration.before(new Date()); // 현재 시간보다 이전이면 만료됨
+        } catch (ExpiredJwtException e) {
+            return true; // 예외가 발생하면 만료된 것
+        } catch (JwtException e) {
+            return false; // 잘못된 토큰
+        }
+    }
+	
+	//토큰 추출 후 분석
+	public String validateToken(HttpServletRequest request) throws Exception {
+		String token = extractToken(request);
+		String email = parseToken(token);
+		if(email == null) {
+			if(isTokenExpired(token)) {
+				throw new Exception("만료된 토큰입니다.");
+			} else {			
+				throw new Exception("유효하지 않은 토큰입니다.");
+			}
+		} else {
+			return email;
+		}
+	}
+	
+	//userPk로 토큰 검증
+	public Boolean validateTokenById(Integer Id, HttpServletRequest request) throws Exception {
+		try {
+			String tokenEmail = validateToken(request);
+			Optional<Users> user = userRepository.findById(Id);
+			if(user.isEmpty()) {
+				throw new Exception("존재하지 않는 회원의 id입니다.");
+			} else if(!user.get().getEmail().equals(tokenEmail)) {
+				throw new Exception("토큰에 담긴 이메일과 사용자의 이메일이 일치하지 않습니다.");
+			} else {
+				return true;
+			}
+		} catch(Exception e) {
+			throw e;
+		}
 	}
 }

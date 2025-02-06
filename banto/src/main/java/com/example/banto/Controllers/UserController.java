@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import com.example.banto.DTOs.LoginDTO;
 import com.example.banto.DTOs.UserDTO;
 import com.example.banto.DTOs.WalletDTO;
+import com.example.banto.JWTs.JwtUtil;
 import com.example.banto.Services.UserService;
 import com.example.banto.Services.WalletService;
 
@@ -19,6 +21,9 @@ import com.example.banto.Services.WalletService;
 public class UserController {
 	@Autowired
 	UserService userService;
+
+	@Autowired
+	JwtUtil jwtUtil;
 	
 	// 회원가입 기능
 	@PostMapping("/sign")
@@ -37,7 +42,8 @@ public class UserController {
 		try {
 			// 단순히 유저 찾기에 불과, JWT 토큰 또는 세션이나 비밀번호 해시화에 대해 넣을 필요가 있음
 			userService.login(dto);
-			return ResponseEntity.ok().body(null);
+			LoginDTO loginDTO = new LoginDTO(jwtUtil.generateToken(dto.getEmail()));
+			return ResponseEntity.ok().body(loginDTO);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
