@@ -23,7 +23,7 @@ public class ItemController {
 	JwtUtil jwtUtil;
 	
 	// 매장 별 물건 조회(20개 씩)
-	@GetMapping("/item/get-items/filter/{userId}/{storeId}/{page}")
+	@GetMapping("/item/get-items/filter/{storeId}/{page}")
 	public ResponseEntity getItemsWithFilter(HttpServletRequest request, @PathVariable("storeId") Integer storeId, @PathVariable("page") Integer page) {
 		try {
 			String token = jwtUtil.validateToken(request);

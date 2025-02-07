@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Modal from 'react-modal';
 import './UserSignComponent.css';
+import { useNavigate } from 'react-router-dom';
 
 Modal.setAppElement('#root');
 
@@ -12,10 +14,11 @@ const UserSignComponent = () => {
   const [agree04, setAgree04] = useState("");
   const [email, setEmail] = useState("");
   const [nickname, setNickname] = useState("");
+  const [phone, setPhone] = useState(null);
   const [isPasswordMatch, setIsPasswordMatch] = useState(true);
-  const [passwordConfirm, setPasswordConfirm] = useState('');
-  const [password, setPassword] = useState('');
-  const [keyword, setKeyword] = useState('');
+  const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [password, setPassword] = useState("");
+  const [keyword, setKeyword] = useState("");
   const [addressList, setAddressList] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [isAddressSearchOpen, setIsAddressSearchOpen] = useState(false);
@@ -23,7 +26,32 @@ const UserSignComponent = () => {
   const [totalPage, setTotalPageNum] = useState(1);
   const [visiblePages, setPageNums] = useState([]);
   const [isMembershipOpen, setIsMembershipOpen] = useState(true);
+  const navigate = useNavigate();
   
+  const handleSign = async () => 
+    {
+      try 
+      {
+        console.log(selectedAddress);
+        const response = await axios.post("http://localhost:9000/sign", 
+          {"email":email, "pw":password, "name":nickname, "addr":selectedAddress, "phone":phone}, {withCredentials : true});
+        if (response.status == 200) 
+        {
+          console.log("회원가입 성공");
+          alert("회원가입 성공");
+          navigate("/login");
+        } 
+        else 
+        {
+          console.error("회원가입 실패:");
+        }
+      } 
+      catch (error) 
+      {
+        console.error("회원가입 오류:", error);
+      }
+    };
+
   // 회원가입 약관 창
   useEffect(() => { setIsMembershipOpen(true); }, []);
 
@@ -33,7 +61,7 @@ const UserSignComponent = () => {
   // 회원가입 약관 전체 동의 토글
   const toggleAgreeAll = () => 
   {
-    const agree = agreeAll === "1" ? "" : "1";
+    const agree = agreeAll == "1" ? "" : "1";
     setAgreeAll(agree);
     setAgree01(agree);
     setAgree02(agree);
@@ -62,7 +90,7 @@ const UserSignComponent = () => {
 
   // 약관 동의 아이콘 그림 변경
   const getIcon = (agreeValue) => 
-    agreeValue === "1" ? "/images/02_icon/icon_02.jpg" : "/images/02_icon/icon_01.jpg";
+    agreeValue == "1" ? "/images/02_icon/icon_02.jpg" : "/images/02_icon/icon_01.jpg";
 
   // 필수 입력 항목 확인
   const isFormValid = email && password && passwordConfirm && nickname && isPasswordMatch;
@@ -383,7 +411,9 @@ const UserSignComponent = () => {
               <input 
                 className="sign_Tel" 
                 type="tel" 
-                placeholder="전화번호"/>
+                placeholder="전화번호"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}/>
             </td>
           </tr>
         </table>
@@ -411,8 +441,7 @@ const UserSignComponent = () => {
               <div 
                 className="sign_Addr_Road"
                 contentEditable={false}
-                tabindex="0"
-                style={{ color: selectedAddress ? "black" : "gray"}}>
+                tabindex="0">
                 {selectedAddress ? selectedAddress.roadAddr : "도로명 주소"}
               </div>
             </td>
@@ -436,13 +465,13 @@ const UserSignComponent = () => {
             </td>
           </tr>
         </table> 
-        {!isFormValid && <p className="info_Ck_Error_Message">* 필수 입력 항목을 작성해주세요</p>}
         <button 
           className="sign_Submit"
           disabled={!isFormValid}
-          onClick={() => (window.location.href = '/')}>
+          onClick={() => {handleSign();}}>
           회원가입
         </button>
+        {!isFormValid && <p className="info_Ck_Error_Message">* 필수 입력 항목을 작성해주세요</p>}
         <Modal 
           isOpen={isAddressSearchOpen} 
           onRequestClose={() => setIsAddressSearchOpen(false)}
@@ -451,14 +480,20 @@ const UserSignComponent = () => {
           overlayClassName="modal_Overlay_Addr"
           ariaHideApp={false}>
           <h3>주소 선택</h3>
-          <button className="modal_Addr_Close" onClick={() => setIsAddressSearchOpen(false)}>X</button>
+          <button 
+            className="modal_Addr_Close" 
+            onClick={() => setIsAddressSearchOpen(false)}>
+            X
+          </button>
           <table>
             <tr>
               <th>도로명 주소</th>
               <th>우편번호</th>
             </tr>
             {addressList.map((address, index) => (
-              <tr key={index} onClick={() => handleAddressSelect(address)} style={{ cursor: 'pointer' }}>
+              <tr 
+                key={index} 
+                onClick={() => handleAddressSelect(address)}>
                 <td>{address.roadAddr}</td>
                 <td>{address.zipNo}</td>
               </tr>
