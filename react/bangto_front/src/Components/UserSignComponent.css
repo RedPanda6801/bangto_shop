@@ -156,6 +156,7 @@
   
 .sign_Submit:disabled
 {
+	cursor: default;
 	background-color: #b82323;
 }
 
