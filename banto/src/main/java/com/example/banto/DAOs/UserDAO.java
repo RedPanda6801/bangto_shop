@@ -11,7 +11,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
+import com.example.banto.Configs.EnvConfig;
 import com.example.banto.DTOs.ItemDTO;
+import com.example.banto.DTOs.LoginDTO;
 import com.example.banto.DTOs.UserDTO;
 import com.example.banto.DTOs.WalletDTO;
 import com.example.banto.Entitys.Items;
@@ -19,7 +21,7 @@ import com.example.banto.Entitys.Users;
 import com.example.banto.Entitys.Wallets;
 import com.example.banto.Repositorys.UserRepository;
 import com.example.banto.Repositorys.WalletRepository;
-
+import com.example.banto.JWTs.JwtUtil;
 import jakarta.transaction.Transactional;
 
 @Component
@@ -30,6 +32,10 @@ public class UserDAO {
 	WalletRepository walletRepository;
 	@Autowired
 	AuthDAO authDAO;
+	@Autowired
+	JwtUtil jwtUtil;
+	@Autowired
+	EnvConfig envConfig;
 	
 	@Transactional
 	public void sign(UserDTO dto) throws Exception{
@@ -52,7 +58,7 @@ public class UserDAO {
 		}
 	}
 	
-	public UserDTO login(String email, String pw) throws Exception{
+	public LoginDTO login(String email, String pw) throws Exception{
 		try {
 			Optional<Users> userOpt = userRepository.findByEmail(email);
 			if(userOpt.isEmpty()) {
@@ -65,7 +71,8 @@ public class UserDAO {
 					throw new Exception("비밀번호 불일치");
 				}
 				else {
-					return UserDTO.toDTO(user);
+					LoginDTO loginDTO = new LoginDTO(jwtUtil.generateToken(user.getId()));
+					return loginDTO;
 				}
 			}
 		}catch(Exception e) {
@@ -75,11 +82,13 @@ public class UserDAO {
 	
 	public List<UserDTO> getUserListForRoot(Integer rootId, Integer page) throws Exception{
 		try {
+			String rootEmail = envConfig.get("ROOT_EMAIL");
+			System.out.println(rootEmail);
 			Optional<Users> userOpt = userRepository.findById(rootId);
 			if(userOpt.isEmpty()) {
 				throw new Exception("존재하지 않는 회원입니다.");
-			}
-			else if(!userOpt.get().getName().equals("root")) {
+			}	
+			else if(!userOpt.get().getEmail().equals((rootEmail))) {
 				throw new Exception("관리자가 아닙니다.");
 			}
 			else {
@@ -130,11 +139,12 @@ public class UserDAO {
 
 	public UserDTO getUserForRoot(Integer rootId, Integer userId) throws Exception{
 		try {
+			String rootEmail = envConfig.get("ROOT_EMAIL");
 			Optional<Users> userOpt = userRepository.findById(rootId);
 			if(userOpt.isEmpty()) {
 				throw new Exception("존재하지 않는 회원입니다.");
 			}
-			else if(!userOpt.get().getName().equals("root")) {
+			else if(!userOpt.get().getEmail().equals((rootEmail))) {
 				throw new Exception("관리자가 아닙니다.");
 			}
 			else {
@@ -153,11 +163,12 @@ public class UserDAO {
 	@Transactional
 	public void modifyUserForRoot(Integer rootId, Integer userId, UserDTO dto) throws Exception{
 		try {
+			String rootEmail = envConfig.get("ROOT_EMAIL");
 			Optional<Users> rootOpt = userRepository.findById(rootId);
 			if(rootOpt.isEmpty()) {
 				throw new Exception("존재하지 않는 회원입니다.");
 			}
-			else if(!rootOpt.get().getName().equals("root")) {
+			else if(!rootOpt.get().getEmail().equals((rootEmail))) {
 				throw new Exception("관리자가 아닙니다.");
 			}
 			else {

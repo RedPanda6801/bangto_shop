@@ -1,5 +1,7 @@
 package com.example.banto.Controllers;
 
+import java.net.http.HttpRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -7,21 +9,31 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.example.banto.DTOs.SellerDTO;
+import com.example.banto.JWTs.JwtUtil;
 import com.example.banto.Services.SellerService;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 public class SellerController {
 	@Autowired
 	SellerService sellerService;
 	
+	@Autowired
+	JwtUtil jwtUtil;
 	
 	// 판매자 본인 조회
-	@GetMapping("/seller/get-info/{userId}")
-	public ResponseEntity getSeller(@PathVariable("userId") Integer userId) {
+	@GetMapping("/seller/get-info")
+	public ResponseEntity getSeller(HttpServletRequest request) {
 		try {
-			// 토큰 인증으로 바뀔 예정
-			SellerDTO seller = sellerService.getSellerInfo(userId);
-			return ResponseEntity.ok().body(seller);
+			// 토큰 인증
+			String token = jwtUtil.validateToken(request);
+			if(token != null) {		
+				SellerDTO seller = sellerService.getSellerInfo(Integer.parseInt(token));
+				return ResponseEntity.ok().body(seller);
+			} else {
+				return ResponseEntity.badRequest().body("토큰 인증 오류");
+			}
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}

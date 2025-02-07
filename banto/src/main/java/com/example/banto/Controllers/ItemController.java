@@ -10,16 +10,25 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.example.banto.DTOs.ItemDTO;
 import com.example.banto.DTOs.SellerDTO;
+import com.example.banto.JWTs.JwtUtil;
 import com.example.banto.Services.ItemService;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 public class ItemController {
 	@Autowired
 	ItemService itemService;
+	@Autowired
+	JwtUtil jwtUtil;
+	
 	// 매장 별 물건 조회(20개 씩)
 	@GetMapping("/item/get-items/filter/{userId}/{storeId}/{page}")
-	public ResponseEntity getItemsWithFilter(@PathVariable("userId") Integer userId, @PathVariable("storeId") Integer storeId, @PathVariable("page") Integer page) {
+	public ResponseEntity getItemsWithFilter(HttpServletRequest request, @PathVariable("storeId") Integer storeId, @PathVariable("page") Integer page) {
 		try {
+			String token = jwtUtil.validateToken(request);
+			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
+			Integer userId = Integer.parseInt(token);
 			List<ItemDTO> itemList = itemService.getItemsWithFilter(userId, storeId, page);
 			return ResponseEntity.ok().body(itemList);
 		}catch(Exception e) {
