@@ -36,9 +36,9 @@ public class JwtUtil {
     }
 	
 	//토큰 발급(이메일 파라미터 필요, 토큰 문자열 반환)
-	public String generateToken(String email) {
+	public String generateToken(Integer userId) {
 		return Jwts.builder()
-                .setSubject(email)
+                .setSubject(Integer.toString(userId))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expireTime))
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -88,32 +88,34 @@ public class JwtUtil {
 	//토큰 추출 후 분석
 	public String validateToken(HttpServletRequest request) throws Exception {
 		String token = extractToken(request);
-		String email = parseToken(token);
-		if(email == null) {
+		String userId = parseToken(token);
+		if(userId == null) {
 			if(isTokenExpired(token)) {
 				throw new Exception("만료된 토큰입니다.");
 			} else {			
 				throw new Exception("유효하지 않은 토큰입니다.");
 			}
 		} else {
-			return email;
+			return userId;
 		}
 	}
 	
-	//userPk로 토큰 검증
-	public Boolean validateTokenById(Integer Id, HttpServletRequest request) throws Exception {
-		try {
-			String tokenEmail = validateToken(request);
-			Optional<Users> user = userRepository.findById(Id);
-			if(user.isEmpty()) {
-				throw new Exception("존재하지 않는 회원의 id입니다.");
-			} else if(!user.get().getEmail().equals(tokenEmail)) {
-				throw new Exception("토큰에 담긴 이메일과 사용자의 이메일이 일치하지 않습니다.");
-			} else {
-				return true;
-			}
-		} catch(Exception e) {
-			throw e;
-		}
-	}
+//	//userPk로 토큰 검증
+//	public Boolean validateTokenById(HttpServletRequest request) throws Exception {
+//		try {
+//			String userId = validateToken(request);
+//			
+//			Optional<Users> user = userRepository.findById(Integer.parseInt(userId));
+//			if(user.isEmpty()) {
+//				throw new Exception("존재하지 않는 회원의 id입니다.");
+////			} else if(!user.get().getEmail().equals(tokenEmail)) {
+////				throw new Exception("토큰에 담긴 이메일과 사용자의 이메일이 일치하지 않습니다.");
+//			}
+//			else {
+//				return true;
+//			}
+//		} catch(Exception e) {
+//			throw e;
+//		}
+//	}
 }

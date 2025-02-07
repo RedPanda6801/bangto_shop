@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.banto.DAOs.UserDAO;
-import com.example.banto.DTOs.ItemDTO;
+import com.example.banto.DTOs.LoginDTO;
 import com.example.banto.DTOs.UserDTO;
 
 @Service
@@ -29,7 +29,7 @@ public class UserService {
 		}
 	}
 	
-	public UserDTO login(UserDTO dto) throws Exception {
+	public LoginDTO login(UserDTO dto) throws Exception {
 		if(dto.getEmail() == null || dto.getPw() == null) {
 			throw new Exception("입력 오류");
 		}

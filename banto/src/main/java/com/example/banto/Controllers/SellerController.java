@@ -23,15 +23,16 @@ public class SellerController {
 	JwtUtil jwtUtil;
 	
 	// 판매자 본인 조회
-	@GetMapping("/seller/get-info/{userId}")
-	public ResponseEntity getSeller(@PathVariable("userId") Integer userId, HttpServletRequest request) {
+	@GetMapping("/seller/get-info")
+	public ResponseEntity getSeller(HttpServletRequest request) {
 		try {
 			// 토큰 인증
-			if(jwtUtil.validateTokenById(userId, request)) {				
-				SellerDTO seller = sellerService.getSellerInfo(userId);
+			String token = jwtUtil.validateToken(request);
+			if(token != null) {		
+				SellerDTO seller = sellerService.getSellerInfo(Integer.parseInt(token));
 				return ResponseEntity.ok().body(seller);
 			} else {
-				return ResponseEntity.ok().body(null);
+				return ResponseEntity.badRequest().body("토큰 인증 오류");
 			}
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());

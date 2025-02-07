@@ -12,15 +12,10 @@ public class WalletService {
 	WalletDAO walletDAO;
 	
 	public WalletDTO getMyWallet(Integer userId) throws Exception{
-		if(userId == null) { 
-			throw new Exception("권한 없음");
-		}
-		else {
-			try {
-				return walletDAO.findWallet(userId);
-			}catch(Exception e) {
-				throw e;
-			}
+		try {
+			return walletDAO.findWallet(userId);
+		}catch(Exception e) {
+			throw e;
 		}
 	}
 }

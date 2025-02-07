@@ -22,15 +22,16 @@ public class WalletController {
 	@Autowired
 	JwtUtil jwtUtil;
 	
-	@GetMapping("/wallet/my/get-info/{userId}")
-	public ResponseEntity getWallet(@PathVariable("userId") Integer userId, HttpServletRequest request) {
+	@GetMapping("/wallet/my/get-info")
+	public ResponseEntity getWallet(HttpServletRequest request) {
 		try {
 			// 토큰 인증
-			if(jwtUtil.validateTokenById(userId, request)) {
-				WalletDTO wallet = walletService.getMyWallet(userId);
+			String token = jwtUtil.validateToken(request);
+			if(token != null) {
+				WalletDTO wallet = walletService.getMyWallet(Integer.parseInt(token));
 				return ResponseEntity.ok().body(wallet);
 			} else {
-				return ResponseEntity.ok().body(null);
+				return ResponseEntity.badRequest().body("토큰 인증 오류");
 			}
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
