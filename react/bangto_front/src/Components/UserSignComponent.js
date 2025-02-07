@@ -14,7 +14,6 @@ const UserSignComponent = () => {
   const [agree04, setAgree04] = useState("");
   const [email, setEmail] = useState("");
   const [nickname, setNickname] = useState("");
-  const [detailAddr, setDetailAddr] = useState("");
   const [phone, setPhone] = useState(null);
   const [isPasswordMatch, setIsPasswordMatch] = useState(true);
   const [passwordConfirm, setPasswordConfirm] = useState("");
@@ -32,10 +31,10 @@ const UserSignComponent = () => {
   const handleSign = async () => 
     {
       try 
-      {        
-        const address = `${selectedAddress.roadAddr} ${detailAddr}`;
+      {
+        console.log(selectedAddress);
         const response = await axios.post("http://localhost:9000/sign", 
-          {"email":email, "pw":password, "name":nickname, "addr":address, "phone":phone}, {withCredentials : true});
+          {"email":email, "pw":password, "name":nickname, "addr":selectedAddress, "phone":phone}, {withCredentials : true});
         if (response.status == 200) 
         {
           console.log("회원가입 성공");
@@ -180,6 +179,7 @@ const UserSignComponent = () => {
   // 선택한 주소 저장
   const handleAddressSelect = (address) => 
   {
+    console.log("선택한 주소:", address);
     setSelectedAddress(address);
     setIsAddressSearchOpen(false);
   };
@@ -451,8 +451,6 @@ const UserSignComponent = () => {
               <input 
                 className="sign_Addr_Detail"
                 type="text" 
-                value={detailAddr}
-                onChange={(e) => setDetailAddr(e.target.value)}
                 placeholder="상세 주소"/>
             </td>
           </tr>
