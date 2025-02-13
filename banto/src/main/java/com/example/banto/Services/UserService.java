@@ -40,9 +40,9 @@ public class UserService {
 		}
 	}
 	
-	public List<UserDTO> getUserListForRoot(Integer rootId, Integer page) throws Exception {
+	public List<UserDTO> getUserListForRoot(Integer page) throws Exception {
 		try {
-				return userDAO.getUserListForRoot(rootId, page);
+				return userDAO.getUserListForRoot(page);
 		}catch(Exception e) {
 			throw e;
 		}
@@ -61,16 +61,16 @@ public class UserService {
 			throw e;
 		}
 	}
-	public UserDTO getUserForRoot(Integer rootId, Integer userId) throws Exception {
+	public UserDTO getUserForRoot(Integer userId) throws Exception {
 		try {
-				return userDAO.getUserForRoot(rootId, userId);
+				return userDAO.getUserForRoot(userId);
 		}catch(Exception e) {
 			throw e;
 		}
 	}
-	public void modifyUserForRoot(Integer rootId, Integer userId, UserDTO dto) throws Exception {
+	public void modifyUserForRoot(Integer userId, UserDTO dto) throws Exception {
 		try {
-				userDAO.modifyUserForRoot(rootId, userId, dto);
+				userDAO.modifyUserForRoot(userId, dto);
 		}catch(Exception e) {
 			throw e;
 		}

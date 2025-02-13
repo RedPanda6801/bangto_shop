@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import com.example.banto.DAOs.AuthDAO;
 import com.example.banto.DTOs.StoreDTO;
 import com.example.banto.DTOs.WalletDTO;
 import com.example.banto.JWTs.JwtUtil;
@@ -23,6 +24,8 @@ public class StoreController {
 	StoreService storeService;
 	@Autowired
 	JwtUtil jwtUtil;
+	@Autowired
+	AuthDAO authDAO;
 	
 	// 매장 추가
 	@PostMapping("/store/add")
@@ -82,4 +85,41 @@ public class StoreController {
 		}
 	}
 	// 매장 삭제
+	
+	
+	// 매장 전체 조회(관리자)
+	@GetMapping("/manager/store/get-list/{page}")
+	public ResponseEntity getStoreListByRoot(HttpServletRequest request, @PathVariable("page") Integer page) throws Exception {
+		try {
+			String token = jwtUtil.validateToken(request);
+			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
+			Integer rootId = Integer.parseInt(token);
+			// 관리자 인증 코드
+			if(!authDAO.authRoot(rootId)) {
+				return ResponseEntity.badRequest().body("Forbidden Error");
+			}
+			List<StoreDTO> stores = storeService.getMyStoresByRoot(page);
+			return ResponseEntity.ok().body(stores);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	
+	// 관리자 매장 수정
+	@PostMapping("/manager/store/modify/{userId}")
+	public ResponseEntity modifyStoreByRoot(HttpServletRequest request, @RequestBody StoreDTO dto, @PathVariable("userId") Integer userId) throws Exception {
+		try {
+			String token = jwtUtil.validateToken(request);
+			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
+			Integer rootId = Integer.parseInt(token);
+			if(!authDAO.authRoot(rootId)) {
+				return ResponseEntity.badRequest().body("Forbidden Error");
+			}
+			storeService.modify(userId, dto);
+			return ResponseEntity.ok().body(null);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	
 }

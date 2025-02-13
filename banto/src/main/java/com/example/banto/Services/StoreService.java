@@ -52,4 +52,11 @@ public class StoreService {
 		}
 	}
 	
+	public List<StoreDTO> getMyStoresByRoot(Integer page) throws Exception {
+		try {
+			return storeDAO.getMyStoresByRoot(page);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
 }
