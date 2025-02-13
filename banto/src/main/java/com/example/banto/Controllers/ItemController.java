@@ -29,7 +29,7 @@ public class ItemController {
 	
 	// 매장 별 물건 조회(20개 씩)
 	@GetMapping("/item/get-itemlist/{storeId}/{page}")
-	public ResponseEntity getItemList(HttpServletRequest request, @PathVariable("storeId") Integer storeId, @PathVariable("page") Integer page) {
+	public ResponseEntity getItemList(HttpServletRequest request, @PathVariable("storeId") Integer storeId, @PathVariable("page") Integer page) throws Exception{
 		try {
 			String token = jwtUtil.validateToken(request);
 			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
@@ -42,7 +42,7 @@ public class ItemController {
 	}
 	// 단일 물건 세부 조회
 	@GetMapping("/item/get-detail/{itemId}")
-	public ResponseEntity getItemDetail(HttpServletRequest request, @PathVariable("itemId") Integer itemId) {
+	public ResponseEntity getItemDetail(HttpServletRequest request, @PathVariable("itemId") Integer itemId) throws Exception{
 		try {
 			String token = jwtUtil.validateToken(request);
 			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
@@ -55,7 +55,7 @@ public class ItemController {
 	}
 	// 물건 추가 
 	@PostMapping("/item/add-item")
-	public ResponseEntity addItem(HttpServletRequest request, @RequestBody ItemDTO itemDTO) {
+	public ResponseEntity addItem(HttpServletRequest request, @RequestBody ItemDTO itemDTO) throws Exception {
 		try {
 			String token = jwtUtil.validateToken(request);
 			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
@@ -74,7 +74,7 @@ public class ItemController {
 	
 	// 관리자 매장 별 물건 조회(20개 씩)
 		@GetMapping("/manager/item/get-itemlist/{storeId}/{page}")
-		public ResponseEntity getItemListByRoot(HttpServletRequest request, @PathVariable("storeId") Integer storeId, @PathVariable("page") Integer page) {
+		public ResponseEntity getItemListByRoot(HttpServletRequest request, @PathVariable("storeId") Integer storeId, @PathVariable("page") Integer page) throws Exception {
 			try {
 				String token = jwtUtil.validateToken(request);
 				if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
@@ -90,8 +90,8 @@ public class ItemController {
 		}
 		
 		// 관리자 단일 물건 세부 조회
-		@GetMapping("/item/get-detail/{itemId}")
-		public ResponseEntity getItemDetailByRoot(HttpServletRequest request, @PathVariable("itemId") Integer itemId) {
+		@GetMapping("/manager/item/get-detail/{itemId}")
+		public ResponseEntity getItemDetailByRoot(HttpServletRequest request, @PathVariable("itemId") Integer itemId) throws Exception{
 			try {
 				String token = jwtUtil.validateToken(request);
 				if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
