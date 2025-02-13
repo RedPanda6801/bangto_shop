@@ -3,6 +3,9 @@ package com.example.banto.Entitys;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import com.example.banto.DTOs.ApplyDTO;
+import com.example.banto.DTOs.StoreDTO;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,7 +34,7 @@ public class SellerAuths {
     
     @Column(name="AUTH", nullable=false)
     @Enumerated(EnumType.STRING)  // Enum 값을 문자열로 저장
-    private ApplyType auth = ApplyType.Processing;
+    private ApplyType auth;
     
     @Column(name="APPLY_DATE", nullable=false, insertable = false, columnDefinition = "date default sysdate")
     private LocalDateTime applyDate;
@@ -42,4 +45,13 @@ public class SellerAuths {
     @ManyToOne(cascade = CascadeType.ALL)  // 필요에 따라 CascadeType.REMOVE 사용 가능
     @JoinColumn(name="USER_PK")
     private Users user;
+    
+    /*public static SellerAuths toEntity(ApplyDTO dto) {
+        return SellerAuths.builder()
+                .id(dto.getId())
+                .auth(dto.getAuth())
+                .applyDate(dto.getApplyDate())
+                .signDate(dto.getSignDate())
+                .build();
+    }*/
 }
