@@ -5,8 +5,8 @@ import { useNavigate } from 'react-router-dom';
 
 const UserAuthComponent = (props) => 
 {  
-  const [userEmail, setUserEmail] = useState("");
-  const [pw, setPw] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const code = new URLSearchParams(window.location.search).get("code");
   const navigate = useNavigate();
@@ -15,22 +15,23 @@ const UserAuthComponent = (props) =>
   {
     try 
     {
-      const response = await axios.post("http://localhost:9000/auth", 
-        { userEmail, pw}, {withCredentials : true});
+      const response = await axios.post("http://localhost:9000/login", 
+        {"email":email, "pw":password}, {withCredentials : true});
       if (response.status == 200) 
       {
-        setErrorMessage("로그인성공");
-        window.location.href = "/";
+        console.log("로그인 성공");
+        console.log(response.data.token);
+        localStorage.setItem("token",response.data.token);
+        navigate("/");
       } 
       else 
       {
-        setErrorMessage("로그인 실패");
+        console.error("로그인 실패:");
       }
     } 
     catch (error) 
     {
       console.error("로그인 오류:", error);
-      setErrorMessage("서버와 연결할 수 없습니다.");
     }
   };
   
@@ -74,51 +75,51 @@ const UserAuthComponent = (props) =>
   return (
     <div className="layout_Auth">
       <div className="box_Auth">
-      <table>
-              <tr>
-                <td>
-                  <input
-                className="Auth_Email"
-                    type="email"
-                    placeholder="이메일"
-                    value={userEmail}
-                    onChange={(e) => setUserEmail(e.target.value)}/>
-                </td>
-              </tr>
-            </table>
         <table>
-              <tr>
-                <td>
-                  <input
+          <tr>
+            <td>
+              <input
+                className="Auth_Email"
+                type="email"
+                placeholder="이메일"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}/>
+            </td>
+          </tr>
+        </table>
+        <table>
+          <tr>
+            <td>
+              <input
                 className="Auth_Pw"
-                    type="password"
-                    placeholder="비밀번호"
-                    value={pw}
-                onChange={(e) => setPw(e.target.value)}
+                type="password"
+                placeholder="비밀번호"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 onKeyDown={(e) => { if (e.key === 'Enter') { handleAuth(); } }}/>
-                </td>
-              </tr>
-            </table>
-            {errorMessage && <p className="error_Message">{errorMessage}</p>}
-            <input 
+            </td>
+          </tr>
+        </table>
+        {errorMessage && <p className="error_Message">{errorMessage}</p>}
+        <input 
           className="btn_Auth"
-              type="button" 
-              value="로그인"
+          type="button" 
+          value="로그인"
           onClick={handleAuth}/>
-            <a href={`https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_API_KEY}&redirect_uri=${process.env.REACT_APP_LOGIN_REDIRECT_URI}&response_type=code`}>
-            <img
-              className="btn_Social"
-              src={`/images/02_icon/kakao_login_medium_narrow.png`} 
-              alt="카카오 로그인" />
-          </a>
-          <div
-            className="btn_Join"
-            onClick={() => (window.location.href = '/sign')}>
-            회원가입
-          </div>
+        <a href={`https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_API_KEY}&redirect_uri=${process.env.REACT_APP_LOGIN_REDIRECT_URI}&response_type=code`}>
+          <img
+            className="btn_Social"
+            src={`/images/02_icon/kakao_login_medium_narrow.png`} 
+            alt="카카오 로그인" />
+        </a>
+        <div
+          className="btn_Join"
+          onClick={() => (window.location.href = '/sign')}>
+          회원가입
         </div>
-      </div>      
-    );
+      </div>
+    </div>      
+  );
 }
 
 export default UserAuthComponent;

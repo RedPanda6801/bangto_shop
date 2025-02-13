@@ -2,12 +2,29 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import UserMainComponent from './Components/UserMainComponent';
 import UserAuthComponent from './Components/UserAuthComponent';
 import UserSignComponent from './Components/UserSignComponent';
+import StoreComponent from './Components/StoreComponent';
+import StoreModiComponent from './Components/StoreModiComponent';
 import './Components/LayoutComponent.css';
 import axios from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function App() {
   const [userName, setUserName] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(()=>{
+    axios.get("http://localhost:9000/user/get-info", {
+           headers: {
+             "Authorization": `Bearer ${localStorage.getItem("token")}`,
+           }
+         }).then((res)=> {
+        setUserName(res.data.name);
+    }).catch((err)=>{
+        console.log(err);
+    })
+  },[localStorage.getItem("token")])
+
   const logout = () => {
     //카카오톡 소셜 로그인 사용자일 경우
     if(localStorage.getItem("kakaoAccessToken") !== null) {
@@ -40,8 +57,11 @@ function App() {
         }
       )
       localStorage.removeItem("kakaoAccessToken");
-      setUserName("");
     }
+    
+    localStorage.removeItem("token");
+    setUserName("");    
+    navigate("/");
   }
 
   return (  
@@ -63,7 +83,12 @@ function App() {
                 {userName}님 환영합니다.
               </div>
               <div 
-                className="header_User header_User_Logout"
+                className="header_User header_User_Menu"
+                onClick={() => (window.location.href = '/seller/apply')}>
+                판매자 페이지
+              </div>
+              <div 
+                className="header_User header_User_Menu"
                 onClick={logout}>
                 로그아웃
               </div>
@@ -87,6 +112,8 @@ function App() {
         <Route path="/" element={<UserMainComponent />} />
         <Route path="/login" element={<UserAuthComponent setUserName={setUserName} />} />
         <Route path="/sign" element={<UserSignComponent />} />
+        <Route path="/seller/apply" element={<StoreComponent setUserName={setUserName} />} />
+        <Route path="/seller/storemodi" element={<StoreModiComponent setUserName={setUserName} />} />
       </Routes>
 
         <div className="layout_Footer_Buttons">

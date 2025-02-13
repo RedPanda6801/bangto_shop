@@ -113,9 +113,10 @@
 	margin-left: 53px;
 }
 
-.header_User_Logout
+.header_User_Menu
 {
-	margin-left: 122px;
+	text-align: right;
+	margin: 0px 3px;
 }
 
 .footer_Btn

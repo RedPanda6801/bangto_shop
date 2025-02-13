@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import com.example.banto.DAOs.AuthDAO;
 import com.example.banto.DTOs.LoginDTO;
 import com.example.banto.DTOs.UserDTO;
 import com.example.banto.DTOs.WalletDTO;
@@ -26,6 +27,9 @@ public class UserController {
 
 	@Autowired
 	JwtUtil jwtUtil;
+	
+	@Autowired
+	AuthDAO authDAO;
 	
 	// 회원가입 기능
 	@PostMapping("/sign")
@@ -49,6 +53,7 @@ public class UserController {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
+	
 	// 내정보 조회
 	@GetMapping("/user/get-info")
 	public ResponseEntity getUser(HttpServletRequest request) {
@@ -84,7 +89,10 @@ public class UserController {
 			String token = jwtUtil.validateToken(request);
 			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
 			Integer rootId = Integer.parseInt(token);
-			List<UserDTO> user = userService.getUserListForRoot(rootId, page);
+			if(!authDAO.authRoot(rootId)) {
+				return ResponseEntity.badRequest().body("Forbidden Error");
+			}
+			List<UserDTO> user = userService.getUserListForRoot(page);
 			return ResponseEntity.ok().body(user);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -97,7 +105,10 @@ public class UserController {
 			String token = jwtUtil.validateToken(request);
 			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
 			Integer rootId = Integer.parseInt(token);
-			UserDTO user = userService.getUserForRoot(rootId, userId);
+			if(!authDAO.authRoot(rootId)) {
+				return ResponseEntity.badRequest().body("Forbidden Error");
+			}
+			UserDTO user = userService.getUserForRoot(userId);
 			return ResponseEntity.ok().body(user);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -110,7 +121,10 @@ public class UserController {
 			String token = jwtUtil.validateToken(request);
 			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
 			Integer rootId = Integer.parseInt(token);
-			userService.modifyUserForRoot(rootId, userId, dto);
+			if(!authDAO.authRoot(rootId)) {
+				return ResponseEntity.badRequest().body("Forbidden Error");
+			}
+			userService.modifyUserForRoot(userId, dto);
 			return ResponseEntity.ok().body(null);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());

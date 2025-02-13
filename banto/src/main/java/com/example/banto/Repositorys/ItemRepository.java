@@ -13,7 +13,7 @@ import com.example.banto.Entitys.Items;
 
 public interface ItemRepository extends JpaRepository<Items, Integer> {
 	
-	@Query("SELECT i FROM Items i WHERE i.id = :storeId")
+	@Query("SELECT i FROM Items i WHERE i.store.id = :storeId")
 	Page<Items> getItemsByStoreId(@Param("storeId") Integer storeId, Pageable pageable); 
 
 }

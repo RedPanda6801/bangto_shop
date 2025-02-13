@@ -1,8 +1,8 @@
 package com.example.banto.Entitys;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -29,17 +29,19 @@ public class Options {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     
-    @Column(name="OPTION_NUM", nullable=false)
-    private Integer optionNum;
+    @Column(name="ADD_PRICE", nullable=false)
+    private Integer addPrice;
     
     @Column(name="OPTION_INFO", nullable=false)
     private String optionInfo;
     
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name="ITEM_PK")
     private Items item;
-    
+ 
     // 'option' 필드가 Carts 엔티티에 존재해야 함
+    @JsonIgnore
     @OneToMany(mappedBy="option")
     private List<Carts> carts;
 }

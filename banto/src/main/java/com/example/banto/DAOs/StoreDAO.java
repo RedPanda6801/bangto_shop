@@ -1,11 +1,17 @@
 package com.example.banto.DAOs;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
+import com.example.banto.Configs.EnvConfig;
 import com.example.banto.DTOs.SellerDTO;
 import com.example.banto.DTOs.StoreDTO;
 import com.example.banto.Entitys.Sellers;
@@ -26,7 +32,8 @@ public class StoreDAO {
 	SellerDAO sellerDAO;
 	@Autowired
 	AuthDAO authDAO;
-	
+	@Autowired
+	EnvConfig envConfig;
 	@Transactional
 	public void create(Integer userId, StoreDTO dto) throws Exception {
 		try {
@@ -108,6 +115,21 @@ public class StoreDAO {
 						dto.getName() : store.getName());
 				storeRepository.save(store);
 			}
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+	
+	public List<StoreDTO> getMyStoresByRoot(Integer page) throws Exception {
+		try {
+			// 10명씩 끊기
+			Pageable pageable = PageRequest.of(page-1, 10, Sort.by("id").ascending());
+			Page<Stores> storeListPage = storeRepository.findAll(pageable);
+			List<StoreDTO>storeList = new ArrayList<>();
+			for(Stores store : storeListPage) {
+				storeList.add(StoreDTO.toDTO(store));
+			}
+			return storeList;
 		}catch(Exception e) {
 			throw e;
 		}
