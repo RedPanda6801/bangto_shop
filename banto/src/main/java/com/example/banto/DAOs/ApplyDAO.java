@@ -104,6 +104,9 @@ public class ApplyDAO {
 				if(sellerAuthOpt.isEmpty()) {
 					throw new Exception("유효하지 않은 판매자 인증 신청서입니다.");
 				}
+				else if(sellerAuthOpt.get().getAuth() != ApplyType.Processing) {
+					throw new Exception("이미 처리된 신청서입니다.");
+				}
 				else {
 					SellerAuths apply = sellerAuthOpt.get();
 					if(process.equals("Accepted")) {
