@@ -20,23 +20,25 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @Component
 public class JwtUtil {
-	EnvConfig envConfig = new EnvConfig();
-	String SECRET_KEY = envConfig.get("JWT_SECRET");
-	Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+	@Autowired
+	EnvConfig envConfig;
 	//토큰 유효 시간 : 30분
 	long expireTime = 1000 * 60 * 30;
+	@Autowired
 	UserRepository userRepository;
 
-    public JwtUtil(UserRepository userRepository) {  // ✅ 생성자로 주입
+    /*public JwtUtil(UserRepository userRepository) {  // ✅ 생성자로 주입
         this.userRepository = userRepository;
     }
 
     public Optional<Users> getUserById(Integer id) {
         return userRepository.findById(id);
-    }
+    }*/
 	
 	//토큰 발급(이메일 파라미터 필요, 토큰 문자열 반환)
 	public String generateToken(Integer userId) {
+		String SECRET_KEY = envConfig.get("JWT_SECRET");
+		Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 		return Jwts.builder()
                 .setSubject(Integer.toString(userId))
                 .setIssuedAt(new Date())
@@ -48,6 +50,8 @@ public class JwtUtil {
 	//토큰 분석(토큰 파라미터 필요, 토큰 내부의 이메일 반환)
 	public String parseToken(String token) {
         try {
+        	String SECRET_KEY = envConfig.get("JWT_SECRET");
+        	Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
             return Jwts.parser()
                     .setSigningKey(key)
                     .build()
@@ -71,6 +75,7 @@ public class JwtUtil {
 	//토큰 만료 여부 확인
 	public boolean isTokenExpired(String token) {
         try {
+        	String SECRET_KEY = envConfig.get("JWT_SECRET");
             Date expiration = Jwts.parser()
                     .setSigningKey(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()))
                     .build()
