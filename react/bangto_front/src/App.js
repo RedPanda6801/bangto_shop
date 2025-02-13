@@ -2,7 +2,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import UserMainComponent from './Components/UserMainComponent';
 import UserAuthComponent from './Components/UserAuthComponent';
 import UserSignComponent from './Components/UserSignComponent';
-import StoreAuthComponent from './Components/StoreAuthComponent';
+import StoreComponent from './Components/StoreComponent';
+import StoreModiComponent from './Components/StoreModiComponent';
 import './Components/LayoutComponent.css';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
@@ -111,7 +112,8 @@ function App() {
         <Route path="/" element={<UserMainComponent />} />
         <Route path="/login" element={<UserAuthComponent setUserName={setUserName} />} />
         <Route path="/sign" element={<UserSignComponent />} />
-        <Route path="/seller/apply" element={<StoreAuthComponent setUserName={setUserName} />} />
+        <Route path="/seller/apply" element={<StoreComponent setUserName={setUserName} />} />
+        <Route path="/seller/storemodi" element={<StoreModiComponent setUserName={setUserName} />} />
       </Routes>
 
         <div className="layout_Footer_Buttons">
