@@ -5,6 +5,7 @@ import java.util.List;
 import com.example.banto.Entitys.Items;
 import com.example.banto.Entitys.Sellers;
 import com.example.banto.Entitys.Stores;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -19,6 +20,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,6 +37,7 @@ public class StoreDTO {
     
     private Sellers seller;
 
+    @JsonIgnore
     private List<Items> items;
     
     public static StoreDTO toDTO(Stores entity) {

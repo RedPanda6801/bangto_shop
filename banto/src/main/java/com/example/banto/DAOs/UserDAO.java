@@ -80,18 +80,8 @@ public class UserDAO {
 		}
 	}
 	
-	public List<UserDTO> getUserListForRoot(Integer rootId, Integer page) throws Exception{
+	public List<UserDTO> getUserListForRoot(Integer page) throws Exception{
 		try {
-			String rootEmail = envConfig.get("ROOT_EMAIL");
-			System.out.println(rootEmail);
-			Optional<Users> userOpt = userRepository.findById(rootId);
-			if(userOpt.isEmpty()) {
-				throw new Exception("존재하지 않는 회원입니다.");
-			}	
-			else if(!userOpt.get().getEmail().equals((rootEmail))) {
-				throw new Exception("관리자가 아닙니다.");
-			}
-			else {
 				// 10명씩 끊기
 				Pageable pageable = PageRequest.of(page-1, 10, Sort.by("id").ascending());
 				Page<Users>users = userRepository.findAll(pageable);
@@ -99,10 +89,8 @@ public class UserDAO {
 				for(Users user : users) {
 					UserDTO dto = UserDTO.toDTO(user);
 					userList.add(dto);
-				}
-				
+				}				
 				return userList;
-			}
 		}catch(Exception e) {
 			throw e;
 		}
@@ -137,59 +125,38 @@ public class UserDAO {
 		}
 	}
 
-	public UserDTO getUserForRoot(Integer rootId, Integer userId) throws Exception{
+	public UserDTO getUserForRoot(Integer userId) throws Exception{
 		try {
-			String rootEmail = envConfig.get("ROOT_EMAIL");
-			Optional<Users> userOpt = userRepository.findById(rootId);
-			if(userOpt.isEmpty()) {
-				throw new Exception("존재하지 않는 회원입니다.");
+			Optional<Users>user = userRepository.findById(userId);
+			if(user.isEmpty()) {
+				throw new Exception("조회할 유저가 없음");
 			}
-			else if(!userOpt.get().getEmail().equals((rootEmail))) {
-				throw new Exception("관리자가 아닙니다.");
-			}
-			else {
-				Optional<Users>user = userRepository.findById(userId);
-				if(user.isEmpty()) {
-					throw new Exception("조회할 유저가 없음");
-				}
-				
-				return UserDTO.toDTO(user.get());
-			}
+			return UserDTO.toDTO(user.get());
 		}catch(Exception e) {
 			throw e;
 		}
 	}
 	
 	@Transactional
-	public void modifyUserForRoot(Integer rootId, Integer userId, UserDTO dto) throws Exception{
+	public void modifyUserForRoot(Integer userId, UserDTO dto) throws Exception{
 		try {
-			String rootEmail = envConfig.get("ROOT_EMAIL");
-			Optional<Users> rootOpt = userRepository.findById(rootId);
-			if(rootOpt.isEmpty()) {
-				throw new Exception("존재하지 않는 회원입니다.");
+			Optional<Users>userOpt = userRepository.findById(userId);
+			if(userOpt.isEmpty()) {
+				throw new Exception("조회할 유저가 없음");
 			}
-			else if(!rootOpt.get().getEmail().equals((rootEmail))) {
-				throw new Exception("관리자가 아닙니다.");
-			}
-			else {
-				Optional<Users>userOpt = userRepository.findById(userId);
-				if(userOpt.isEmpty()) {
-					throw new Exception("조회할 유저가 없음");
-				}
-				Users user = userOpt.get();
-				// 수정 로직
-				user.setEmail((dto.getEmail() != null && !dto.getEmail().equals("")) ?
-						dto.getEmail() : user.getEmail());
-				user.setName((dto.getName() != null && !dto.getName().equals("")) ?
-						dto.getName() : user.getName());
-				user.setPw((dto.getPw() != null && !dto.getPw().equals("")) ?
-						dto.getPw() : user.getPw());
-				user.setPhone((dto.getPhone() != null && !dto.getPhone().equals("")) ?
-						dto.getPhone() : user.getPhone());
-				user.setAddr((dto.getAddr() != null && !dto.getAddr().equals("")) ?
-						dto.getAddr() : user.getAddr());
-				userRepository.save(user);
-			}
+			Users user = userOpt.get();
+			// 수정 로직
+			user.setEmail((dto.getEmail() != null && !dto.getEmail().equals("")) ?
+					dto.getEmail() : user.getEmail());
+			user.setName((dto.getName() != null && !dto.getName().equals("")) ?
+					dto.getName() : user.getName());
+			user.setPw((dto.getPw() != null && !dto.getPw().equals("")) ?
+					dto.getPw() : user.getPw());
+			user.setPhone((dto.getPhone() != null && !dto.getPhone().equals("")) ?
+					dto.getPhone() : user.getPhone());
+			user.setAddr((dto.getAddr() != null && !dto.getAddr().equals("")) ?
+					dto.getAddr() : user.getAddr());
+			userRepository.save(user);	
 		}catch(Exception e) {
 			throw e;
 		}

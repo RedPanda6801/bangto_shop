@@ -33,9 +33,9 @@ public class ItemDTO {
 
     private String img;
 
-    private Integer ammount;
+    private Integer amount;
     
-    private Stores store;
+    private Integer storePk;
     
     private Integer star;
     
@@ -52,14 +52,14 @@ public class ItemDTO {
     private List<Carts> carts;
     
     public ItemDTO(Integer id, String title, Integer category, Integer price, 
-        String content, String img, Integer ammount, Integer star) {
+        String content, String img, Integer amount, Integer star) {
 		 this.id = id;
 		 this.title = title;
 		 this.category = category;
 		 this.price = price;
 		 this.content = content;
 		 this.img = img;
-		 this.ammount = ammount;
+		 this.amount = amount;
 		 this.star = star;
 	}
     
@@ -71,9 +71,12 @@ public class ItemDTO {
                 .price(entity.getPrice())
                 .content(entity.getContent())
                 .img(entity.getImg())
-                .ammount(entity.getAmmount())
+                .amount(entity.getAmount())
                 .options(entity.getOptions())
                 .star(entity.getFavorites().size())
+                .qnas(entity.getQnas())
+                .comments(entity.getComments())
+                .options(entity.getOptions())
                 .build();
     }
 

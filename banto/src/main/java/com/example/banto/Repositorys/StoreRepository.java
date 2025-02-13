@@ -19,4 +19,5 @@ public interface StoreRepository extends JpaRepository<Stores, Integer> {
 	
 	@Query("SELECT s FROM Stores s WHERE s.seller.user.id = :userId AND s.id = :storeId")
 	public Optional<Stores> findStoreByUserId(@Param("userId") Integer userId, @Param("storeId") Integer storeId);
+	
 }

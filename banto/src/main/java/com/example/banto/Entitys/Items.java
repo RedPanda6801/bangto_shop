@@ -1,6 +1,9 @@
 package com.example.banto.Entitys;
 import java.util.List;
 
+import com.example.banto.DTOs.ItemDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -42,10 +45,10 @@ public class Items {
     @Column(name="IMG", nullable=true)
     private String img;
     
-    @Column(name="AMMOUNT", nullable=false)
-    private Integer ammount = 0;
+    @Column(name="AMOUNT", nullable=false)
+    private Integer amount;
     
-    // 참조 객체
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="STORE_PK")
     private Stores store;
@@ -67,4 +70,15 @@ public class Items {
     
     @OneToMany(mappedBy="item", cascade = CascadeType.ALL)  // 추가: cascade 설정
     private List<Carts> carts;
+    
+    public static Items toEntity(ItemDTO dto) {
+    	return Items.builder()
+    			.title(dto.getTitle())
+    			.img(dto.getImg())
+    			.price(dto.getPrice())
+    			.content(dto.getContent())
+    			.amount(dto.getAmount())  // 기본값 설정
+    			.category(dto.getCategory())
+    			.build();
+    }
 }
