@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.banto.DAOs.AuthDAO;
 import com.example.banto.DTOs.ItemDTO;
+import com.example.banto.DTOs.OptionDTO;
 import com.example.banto.Entitys.Options;
 import com.example.banto.JWTs.JwtUtil;
 import com.example.banto.Services.ItemService;
@@ -26,6 +27,19 @@ public class ItemController {
 	JwtUtil jwtUtil;
 	@Autowired
 	AuthDAO authDAO;
+	
+	// 물품 전체 조회
+	@GetMapping("/item/get-all-list/{page}")
+	public ResponseEntity getItemList(@PathVariable("page") Integer page) throws Exception{
+		try {
+			List<ItemDTO> itemList = itemService.getAllItemList(page);
+			return ResponseEntity.ok().body(itemList);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	
+	// 검색어 별 조회, 카테고리 별 조회...
 	
 	// 매장 별 물건 조회(20개 씩)
 	@GetMapping("/item/get-itemlist/{storeId}/{page}")
@@ -67,9 +81,32 @@ public class ItemController {
 		}
 	}
 	// 물건 수정
+		@PostMapping("/item/modify")
+		public ResponseEntity modifyItem(HttpServletRequest request, @RequestBody ItemDTO itemDTO) throws Exception {
+			try {
+				String token = jwtUtil.validateToken(request);
+				if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
+				Integer userId = Integer.parseInt(token);
+				itemService.modifyItem(userId, itemDTO);
+				return ResponseEntity.ok().body(null);
+			}catch(Exception e) {
+				return ResponseEntity.badRequest().body(e.getMessage());
+			}
+		}
 	
 	// 옵션 수정
-	
+		@PostMapping("/item/option/modify")
+		public ResponseEntity modifyItemOption(HttpServletRequest request, @RequestBody OptionDTO optionDTO) throws Exception {
+			try {
+				String token = jwtUtil.validateToken(request);
+				if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
+				Integer userId = Integer.parseInt(token);
+				itemService.modifyItemOption(userId, optionDTO);
+				return ResponseEntity.ok().body(null);
+			}catch(Exception e) {
+				return ResponseEntity.badRequest().body(e.getMessage());
+			}
+		}
 	// 물건 삭제
 	
 	// 관리자 매장 별 물건 조회(20개 씩)
@@ -105,4 +142,39 @@ public class ItemController {
 				return ResponseEntity.badRequest().body(e.getMessage());
 			}
 		}
+		
+		// 관리자 물건 수정
+		@PostMapping("/manager/item/modify")
+		public ResponseEntity modifyItemByRoot(HttpServletRequest request, @RequestBody ItemDTO itemDTO) throws Exception {
+			try {
+				String token = jwtUtil.validateToken(request);
+				if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
+				Integer rootId = Integer.parseInt(token);
+				if(!authDAO.authRoot(rootId)) {
+					return ResponseEntity.badRequest().body("Forbidden Error");
+				}
+				itemService.modifyItem(-1, itemDTO);
+				return ResponseEntity.ok().body(null);
+			}catch(Exception e) {
+				return ResponseEntity.badRequest().body(e.getMessage());
+			}
+		}
+			
+	// 관리자 옵션 수정
+		@PostMapping("/manager/item/option/modify")
+		public ResponseEntity modifyItemOptionByRoot(HttpServletRequest request, @RequestBody OptionDTO optionDTO) throws Exception {
+			try {
+				String token = jwtUtil.validateToken(request);
+				if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
+				Integer rootId = Integer.parseInt(token);
+				if(!authDAO.authRoot(rootId)) {
+					return ResponseEntity.badRequest().body("Forbidden Error");
+				}
+				itemService.modifyItemOption(-1, optionDTO);
+				return ResponseEntity.ok().body(null);
+			}catch(Exception e) {
+				return ResponseEntity.badRequest().body(e.getMessage());
+			}
+		}
+		
 }

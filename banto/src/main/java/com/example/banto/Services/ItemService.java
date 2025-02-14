@@ -7,11 +7,24 @@ import org.springframework.stereotype.Service;
 
 import com.example.banto.DAOs.ItemDAO;
 import com.example.banto.DTOs.ItemDTO;
+import com.example.banto.DTOs.OptionDTO;
 
 @Service
 public class ItemService {
 	@Autowired
 	ItemDAO itemDAO;
+	
+	public List<ItemDTO> getAllItemList(Integer page) throws Exception {
+		try {
+			if(page == null || page < 1) {
+				throw new Exception("페이지 입력 오류");
+		}else {
+				return itemDAO.getAllItemList(page);
+			}
+		}catch(Exception e) {
+			throw e;
+		}
+	}
 	
 	public List<ItemDTO> getItemList(Integer userId, Integer storeId, Integer page) throws Exception {
 		try {
@@ -36,6 +49,22 @@ public class ItemService {
 	public void addItem(Integer userId, ItemDTO itemDTO) throws Exception {
 		try {
 			itemDAO.addItem(userId, itemDTO);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+	
+	public void modifyItem(Integer userId, ItemDTO itemDTO) throws Exception {
+		try {
+			itemDAO.modifyItem(userId, itemDTO);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+	
+	public void modifyItemOption(Integer userId, OptionDTO optionDTO) throws Exception {
+		try {
+			itemDAO.modifyItemOption(userId, optionDTO);
 		}catch(Exception e) {
 			throw e;
 		}
