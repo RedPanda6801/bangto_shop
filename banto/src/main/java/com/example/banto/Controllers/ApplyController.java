@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import com.example.banto.DAOs.AuthDAO;
 import com.example.banto.DTOs.ApplyDTO;
 import com.example.banto.DTOs.ProcessDTO;
-import com.example.banto.DTOs.StoreDTO;
 import com.example.banto.JWTs.JwtUtil;
 import com.example.banto.Services.ApplyService;
 
@@ -23,7 +23,9 @@ public class ApplyController {
 	@Autowired
 	ApplyService applyService;  
 	@Autowired
-	JwtUtil jwtUtil;	
+	JwtUtil jwtUtil;
+	@Autowired
+	AuthDAO authDAO;
 	
 	// 판매자 인증 신청
 	@PostMapping("/apply")
@@ -33,7 +35,7 @@ public class ApplyController {
 			String token = jwtUtil.validateToken(request);
 			if(token != null) {
 				applyService.applySellerAuth(Integer.parseInt(token));
-				return ResponseEntity.ok().body(null);
+				return ResponseEntity.ok().body("판매자 인증 신청 완료");
 			} else {
 				return ResponseEntity.badRequest().body("토큰 인증 오류");
 			}
@@ -49,7 +51,7 @@ public class ApplyController {
 			// 토큰 인증
 			String token = jwtUtil.validateToken(request);
 			if(token != null) {		
-				ApplyDTO authInfo = applyService.getAuthInfo(Integer.parseInt(token));
+				List<ApplyDTO> authInfo = applyService.getAuthInfo(Integer.parseInt(token));
 				return ResponseEntity.ok().body(authInfo);
 			} else {
 				return ResponseEntity.badRequest().body("토큰 인증 오류");
@@ -65,30 +67,31 @@ public class ApplyController {
 		try {
 			// 토큰 인증
 			String token = jwtUtil.validateToken(request);
-			if(token != null) {
-				Integer rootId = Integer.parseInt(token);
-				applyService.modify(rootId, dto);
-				return ResponseEntity.ok().body(null);
-			} else {
-				return ResponseEntity.badRequest().body("토큰 인증 오류");
+			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
+			Integer rootId = Integer.parseInt(token);
+			if(!authDAO.authRoot(rootId)) {
+				return ResponseEntity.badRequest().body("Forbidden Error");
 			}
+			applyService.modify(dto);
+			return ResponseEntity.ok().body("판매자 인증 신청서 처리 완료");
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
 	
-	// 판매자 인증 신청서 목록 조회(관리자)
-	@GetMapping("/apply/get-list")
-	public ResponseEntity getApplyList(HttpServletRequest request) {
+	// 판매자 인증 신청서 목록 조회(20개씩, 관리자)
+	@GetMapping("/apply/get-list/{page}")
+	public ResponseEntity getApplyList(HttpServletRequest request, @PathVariable("page") Integer page) {
 		try {
 			// 토큰 인증
 			String token = jwtUtil.validateToken(request);
-			if(token != null) {		
-				List<ApplyDTO> applies = applyService.getApplyList(Integer.parseInt(token));
-				return ResponseEntity.ok().body(applies);
-			} else {
-				return ResponseEntity.badRequest().body("토큰 인증 오류");
+			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
+			Integer rootId = Integer.parseInt(token);
+			if(!authDAO.authRoot(rootId)) {
+				return ResponseEntity.badRequest().body("Forbidden Error");
 			}
+			List<ApplyDTO> applies = applyService.getApplyList(page);
+			return ResponseEntity.ok().body(applies);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
@@ -100,12 +103,13 @@ public class ApplyController {
 		try {
 			// 토큰 인증
 			String token = jwtUtil.validateToken(request);
-			if(token != null) {		
-				ApplyDTO apply = applyService.getApply(Integer.parseInt(token), sellerAuthId);
-				return ResponseEntity.ok().body(apply);
-			} else {
-				return ResponseEntity.badRequest().body("토큰 인증 오류");
+			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
+			Integer rootId = Integer.parseInt(token);
+			if(!authDAO.authRoot(rootId)) {
+				return ResponseEntity.badRequest().body("Forbidden Error");
 			}
+			ApplyDTO apply = applyService.getApply(sellerAuthId);
+			return ResponseEntity.ok().body(apply);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}

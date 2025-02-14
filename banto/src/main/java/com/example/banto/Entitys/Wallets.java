@@ -32,7 +32,7 @@ public class Wallets {
     @Column(name="CASH_BACK", nullable=true)
     private Integer cashBack = 0;  // 기본값 0 설정
 
-    @OneToOne(cascade = CascadeType.ALL)  // 모든 cascade 동작을 원한다면 CascadeType.ALL을 사용하는 것이 좋습니다.
+    @OneToOne//(cascade = CascadeType.ALL)  // 모든 cascade 동작을 원한다면 CascadeType.ALL을 사용하는 것이 좋습니다.
     @JoinColumn(name = "OWNER_PK")
     private Users user;
     

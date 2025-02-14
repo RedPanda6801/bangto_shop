@@ -80,7 +80,20 @@ public class UserController {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
-	// 내 정보 삭제
+	
+	// 회원탈퇴
+	@PostMapping("/user/delete-me")
+	public ResponseEntity deleteMyself(HttpServletRequest request) {
+		try {
+			String token = jwtUtil.validateToken(request);
+			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
+			Integer userId = Integer.parseInt(token);
+			userService.deleteMyself(userId);
+			return ResponseEntity.ok().body("회원탈퇴 완료");
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
 	
 	// 유저 전체 정보 조회(관리자)
 	@GetMapping("/manager/user/get-list/{page}")
@@ -131,4 +144,19 @@ public class UserController {
 		}
 	}
 	// 유저 단일 삭제(관리자)
+	@PostMapping("/user/delete/{userId}")
+	public ResponseEntity deleteUser(HttpServletRequest request, @PathVariable("userId") Integer userId) {
+		try {
+			String token = jwtUtil.validateToken(request);
+			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
+			Integer rootId = Integer.parseInt(token);
+			if(!authDAO.authRoot(rootId)) {
+				return ResponseEntity.badRequest().body("Forbidden Error");
+			}
+			userService.deleteUser(userId);
+			return ResponseEntity.ok().body("회원 추방 완료");
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
 }

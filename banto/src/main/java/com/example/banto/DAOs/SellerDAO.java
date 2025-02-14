@@ -11,6 +11,8 @@ import com.example.banto.Entitys.Sellers;
 import com.example.banto.Repositorys.SellerRepository;
 import com.example.banto.Repositorys.UserRepository;
 
+import jakarta.transaction.Transactional;
+
 @Component
 public class SellerDAO {
 	@Autowired
@@ -19,7 +21,7 @@ public class SellerDAO {
 	AuthDAO authDAO;
 	
 	public SellerDTO findSeller(Integer userId) throws Exception{
-	try {
+		try {
 			// 인증 유효 확인
 			authDAO.auth(userId);
 			Optional<Sellers>sellerOpt =  sellerRepository.findByUser_Id(userId);
@@ -29,6 +31,40 @@ public class SellerDAO {
 			else {
 				Sellers seller = sellerOpt.get();
 				return SellerDTO.toDTO(seller);
+			}
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+	
+	@Transactional
+	public void deleteMyself(Integer userId) throws Exception{
+		try {
+			// 인증 유효 확인
+			authDAO.auth(userId);
+			Optional<Sellers>sellerOpt = sellerRepository.findByUser_Id(userId);
+			if(sellerOpt.isEmpty()) {
+				throw new Exception("판매자가 아닙니다.");
+			}
+			else {
+				Sellers seller = sellerOpt.get();
+				sellerRepository.delete(seller);
+			}
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+	
+	@Transactional
+	public void deleteSeller(Integer userId) throws Exception{
+		try {
+			Optional<Sellers>sellerOpt = sellerRepository.findByUser_Id(userId);
+			if(sellerOpt.isEmpty()) {
+				throw new Exception("판매자가 아닙니다.");
+			}
+			else {
+				Sellers seller = sellerOpt.get();
+				sellerRepository.delete(seller);
 			}
 		}catch(Exception e) {
 			throw e;
