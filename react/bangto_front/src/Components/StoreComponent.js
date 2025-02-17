@@ -170,13 +170,13 @@ const StoreAuthComponent = (props) =>
                   </tr>
                 </table>
                 <button
-                  onClick={() => navigate(`/seller/storemodi?sellerName=${sellerName}&busiNum=${storeInfo.busiNum}`)}>
+                  onClick={() => navigate(`/seller/storemodi?id=${storeInfo.id}&sellerName=${sellerName}&busiNum=${storeInfo.busiNum}`)}>
                   매장 정보 수정
                 </button>
               </div>
               <button 
                 className="btn_Store_Add"
-                onClick={() => navigate('/item/add_item')}>
+                onClick={() => navigate(`/item/add_item?storeName=${storeInfo.name}&storePk=${storeInfo.id}`)}>
                 판매 물품 등록</button>
               <div className="box_Item_Info">
                 <table>
@@ -192,7 +192,12 @@ const StoreAuthComponent = (props) =>
                       <td>{item.title}</td>
                       <td>{item.content}</td>
                       <td>{item.price}</td>
-                      <td><button>공동구매 등록</button></td>
+                      <td>
+                        <button
+                          onClick={() => navigate(`/item/add_group_item?storeName=${storeInfo.name}&itemTitle=${item.title}&itemId=${item.id}`)}>
+                            공동구매 등록
+                        </button>
+                      </td>
                       <td><button>삭제</button></td>
                       </tr>
                     ))}

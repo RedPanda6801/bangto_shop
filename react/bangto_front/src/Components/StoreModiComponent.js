@@ -6,14 +6,15 @@ import './StoreModiComponent.css';
 
 const StoreModiComponent = () => {  
   const navigate = useNavigate();
-  const [store, setStore] = useState("");
+  const [name, setName] = useState("");
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
 
-  const sellerName = searchParams.get('sellerName');
-  const busiNum = searchParams.get('busiNum');
+  const sellerName = searchParams.get("sellerName");
+  const busiNum = searchParams.get("busiNum");  
+  const id = searchParams.get("id");
 
-  let isStoreValid = store;
+  let isStoreValid = name;
 
   // 입력 항목 유효성 검사
   const handleStoreAuth = async () => 
@@ -22,10 +23,10 @@ const StoreModiComponent = () => {
     {      
       const validChar = /^[a-zA-Z가-힣0-9]+$/;
 
-      if( 0 < store.length  && 11 > store.length  && validChar.test(store)  ) isStoreValid = true;
+      if( 0 < name.length  && 11 > name.length  && validChar.test(name)  ) isStoreValid = true;
 
       const response = await axios.post("http://localhost:9000/store/modify", 
-        {"name":store, "sellerName":sellerName, "busiNum":busiNum}, {withCredentials : true, headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }});
+        { id, name, sellerName, busiNum}, {withCredentials : true, headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }});
       
       if(!isStoreValid)
       {
@@ -75,8 +76,8 @@ const StoreModiComponent = () => {
                   className="Modi_Store_Name"
                   type="text"
                   placeholder="* 매장 이름"
-                  value={store}
-                  onChange={(e) => setStore(e.target.value)}/>
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}/>
               </td>
             </tr>
           </table>
@@ -105,7 +106,7 @@ const StoreModiComponent = () => {
               value="취소"
               onClick={() => navigate(-1)}/>
           </div>
-          {!store && <p className="StoreModi_Ck_Error_Message">* 매장 이름을 입력해주세요</p>} 
+          {!name && <p className="StoreModi_Ck_Error_Message">* 매장 이름을 입력해주세요</p>} 
         </div>
       </div>
     </>
