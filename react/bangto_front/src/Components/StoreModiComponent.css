@@ -3,22 +3,22 @@
 	display: grid;
 	grid-template-columns: repeat(19, 100px);
 	grid-template-rows: repeat(20, 30px);
-    padding-top: 80px;
+  padding-top: 80px;
 }
 
 
 .box_Store_Modi
 {
-    grid-column: 8 / 13;
-    grid-row: 3 / 19;
+  grid-column: 8 / 13;
+  grid-row: 3 / 19;
   
     
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    justify-content: center;
-    border: 1px solid black;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid black;
 }
 
 .Modi_Seller_Name   ,

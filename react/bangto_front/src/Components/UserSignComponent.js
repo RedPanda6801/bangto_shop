@@ -33,7 +33,7 @@ const UserSignComponent = () => {
   {
     try 
     {        
-      const address = "";
+      let address = "";
         
       if(null != selectedAddress)
       {

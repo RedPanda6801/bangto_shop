@@ -4,6 +4,8 @@ import UserAuthComponent from './Components/UserAuthComponent';
 import UserSignComponent from './Components/UserSignComponent';
 import StoreComponent from './Components/StoreComponent';
 import StoreModiComponent from './Components/StoreModiComponent';
+import StoreItemRegisterComponent from './Components/StoreItemRegisterComponent';
+import StoreGroupItemRegisterComponent from './Components/StoreGroupItemRegisterComponent';
 import './Components/LayoutComponent.css';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
@@ -114,6 +116,8 @@ function App() {
         <Route path="/sign" element={<UserSignComponent />} />
         <Route path="/seller/apply" element={<StoreComponent setUserName={setUserName} />} />
         <Route path="/seller/storemodi" element={<StoreModiComponent setUserName={setUserName} />} />
+        <Route path="/item/add_item" element={<StoreItemRegisterComponent setUserName={setUserName} />} />
+        <Route path="/item/add_group_item" element={<StoreGroupItemRegisterComponent setUserName={setUserName} />} />
       </Routes>
 
         <div className="layout_Footer_Buttons">
