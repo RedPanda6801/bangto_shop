@@ -33,7 +33,7 @@ public class Sellers {
 	    @OneToMany(mappedBy="seller", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	    private List<Stores> stores;
 	    
-	    @OneToOne(cascade = CascadeType.ALL)  // 모든 cascade 동작을 원한다면 CascadeType.ALL을 사용하는 것이 좋습니다.
+	    @OneToOne//(cascade = CascadeType.ALL)  // 모든 cascade 동작을 원한다면 CascadeType.ALL을 사용하는 것이 좋습니다.
 	    @JoinColumn(name = "USER_PK")
 	    private Users user;
 	    

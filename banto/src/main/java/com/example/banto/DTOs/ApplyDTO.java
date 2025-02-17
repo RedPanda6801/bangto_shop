@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 
 import com.example.banto.Entitys.ApplyType;
 import com.example.banto.Entitys.SellerAuths;
-import com.example.banto.Entitys.Sellers;
-import com.example.banto.Entitys.Users;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,12 +21,13 @@ public class ApplyDTO {
     private LocalDateTime signDate;
     private Integer userPk;
     
-   /* public static ApplyDTO toDTO(SellerAuths entity) {
+   public static ApplyDTO toDTO(SellerAuths entity) {
         return ApplyDTO.builder()
                 .id(entity.getId())
                 .auth(entity.getAuth())
                 .applyDate(entity.getApplyDate())
                 .signDate(entity.getSignDate())
+                .userPk(entity.getUser().getId())
                 .build();
-    }*/
+    }
 }

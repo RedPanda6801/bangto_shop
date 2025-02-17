@@ -23,4 +23,25 @@ public class SellerService {
 			}
 		}
 	}
+	
+	public void deleteMyself(Integer userId) throws Exception{
+		if(userId == null) {
+			throw new Exception("권한 없음");
+		}
+		else {
+			try {
+				sellerDAO.deleteMyself(userId);
+			}catch(Exception e) {
+				throw e;
+			}
+		}
+	}
+	
+	public void deleteSeller(Integer userId) throws Exception{
+		try {
+			sellerDAO.deleteSeller(userId);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
 }

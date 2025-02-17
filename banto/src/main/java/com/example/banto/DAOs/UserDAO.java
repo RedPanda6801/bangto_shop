@@ -17,8 +17,12 @@ import com.example.banto.DTOs.LoginDTO;
 import com.example.banto.DTOs.UserDTO;
 import com.example.banto.DTOs.WalletDTO;
 import com.example.banto.Entitys.Items;
+import com.example.banto.Entitys.SellerAuths;
+import com.example.banto.Entitys.Sellers;
 import com.example.banto.Entitys.Users;
 import com.example.banto.Entitys.Wallets;
+import com.example.banto.Repositorys.ApplyRepository;
+import com.example.banto.Repositorys.SellerRepository;
 import com.example.banto.Repositorys.UserRepository;
 import com.example.banto.Repositorys.WalletRepository;
 import com.example.banto.JWTs.JwtUtil;
@@ -30,6 +34,10 @@ public class UserDAO {
 	UserRepository userRepository;
 	@Autowired
 	WalletRepository walletRepository;
+	@Autowired
+	ApplyRepository applyRepository;
+	@Autowired
+	SellerRepository sellerRepository;
 	@Autowired
 	AuthDAO authDAO;
 	@Autowired
@@ -157,6 +165,54 @@ public class UserDAO {
 			user.setAddr((dto.getAddr() != null && !dto.getAddr().equals("")) ?
 					dto.getAddr() : user.getAddr());
 			userRepository.save(user);	
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+	
+	@Transactional
+	public void deleteMyself(Integer userId) throws Exception{
+		try {
+			/*// 지갑이 1:1관계로 바로 생성되므로 지갑을 삭제해야 됨.
+			Optional<Wallets> walletOpt = walletRepository.findByUser_Id(userId);
+			walletRepository.delete(walletOpt.get());
+			// 판매자 인증 신청서가 있을 경우 삭제해야 함.
+			List<SellerAuths> sellerAuths = applyRepository.findAllByUserId(userId);
+			for(SellerAuths auth : sellerAuths) {
+				applyRepository.delete(auth);
+			}
+			// 판매자일 경우 권한을 반납해야 함.
+			Optional<Sellers> sellerOpt = sellerRepository.findByUser_Id(userId);
+			sellerRepository.delete(sellerOpt.get());
+			// 추후에 다른 항목들도 삭제해야 될 수도 있음.*/
+			
+			//Users user = authDAO.auth(userId);
+			//userRepository.delete(user);
+			
+			Optional<Wallets> walletOpt = walletRepository.findByUser_Id(userId);
+			walletRepository.delete(walletOpt.get());
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+	
+	@Transactional
+	public void deleteUser(Integer userId) throws Exception{
+		try {
+			// 지갑이 1:1관계로 바로 생성되므로 지갑을 삭제해야 됨.
+			Optional<Wallets> walletOpt = walletRepository.findByUser_Id(userId);
+			walletRepository.delete(walletOpt.get());
+			// 판매자 인증 신청서가 있을 경우 삭제해야 함.
+			List<SellerAuths> sellerAuths = applyRepository.findAllByUserId(userId);
+			for(SellerAuths auth : sellerAuths) {
+				applyRepository.delete(auth);
+			}
+			// 판매자일 경우 권한을 박탈해야 함.
+			Optional<Sellers> sellerOpt = sellerRepository.findByUser_Id(userId);
+			sellerRepository.delete(sellerOpt.get());
+			// 추후에 다른 항목들도 삭제해야 될 수도 있음.
+			Optional<Users> userOpt = userRepository.findById(userId);
+			userRepository.delete(userOpt.get());
 		}catch(Exception e) {
 			throw e;
 		}

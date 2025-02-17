@@ -9,7 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ProcessDTO {
-	private Integer sellerAuthPk;
-    private String process;
+public class CartDTO {
+	private Integer cartPk;
+	private Integer itemPk;
+	private Integer amount;
+	private Integer optionPk;
+	private Integer userPk;
 }

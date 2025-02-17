@@ -42,7 +42,7 @@ public class SellerAuths {
     @Column(name="SIGN_DATE", nullable=true)
     private LocalDateTime signDate;
     
-    @ManyToOne(cascade = CascadeType.ALL)  // 필요에 따라 CascadeType.REMOVE 사용 가능
+    @ManyToOne//(cascade = CascadeType.ALL)  // 필요에 따라 CascadeType.REMOVE 사용 가능
     @JoinColumn(name="USER_PK")
     private Users user;
     

@@ -31,8 +31,8 @@ const StoreAuthComponent = (props) =>
            }
          }).then((res)=> {
           // 유저 정보
-          console.log("유저 정보");
-          console.log(res.data);
+          //console.log("유저 정보");
+          //console.log(res.data);
           setSellerName(res.data.name);
         axios.get("http://localhost:9000/store/get-list", {
           headers: {
@@ -40,8 +40,8 @@ const StoreAuthComponent = (props) =>
           }
         }).then((res)=> {
           // 유저가 등록한 스토어 정보
-          console.log("스토어 리스트");
-          console.log(res.data);
+          //console.log("스토어 리스트");
+          //console.log(res.data);
           setStorelist(res.data); 
           setIsSeller(true); 
         })
@@ -88,8 +88,8 @@ const StoreAuthComponent = (props) =>
       }
     })
     // 스토어 정보
-    console.log("클릭한 스토어 정보");
-    console.log(storeResponse.data);
+    //console.log("클릭한 스토어 정보");
+    //console.log(storeResponse.data);
     setStoreInfo(storeResponse.data)
 
     const itemResponse = await axios.get(`http://localhost:9000/item/get-itemlist/${storeId}/${page}`,{
@@ -99,9 +99,9 @@ const StoreAuthComponent = (props) =>
     })
     
       // 선택한 스토어의 상품
-      console.log(storeId);
-      console.log("클릭한 스토어 상품 정보");
-      console.log(itemResponse.data);
+     // console.log(storeId);
+      //console.log("클릭한 스토어 상품 정보");
+      //console.log(itemResponse.data);
       setItemlist(itemResponse.data);
   }
 
@@ -170,11 +170,14 @@ const StoreAuthComponent = (props) =>
                   </tr>
                 </table>
                 <button
-                  onClick={() => navigate(`/seller/storemodi?sellerName=${sellerName}&storeName=${storeInfo.name}&busiNum=${storeInfo.busiNum}`)}>
+                  onClick={() => navigate(`/seller/storemodi?sellerName=${sellerName}&busiNum=${storeInfo.busiNum}`)}>
                   매장 정보 수정
                 </button>
               </div>
-              <button className="btn_Store_Add">판매 물품 등록</button>
+              <button 
+                className="btn_Store_Add"
+                onClick={() => navigate('/item/add_item')}>
+                판매 물품 등록</button>
               <div className="box_Item_Info">
                 <table>
                   <tr>

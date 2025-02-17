@@ -36,7 +36,7 @@ public class Stores {
     @Column(name="BUSI_NUM", nullable=false)
     private String busiNum;
     
-    @ManyToOne(cascade = CascadeType.ALL)  // 'Users' 삭제 시 관련 'Stores'도 삭제되도록 설정
+    @ManyToOne//(cascade = CascadeType.ALL)  // 'Users' 삭제 시 관련 'Stores'도 삭제되도록 설정
     @JoinColumn(name="SELLER_PK")
     private Sellers seller;
 

@@ -75,4 +75,18 @@ public class UserService {
 			throw e;
 		}
 	}
+	public void deleteMyself(Integer userId) throws Exception {
+		try {
+			userDAO.deleteMyself(userId);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+	public void deleteUser(Integer userId) throws Exception {
+		try {
+			userDAO.deleteUser(userId);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
 }

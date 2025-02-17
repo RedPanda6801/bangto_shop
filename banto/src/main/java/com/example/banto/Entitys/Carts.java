@@ -26,8 +26,8 @@ public class Carts {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	
-	@Column(name="AMMOUNT", nullable=false)
-	private Integer ammount;
+	@Column(name="AMOUNT", nullable=false)
+	private Integer amount;
 
 	@ManyToOne
 	@JoinColumn(name="BUYER_PK")

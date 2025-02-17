@@ -15,13 +15,13 @@ const UserSignComponent = () => {
   const [email, setEmail] = useState("");
   const [nickname, setNickname] = useState("");
   const [detailAddr, setDetailAddr] = useState("");
-  const [phone, setPhone] = useState(null);
+  const [phone, setPhone] = useState("");
   const [isPasswordMatch, setIsPasswordMatch] = useState(true);
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [password, setPassword] = useState("");
   const [keyword, setKeyword] = useState("");
   const [addressList, setAddressList] = useState([]);
-  const [selectedAddress, setSelectedAddress] = useState(null);
+  const [selectedAddress, setSelectedAddress] = useState("");
   const [isAddressSearchOpen, setIsAddressSearchOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPageNum] = useState(1);
@@ -30,28 +30,34 @@ const UserSignComponent = () => {
   const navigate = useNavigate();
   
   const handleSign = async () => 
-    {
-      try 
-      {        
-        const address = `${selectedAddress.roadAddr} ${detailAddr}`;
-        const response = await axios.post("http://localhost:9000/sign", 
-          {"email":email, "pw":password, "name":nickname, "addr":address, "phone":phone}, {withCredentials : true});
-        if (response.status == 200) 
-        {
-          console.log("회원가입 성공");
-          alert("회원가입 성공");
-          navigate("/login");
-        } 
-        else 
-        {
-          console.error("회원가입 실패:");
-        }
-      } 
-      catch (error) 
+  {
+    try 
+    {        
+      const address = "";
+        
+      if(null != selectedAddress)
       {
-        console.error("회원가입 오류:", error);
+        address = `${selectedAddress.roadAddr} ${detailAddr}`;
       }
-    };
+
+      const response = await axios.post("http://localhost:9000/sign", 
+        {"email":email, "pw":password, "name":nickname, "addr":address, "phone":phone}, {withCredentials : true});
+      if (response.status == 200) 
+      {
+        console.log("회원가입 성공");
+        alert("회원가입 성공");
+        navigate("/login");
+      } 
+      else 
+      {
+        console.error("회원가입 실패:");
+      }
+    } 
+    catch (error) 
+    {
+      console.error("회원가입 오류:", error);
+    }
+  };
 
   // 회원가입 약관 창
   useEffect(() => { setIsMembershipOpen(true); }, []);
