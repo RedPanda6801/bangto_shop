@@ -62,10 +62,11 @@ public class Items {
     @OneToMany(mappedBy="item", cascade = CascadeType.ALL)  // 추가: cascade 설정
     private List<Options> options;
     
+    @JsonIgnore
     @OneToMany(mappedBy="item", cascade = CascadeType.ALL)  // 추가: cascade 설정
     private List<Favorites> favorites;
     
-    @OneToMany(mappedBy="item", cascade = CascadeType.ALL)  // 추가: cascade 설정
+    @OneToMany(mappedBy="item")  // 추가: cascade 설정
     private List<GroupBuyItems> events;
     
     @OneToMany(mappedBy="item", cascade = CascadeType.ALL)  // 추가: cascade 설정
