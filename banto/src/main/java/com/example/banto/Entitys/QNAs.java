@@ -3,6 +3,8 @@ package com.example.banto.Entitys;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -38,10 +40,12 @@ public class QNAs {
     @Column(name="A_WRITE_DATE", nullable=true)
     private LocalDateTime aWriteDate;
     
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="WRITER_PK")
     private Users user;
     
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="ITEM_PK")
     private Items item;
