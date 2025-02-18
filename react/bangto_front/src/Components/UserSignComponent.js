@@ -13,12 +13,12 @@ const UserSignComponent = () => {
   const [agree03, setAgree03] = useState("");
   const [agree04, setAgree04] = useState("");
   const [email, setEmail] = useState("");
-  const [nickname, setNickname] = useState("");
+  const [name, setName] = useState("");
   const [detailAddr, setDetailAddr] = useState("");
   const [phone, setPhone] = useState("");
   const [isPasswordMatch, setIsPasswordMatch] = useState(true);
   const [passwordConfirm, setPasswordConfirm] = useState("");
-  const [password, setPassword] = useState("");
+  const [pw, setPw] = useState("");
   const [keyword, setKeyword] = useState("");
   const [addressList, setAddressList] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState("");
@@ -33,15 +33,15 @@ const UserSignComponent = () => {
   {
     try 
     {        
-      const address = "";
+      let addr = "";
         
       if(null != selectedAddress)
       {
-        address = `${selectedAddress.roadAddr} ${detailAddr}`;
+        addr = `${selectedAddress.roadAddr} ${detailAddr}`;
       }
 
       const response = await axios.post("http://localhost:9000/sign", 
-        {"email":email, "pw":password, "name":nickname, "addr":address, "phone":phone}, {withCredentials : true});
+        {email, pw, name, addr, phone}, {withCredentials : true});
       if (response.status == 200) 
       {
         console.log("회원가입 성공");
@@ -100,10 +100,10 @@ const UserSignComponent = () => {
     agreeValue == "1" ? "/images/02_icon/icon_02.jpg" : "/images/02_icon/icon_01.jpg";
 
   // 필수 입력 항목 확인
-  const isFormValid = email && password && passwordConfirm && nickname && isPasswordMatch;
+  const isFormValid = email && pw && passwordConfirm && name && isPasswordMatch;
 
   // 비밀번호 확인
-  useEffect(() => { setIsPasswordMatch(password == passwordConfirm); }, [password, passwordConfirm]);
+  useEffect(() => { setIsPasswordMatch(pw == passwordConfirm); }, [pw, passwordConfirm]);
   
   // 페이지 번호 설정
   const updatePageNums = (currentPage, totalPage) =>
@@ -203,7 +203,7 @@ const UserSignComponent = () => {
       <div className="box_Sign">
         <Modal
           isOpen={isMembershipOpen}
-          onRequestClose={() => { setIsMembershipOpen(false); window.location.href = '/login'; }}
+          onRequestClose={() => { setIsMembershipOpen(false); navigate("/login"); }}
           contentLabel="회원가입 약관 동의 창"
           className="modal_Membership"
           overlayClassName="modal_Overlay_Membership">
@@ -381,8 +381,8 @@ const UserSignComponent = () => {
                 className="sign_Pw" 
                 type="password" 
                 placeholder="* 비밀번호" 
-                value={password} 
-                onChange={(e) => setPassword(e.target.value)}/>
+                value={pw} 
+                onChange={(e) => setPw(e.target.value)}/>
             </td>
           </tr>
         </table>
@@ -406,8 +406,8 @@ const UserSignComponent = () => {
                 className="sign_Name" 
                 type="text" 
                 placeholder="* 별명"
-                value={nickname}
-                onChange={(e) => setNickname(e.target.value)}/>
+                value={name}
+                onChange={(e) => setName(e.target.value)}/>
             </td>
           </tr>
         </table>

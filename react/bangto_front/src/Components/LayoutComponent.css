@@ -64,6 +64,18 @@
 	width: 50px;
 	height: 50px;
 }
+
+.header_Manager
+{
+	color: black;
+	text-align: center;
+	font-size: 16px;
+	font-weight: 550;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	align-content: center;
+}
  
 .header_Menu, .header_User
 {
@@ -103,6 +115,14 @@
 .header_User_First
 {
 	margin-left: 53px;
+}
+
+.header_Manager_Text
+{
+	font-size: 13px;
+	font-weight: 500;
+	margin-top: 10px;	
+	margin-left: 627px;
 }
 
 .header_User_Text

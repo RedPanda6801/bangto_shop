@@ -33,4 +33,9 @@ public class Favorites {
 	@ManyToOne
 	@JoinColumn(name="ITEM_PK")
 	private Items item;
+	
+	public Favorites(Users user, Items item) {
+		this.user = user;
+		this.item = item;
+	}
 }

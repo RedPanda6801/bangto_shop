@@ -10,7 +10,6 @@ const StoreAuthComponent = (props) =>
   const [store, setStore] = useState("");
   const [busi, setBusi] = useState("");
   const [storelist, setStorelist] = useState([]);
-  const [isSeller, setIsSeller] = useState(false);
   const [page, setPage] = useState(1);
   const [selectedMenu, setSelectedMenu] = useState("매장 인증");
   const [selectedSubmenu, setSelectedSubmenu] = useState(null);
@@ -43,11 +42,9 @@ const StoreAuthComponent = (props) =>
           //console.log("스토어 리스트");
           //console.log(res.data);
           setStorelist(res.data); 
-          setIsSeller(true); 
         })
     }).catch((err)=>{
         console.log(err);
-        setIsSeller(false);
     })
   },[])
 
@@ -61,7 +58,6 @@ const StoreAuthComponent = (props) =>
     const validChar = /^[a-zA-Z가-힣0-9]+$/;
     const busiChar = /^\d{3}-\d{2}-\d{5}$/;
 
-    let isSellerValid = false;
     let isStoreValid = false;
     let isBusiValid = false;
   
@@ -70,13 +66,34 @@ const StoreAuthComponent = (props) =>
     if( busiChar.test(busi) )                                               isBusiValid = true;
 
     // 유효성 검사 결과
-    if     (!isSellerValid) { alert("판매자 이름 입력이 잘못되었습니다. (2 ~ 10자로 입력 가능, 특수문자 입력 불가)"); }  
-    else if(!isStoreValid)  { alert("매장 이름 입력이 잘못되었습니다. (1 ~ 10자로 입력 가능, 특수문자 입력 불가)");   }   
+    if(!isStoreValid)  { alert("매장 이름 입력이 잘못되었습니다. (1 ~ 10자로 입력 가능, 특수문자 입력 불가)");   }   
     else if(!isBusiValid)   { alert("사업자 번호 입력이 잘못되었습니다. (xxx-xx-xxxxx로 구성된 10자리 숫자)");       }
-    else if(isSellerValid && isStoreValid && isBusiValid)
+    else if(isStoreValid && isBusiValid)
     {
-      alert("판매자 인증 신청이 완료되었습니다."); 
-      navigate("/");
+      try 
+      { 
+        const response = await axios.post("http://localhost:9000/apply", 
+          {withCredentials : true, headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }});  
+
+        if (response.status == 200) 
+        {
+          alert("판매자 인증 신청이 완료되었습니다."); 
+          navigate(-1);
+        } 
+        else 
+        {
+          console.error("판매자 인증 신청 실패", response.data);
+        }
+        
+      }  
+      catch (error) 
+      {
+        console.error("판매자 인증 신청 오류:", error);
+        if (error.response) 
+        {
+          console.error("서버 응답 오류:", error.response.data);
+        }
+      }
     }
   };
 
@@ -103,6 +120,15 @@ const StoreAuthComponent = (props) =>
       //console.log("클릭한 스토어 상품 정보");
       //console.log(itemResponse.data);
       setItemlist(itemResponse.data);
+  }
+
+  const handleItemDelete = (id) =>
+  {
+    if(window.confirm("물품을 삭제하시겠습니까?"))
+    {
+      //물품 삭제 추가 필요
+      alert(id);
+    }
   }
 
   // 판매자 인증 O
@@ -170,13 +196,13 @@ const StoreAuthComponent = (props) =>
                   </tr>
                 </table>
                 <button
-                  onClick={() => navigate(`/seller/storemodi?sellerName=${sellerName}&busiNum=${storeInfo.busiNum}`)}>
+                  onClick={() => navigate(`/seller/storemodi?id=${storeInfo.id}&sellerName=${sellerName}&busiNum=${storeInfo.busiNum}`)}>
                   매장 정보 수정
                 </button>
               </div>
               <button 
                 className="btn_Store_Add"
-                onClick={() => navigate('/item/add_item')}>
+                onClick={() => navigate(`/item/add_item?storeName=${storeInfo.name}&storePk=${storeInfo.id}`)}>
                 판매 물품 등록</button>
               <div className="box_Item_Info">
                 <table>
@@ -192,8 +218,18 @@ const StoreAuthComponent = (props) =>
                       <td>{item.title}</td>
                       <td>{item.content}</td>
                       <td>{item.price}</td>
-                      <td><button>공동구매 등록</button></td>
-                      <td><button>삭제</button></td>
+                      <td>
+                        <button
+                          onClick={() => navigate(`/item/add_group_item?storeName=${storeInfo.name}&itemTitle=${item.title}&itemId=${item.id}`)}>
+                            공동구매 등록
+                        </button>
+                      </td>
+                      <td>
+                        <button
+                          onClick={() => handleItemDelete(item.id)}>
+                          삭제
+                        </button>
+                      </td>
                       </tr>
                     ))}
                 </table>

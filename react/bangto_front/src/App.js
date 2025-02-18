@@ -1,9 +1,12 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import ManagerComponent from './Components/ManagerComponent';
 import UserMainComponent from './Components/UserMainComponent';
 import UserAuthComponent from './Components/UserAuthComponent';
 import UserSignComponent from './Components/UserSignComponent';
 import StoreComponent from './Components/StoreComponent';
 import StoreModiComponent from './Components/StoreModiComponent';
+import StoreItemRegisterComponent from './Components/StoreItemRegisterComponent';
+import StoreGroupItemRegisterComponent from './Components/StoreGroupItemRegisterComponent';
 import './Components/LayoutComponent.css';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
@@ -11,7 +14,10 @@ import { useNavigate } from 'react-router-dom';
 
 function App() {
   const [userName, setUserName] = useState("");
+  const [userEmail, setUserEmail] = useState("");
   const navigate = useNavigate();
+
+  const rootEmail = process.env.REACT_APP_ROOT_EMAIL;
 
   useEffect(()=>{
     axios.get("http://localhost:9000/user/get-info", {
@@ -19,6 +25,7 @@ function App() {
              "Authorization": `Bearer ${localStorage.getItem("token")}`,
            }
          }).then((res)=> {
+        setUserEmail(res.data.email);
         setUserName(res.data.name);
     }).catch((err)=>{
         console.log(err);
@@ -60,6 +67,7 @@ function App() {
     }
     
     localStorage.removeItem("token");
+    setUserEmail("");
     setUserName("");    
     navigate("/");
   }
@@ -67,25 +75,30 @@ function App() {
   return (  
     <div className="layout_Main">
       <div className="layout_Header">
-        <button className="header_Logo" onClick={() => (window.location.href = '/')}>
+        <button className="header_Logo" onClick={() => (navigate("/"))}>
           <img src={`/images/01_logo/logo_01.jpg`} alt="로고 이미지" />
         </button>
-        <div className="header_Menu">카테고리1</div>
-        <div className="header_Menu">카테고리2</div>
-        <div className="header_Menu">카테고리3</div>
-        <div className="header_Menu">카테고리4</div>
-        <div className="header_Menu">카테고리5</div>
-        <div className="header_Menu">공동구매</div>
+        {userEmail == rootEmail ? (
+            <>
+              <div className="header_Manager">관리자 메뉴</div>
+            </>
+          ):(
+          <>
+            <div className="header_Menu">카테고리1</div>
+            <div className="header_Menu">카테고리2</div>
+            <div className="header_Menu">카테고리3</div>
+            <div className="header_Menu">카테고리4</div>
+            <div className="header_Menu">카테고리5</div>
+            <div className="header_Menu">공동구매</div>
+          </>)}
         {userName !== "" ? (
+           userEmail === rootEmail ? (
             <div>
-              <div
-                className="header_User_Text">
-                {userName}님 환영합니다.
-              </div>
+              <div className="header_Manager_Text">관리자님 환영합니다.</div>
               <div 
                 className="header_User header_User_Menu"
-                onClick={() => (window.location.href = '/seller/apply')}>
-                판매자 페이지
+                onClick={() => (navigate("/manager"))}>
+                관리자 페이지
               </div>
               <div 
                 className="header_User header_User_Menu"
@@ -94,26 +107,46 @@ function App() {
               </div>
             </div>
           ) : (
+            <div>
+              <div
+                className="header_User_Text">
+                {userName}님 환영합니다.
+              </div>
+              <div 
+                className="header_User header_User_Menu"
+                onClick={() => (navigate("/seller/apply"))}>
+                판매자 페이지
+              </div>
+              <div 
+                className="header_User header_User_Menu"
+                onClick={logout}>
+                로그아웃
+              </div>
+            </div>)
+          ) : (
               <>
                 <div
                   className="header_User header_User_First"
-                  onClick={() => (window.location.href = '/login')}>
+                  onClick={() => (navigate("/login"))}>
                   로그인
                 </div>
                 <div 
                   className="header_User" 
-                onClick={() => (window.location.href = '/sign')}>
+                onClick={() => (navigate("/sign"))}>
                   회원가입
                 </div>
               </>
-          )}
+        )}
       </div>
       <Routes>
+        <Route path="/manager" element={<ManagerComponent setUserName={setUserName} />} />
         <Route path="/" element={<UserMainComponent />} />
         <Route path="/login" element={<UserAuthComponent setUserName={setUserName} />} />
         <Route path="/sign" element={<UserSignComponent />} />
         <Route path="/seller/apply" element={<StoreComponent setUserName={setUserName} />} />
         <Route path="/seller/storemodi" element={<StoreModiComponent setUserName={setUserName} />} />
+        <Route path="/item/add_item" element={<StoreItemRegisterComponent setUserName={setUserName} />} />
+        <Route path="/item/add_group_item" element={<StoreGroupItemRegisterComponent setUserName={setUserName} />} />
       </Routes>
 
         <div className="layout_Footer_Buttons">

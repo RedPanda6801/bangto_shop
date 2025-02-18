@@ -61,7 +61,8 @@ public class Users {
 
     @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Comments> comments;
-
+    
+    @JsonIgnore
     @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Favorites> favorites;
 
