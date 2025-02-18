@@ -1,5 +1,9 @@
 package com.example.banto.DTOs;
 
+import com.example.banto.Entitys.Items;
+import com.example.banto.Entitys.Options;
+import com.example.banto.Entitys.Users;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,8 +15,10 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CartDTO {
 	private Integer cartPk;
-	private Integer itemPk;
+	private Items item;
 	private Integer amount;
+	private Options option;
 	private Integer optionPk;
-	private Integer userPk;
+	private Users user;
+	private Integer totalPrice;
 }

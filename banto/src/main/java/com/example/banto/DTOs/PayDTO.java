@@ -1,5 +1,7 @@
 package com.example.banto.DTOs;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,15 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class OptionDTO {
-
-    private Integer id;
-    
-    private Integer addPrice;
-    
-    private String optionInfo;
- 
-    private Integer itemPk;
-    
-    private Integer amount;
+public class PayDTO {
+	private List<Integer> cartPks;
+	private Integer usingCashBack;
 }

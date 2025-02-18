@@ -34,15 +34,15 @@ public class CartDAO {
 		try {
 			// 인증 유효 확인
 			Users user = authDAO.auth(userId);
-			Integer itemPk = dto.getItemPk();
 			Integer optionPk = dto.getOptionPk();
-			Optional<Items> itemOpt = itemRepository.findById(itemPk);
-			if(itemOpt.isEmpty()) {
-				throw new Exception("존재하지 않는 물품입니다.");
-			}
 			Optional<Options> optionOpt = optionRepository.findById(optionPk);
 			if(optionOpt.isEmpty()) {
 				throw new Exception("존재하지 않는 옵션입니다.");
+			}
+			Integer itemPk = optionOpt.get().getItem().getId();
+			Optional<Items> itemOpt = itemRepository.findById(itemPk);
+			if(itemOpt.isEmpty()) {
+				throw new Exception("존재하지 않는 물품입니다.");
 			}
 			if(dto.getAmount()<= 0) {
 				throw new Exception("물품 수량은 자연수이어야 합니다.");
@@ -50,8 +50,15 @@ public class CartDAO {
 			// 물품과 옵션이 같은 항목이 이미 장바구니에 있을 경우 수량만 추가
 			List<Carts> carts = cartRepository.findAllByUserId(userId);
 			for(Carts cart : carts) {
+				if(dto.getAmount() > cart.getOption().getAmount()){
+					throw new Exception("물품 재고가 부족합니다.");
+				}
 				if(cart.getItem().getId() == itemPk && cart.getOption().getId() == optionPk) {
-					cart.setAmount(cart.getAmount() + dto.getAmount());
+					int sum = cart.getAmount() + dto.getAmount();
+					if(sum > cart.getOption().getAmount()) {
+						throw new Exception("물품 재고가 부족합니다.");
+					}
+					cart.setAmount(sum);
 					cartRepository.save(cart);
 					return;
 				}
@@ -81,9 +88,10 @@ public class CartDAO {
 					CartDTO dto = new CartDTO();
 					dto.setAmount(cart.getAmount());
 					dto.setCartPk(cart.getId());
-					dto.setItemPk(cart.getItem().getId());
-					dto.setOptionPk(cart.getOption().getId());
-					dto.setUserPk(cart.getUser().getId());
+					dto.setItem(cart.getItem());
+					dto.setOption(cart.getOption());
+					dto.setUser(cart.getUser());
+					dto.setTotalPrice((cart.getItem().getPrice() + cart.getOption().getAddPrice()) * cart.getAmount());
 					cartList.add(dto);
 				}
 				return cartList;
@@ -123,8 +131,11 @@ public class CartDAO {
 					}
 				}
 				if(amount != null) {					
-					if(dto.getAmount()<= 0) {
+					if(dto.getAmount() <= 0) {
 						throw new Exception("물품 수량은 자연수이어야 합니다.");
+					}
+					if(dto.getAmount() > cartOpt.get().getOption().getAmount()) {
+						throw new Exception("물품 재고가 부족합니다.");
 					}
 					cart.setAmount(dto.getAmount());
 				}

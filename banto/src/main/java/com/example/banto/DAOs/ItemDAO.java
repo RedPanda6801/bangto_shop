@@ -136,8 +136,6 @@ public class ItemDAO {
 								dto.getImg() : item.getImg());
 						item.setContent((dto.getContent() != null && !dto.getContent().equals("")) ?
 								dto.getContent() : item.getContent());
-						item.setAmount((dto.getAmount() != null && !dto.getAmount().equals("")) ?
-								dto.getAmount() : item.getAmount());
 						itemRepository.save(item);
 					}
 				}
@@ -166,6 +164,8 @@ public class ItemDAO {
 								dto.getAddPrice() : option.getAddPrice());
 						option.setOptionInfo((dto.getOptionInfo() != null && !dto.getOptionInfo().equals("")) ?
 								dto.getOptionInfo() : option.getOptionInfo());
+						option.setAmount((dto.getAmount() != null && !dto.getAmount().equals("")) ?
+								dto.getAmount() : option.getAmount());
 						optionRepository.save(option);
 					}
 				}

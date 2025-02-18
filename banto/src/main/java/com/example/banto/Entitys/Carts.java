@@ -1,8 +1,5 @@
 package com.example.banto.Entitys;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -40,4 +37,6 @@ public class Carts {
 	@ManyToOne
 	@JoinColumn(name="OPTION_PK")
 	private Options option;
+	
+	private Integer totalPrice;
 }
