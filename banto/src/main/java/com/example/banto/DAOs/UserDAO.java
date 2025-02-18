@@ -209,7 +209,9 @@ public class UserDAO {
 			}
 			// 판매자일 경우 권한을 박탈해야 함.
 			Optional<Sellers> sellerOpt = sellerRepository.findByUser_Id(userId);
-			sellerRepository.delete(sellerOpt.get());
+			if(sellerOpt.isPresent()) {
+				sellerRepository.delete(sellerOpt.get());
+			}
 			// 추후에 다른 항목들도 삭제해야 될 수도 있음.
 			Optional<Users> userOpt = userRepository.findById(userId);
 			userRepository.delete(userOpt.get());
