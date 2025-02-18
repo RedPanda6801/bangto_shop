@@ -40,7 +40,7 @@ public class StoreDAO {
 			// 인증 유효 확인
 			authDAO.auth(userId);
 			// 판매자 가져오기
-			Optional<Sellers> seller = sellerRepository.findById(userId);
+			Optional<Sellers> seller = sellerRepository.findByUser_Id(userId);
 			if(seller.isEmpty()) {
 				throw new Exception("판매자 권한 오류");
 			}

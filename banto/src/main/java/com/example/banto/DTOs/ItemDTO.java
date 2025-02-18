@@ -32,7 +32,7 @@ public class ItemDTO {
     private String content;
 
     private String img;
-
+    
     private Integer amount;
     
     private Integer storePk;
@@ -64,6 +64,10 @@ public class ItemDTO {
 	}
     
     public static ItemDTO toDTO(Items entity) {
+    	Integer amount = 0;
+    	for(Options option : entity.getOptions()) {
+    		amount += option.getAmount();
+    	}
         return ItemDTO.builder()
                 .id(entity.getId())
                 .title(entity.getTitle())
@@ -71,7 +75,7 @@ public class ItemDTO {
                 .price(entity.getPrice())
                 .content(entity.getContent())
                 .img(entity.getImg())
-                .amount(entity.getAmount())
+                .amount(amount)
                 .options(entity.getOptions())
                 .star(entity.getFavorites().size())
                 .qnas(entity.getQnas())

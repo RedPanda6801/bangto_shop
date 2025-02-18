@@ -71,12 +71,18 @@ public class Users {
 
     @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<GroupChatMsgs> msgs;
-
+    
+    @JsonIgnore
     @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Carts> carts;
     
+    @JsonIgnore
     @OneToOne(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Wallets wallets;
+    
+    @JsonIgnore
+    @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<SoldItems> soldItems;
 
     public static Users toEntity(UserDTO dto) {
         return Users.builder()

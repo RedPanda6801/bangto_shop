@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -45,9 +46,6 @@ public class Items {
     @Column(name="IMG", nullable=true)
     private String img;
     
-    @Column(name="AMOUNT", nullable=false)
-    private Integer amount;
-    
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name="STORE_PK")
@@ -69,6 +67,7 @@ public class Items {
     @OneToMany(mappedBy="item")  // 추가: cascade 설정
     private List<GroupBuyItems> events;
     
+    @JsonIgnore
     @OneToMany(mappedBy="item", cascade = CascadeType.ALL)  // 추가: cascade 설정
     private List<Carts> carts;
     
@@ -78,7 +77,6 @@ public class Items {
     			.img(dto.getImg())
     			.price(dto.getPrice())
     			.content(dto.getContent())
-    			.amount(dto.getAmount())  // 기본값 설정
     			.category(dto.getCategory())
     			.build();
     }

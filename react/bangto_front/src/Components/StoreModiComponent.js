@@ -45,12 +45,14 @@ const StoreModiComponent = () => {
         }
       }
     }  
-    catch (error) {
-        console.error("판매자 정보 수정 오류:", error);
-        if (error.response) {
-          console.error("서버 응답 오류:", error.response.data);
-        }
+    catch (error) 
+    {
+      console.error("판매자 정보 수정 오류:", error);
+      if (error.response) 
+      {
+        console.error("서버 응답 오류:", error.response.data);
       }
+    }
   };
  
   return  (
