@@ -3,6 +3,7 @@ package com.example.banto.DTOs;
 import java.time.LocalDateTime;
 
 import com.example.banto.Entitys.Items;
+import com.example.banto.Entitys.QNAs;
 import com.example.banto.Entitys.Users;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -18,7 +19,6 @@ import lombok.NoArgsConstructor;
 public class QNADTO {
     private Integer id;
     
-    @JsonProperty("qContent") 
     private String qContent;
     
     private String aContent;
@@ -31,7 +31,21 @@ public class QNADTO {
     
     private Integer userPk;
     
+    private Integer storePk;
+    
     private Users user;
 
     private Items item;
+    
+    public static QNADTO toDTO(QNAs entity) {
+        return QNADTO.builder()
+                .id(entity.getId())
+                .qContent(entity.getQContent())
+                .aContent(entity.getAContent())
+                .qWriteDate(entity.getQWriteDate())
+                .aWriteDate(entity.getAWriteDate())
+                .itemPk(entity.getItem().getId())
+                .userPk(entity.getUser().getId())
+                .build();
+    }
 }
