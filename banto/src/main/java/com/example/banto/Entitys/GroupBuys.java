@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.banto.DTOs.GroupBuyDTO;
+import com.example.banto.DTOs.StoreDTO;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -35,5 +38,10 @@ public class GroupBuys {
 	@OneToMany(mappedBy="event")
 	private List<GroupBuyItems> items;
 	
-	
+	public static GroupBuys toEntity(GroupBuyDTO dto) {
+        return GroupBuys.builder()
+                .startDate(dto.getStartDate())
+                .endDate(dto.getEndDate())
+                .build();
+    }
 }
