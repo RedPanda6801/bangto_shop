@@ -1,0 +1,126 @@
+.layout_User_Cart
+{  
+    display: grid;
+    grid-template-columns: repeat(19, 100px);
+	grid-auto-rows: minmax(30px, auto);
+    margin-top: 80px;
+}
+
+.box_User_Cart
+{    
+    grid-column: 6 / 14;
+    grid-auto-rows: minmax(30px, auto);
+  
+    display: flex;
+    flex-direction: column;
+    margin: 40px 0px;
+}
+
+.box_User_Cart_Item
+{
+    padding: 10px;
+}
+
+.box_User_Cart_Item table
+{
+    text-align: center;
+    width: 100%;
+    margin-bottom: 10px;
+    border-collapse: collapse;
+    border: 1px solid #ccc;
+}
+
+.box_User_Cart_Info 
+{
+    position: fixed;
+    top: 200px;
+    right: 200px;
+    width: 220px;
+    height: auto;
+    z-index: 10;
+    border: 1px solid #ccc;
+    background-color: white;
+    padding: 10px;
+    border-radius: 7px;
+}
+
+
+.box_User_Cart_SelectAll
+{
+    font-size: 17px;
+    padding-left: 12px;
+}
+
+.btn_User_Cart_SelectAll
+{
+    margin: 10px;
+}
+
+.btn_User_Cart_Img
+{
+    border: 1px solid black;
+    width: 100px;
+    height: 100px;
+    cursor: default;
+}
+
+.box_User_Cart_Item tr:first-child td:nth-child(2)
+{
+    width: 120px;
+    height: 120px;
+}
+
+.box_User_Cart_Item tr:first-child td:nth-child(1)
+{
+    width: 30px;
+}
+
+.box_User_Cart_Item tr:first-child td:nth-child(3)
+{
+    text-align: left;
+}
+
+.box_User_Cart_Item tr:nth-child(2) td:first-child
+{
+    text-align: right;
+}
+
+.btn_User_Cart_Opt_Modi
+{    
+    width: 100px;
+    height: 30px;
+    border: none;
+    border-radius: 7px;
+    background-color: #f8c8c8;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.box_User_Cart_Info table
+{
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.box_User_Cart_Info td:nth-child(2)
+{
+    text-align: right;
+}
+
+.box_User_Cart_Info tr
+{
+    height: 50px;
+}
+
+.box_User_Cart_Info button
+{
+    width: 218px;
+    height: 40px;
+    border: none;
+    border-radius: 7px;
+    background-color: #f8c8c8;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
