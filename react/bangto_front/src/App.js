@@ -7,6 +7,7 @@ import StoreComponent from './Components/StoreComponent';
 import StoreModiComponent from './Components/StoreModiComponent';
 import StoreItemRegisterComponent from './Components/StoreItemRegisterComponent';
 import StoreGroupItemRegisterComponent from './Components/StoreGroupItemRegisterComponent';
+import UserCartComponent from './Components/UserCartComponent';
 import './Components/LayoutComponent.css';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
@@ -107,22 +108,31 @@ function App() {
               </div>
             </div>
           ) : (
-            <div>
-              <div
-                className="header_User_Text">
-                {userName}님 환영합니다.
+            <>
+              <div>
+                <div
+                  className="header_User_Text">
+                  {userName}님 환영합니다.
+                </div>
+                <div 
+                  className="header_User header_User_Menu"
+                  onClick={logout}>
+                  로그아웃
+                </div>
               </div>
-              <div 
-                className="header_User header_User_Menu"
-                onClick={() => (navigate("/seller/apply"))}>
-                판매자 페이지
+              <div>              
+                <div 
+                  className="header_User header_User_Menu"
+                  onClick={() => (navigate("/seller/apply"))}>
+                  판매자 페이지
+                </div>
+                <div 
+                  className="header_User header_User_Menu"
+                  onClick={() => (navigate("/user/cart"))}>
+                  카트
+                </div>
               </div>
-              <div 
-                className="header_User header_User_Menu"
-                onClick={logout}>
-                로그아웃
-              </div>
-            </div>)
+            </>)
           ) : (
               <>
                 <div
@@ -147,8 +157,9 @@ function App() {
         <Route path="/seller/storemodi" element={<StoreModiComponent setUserName={setUserName} />} />
         <Route path="/item/add_item" element={<StoreItemRegisterComponent setUserName={setUserName} />} />
         <Route path="/item/add_group_item" element={<StoreGroupItemRegisterComponent setUserName={setUserName} />} />
+        <Route path="/user/cart" element={<UserCartComponent setUserName={setUserName} />} />
       </Routes>
-
+      
         <div className="layout_Footer_Buttons">
           <div className="footer_Btn footer_Btn_First">회사소개</div>
           <div className="footer_Btn">개인정보처리방침</div>

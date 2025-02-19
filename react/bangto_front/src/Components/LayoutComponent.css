@@ -131,12 +131,13 @@
 	font-weight: 500;
 	margin-top: 10px;	
 	margin-left: 53px;
+	margin-right: 10px;
 }
 
 .header_User_Menu
 {
 	text-align: right;
-	margin: 0px 3px;
+	margin: 10px 3px;
 }
 
 .footer_Btn

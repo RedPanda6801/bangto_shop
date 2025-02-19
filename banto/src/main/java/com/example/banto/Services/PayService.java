@@ -39,4 +39,30 @@ public class PayService {
 			}
 		}
 	}
+	
+	public void modifySoldItem(Integer userId, SoldItemDTO dto) throws Exception{
+		if(userId == null) { 
+			throw new Exception("권한 없음");
+		}
+		else {
+			try {
+				payDAO.modifySoldItem(userId, dto);
+			}catch(Exception e) {
+				throw e;
+			}
+		}
+	}
+	
+	public List<SoldItemDTO> getSoldList(Integer userId, Integer storeId, Integer page) throws Exception{
+		if(userId == null) { 
+			throw new Exception("권한 없음");
+		}
+		else {
+			try {
+				return payDAO.getSoldList(userId, storeId, page);
+			}catch(Exception e) {
+				throw e;
+			}
+		}
+	}
 }

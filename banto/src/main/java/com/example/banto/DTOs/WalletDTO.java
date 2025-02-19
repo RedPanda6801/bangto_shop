@@ -2,6 +2,7 @@ package com.example.banto.DTOs;
 
 import com.example.banto.Entitys.Users;
 import com.example.banto.Entitys.Wallets;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -35,6 +36,10 @@ public class WalletDTO {
     @OneToOne(cascade = CascadeType.ALL)  // 모든 cascade 동작을 원한다면 CascadeType.ALL을 사용하는 것이 좋습니다.
     @JoinColumn(name = "OWNER_PK")
     private Users user;
+    
+    // 관리자가 조정할 지갑의 PK
+    @JsonIgnore
+    private Integer walletPk;
     
     public static WalletDTO toDTO(Wallets entity) {
         return WalletDTO.builder()
