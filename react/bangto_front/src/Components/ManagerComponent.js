@@ -25,6 +25,7 @@ const ManagerComponent = () =>
     const [selectedStoreId, setSelectedStoreId] = useState("");
     const [storeName, setStoreName] = useState("");
     const [busiNum, setBusiNum] = useState("");
+    const [groupItem, setGroupItem] = useState("");
     
     useEffect(() => 
     {
@@ -152,28 +153,31 @@ const ManagerComponent = () =>
 
     const handleUserDel = async(userId) =>
     {
-        try 
-        {    
-            const response = await axios.post(`http://localhost:9000/user/delete/${userId}`, {}, {
-                    withCredentials : true,
-                    headers: { "Authorization": `Bearer ${localStorage.getItem("token")}`,
-               }
-            });
-
-            if (response.status == 200) 
-            {
-                console.log("회원 추방 성공");
-                alert("회원 추방 성공");
-                navigate(0);
-            } 
-            else 
-            {
-                console.error("회원 추방 실패:");
-            }
-        } 
-        catch (error) 
+        if(window.confirm("회원을 삭제 하시겠습니까?"))
         {
-            console.error("회원 추방 오류:", error);
+            try 
+            {    
+                const response = await axios.post(`http://localhost:9000/user/delete/${userId}`, {}, {
+                        withCredentials : true,
+                        headers: { "Authorization": `Bearer ${localStorage.getItem("token")}`,
+                }
+                });
+
+                if (response.status == 200) 
+                {
+                    console.log("회원 추방 성공");
+                    alert("회원 추방 성공");
+                    navigate(0);
+                } 
+                else 
+                {
+                    console.error("회원 추방 실패:");
+                }
+            } 
+            catch (error) 
+            {
+                console.error("회원 추방 오류:", error);
+            }
         }
     }
 
@@ -243,16 +247,12 @@ const ManagerComponent = () =>
             {
                 case "storeName":
                     return store.storeName;
-                    break;
                 case "name":
                     return store.name;
-                    break;
                 case "busiNum":
                     return store.busiNum;
-                    break;
                 default:
                     return "정보가 존재하지 않습니다.";
-                    break;
             }
         } 
     };
@@ -332,6 +332,34 @@ const ManagerComponent = () =>
         }
     }
     
+    const searchGroupDate = async() =>
+    {
+        try 
+        {
+            //이거 해야됨     
+            const response = await axios.get(`http://localhost:9000/pay/get-info`,{
+
+            }, {
+                withCredentials : true,
+                headers: { "Authorization": `Bearer ${localStorage.getItem("token")}`}
+            });
+
+            if (response.status == 200) 
+            {
+                setGroupItem(response);
+            } 
+            else 
+            {
+                console.error("공동 구매 기간 가져오기 실패:");
+            }
+            
+        }
+        catch (error) 
+        {
+            console.error("공동 구매 기간 가져오기 오류:", error);
+        }
+    }
+
     const renderContent = (menu) => {
         if("고객 관리" == menu)
         {
@@ -443,12 +471,14 @@ const ManagerComponent = () =>
                         </table>
                     </div>
                     <div>
-                        {/* {AuthPagination()} */}
+                        {/* {authPagination()} */}
                     </div>
                 </div>
         }
         else if("공동 구매 관리" == menu)
         {
+            //{searchGroupDate}
+
             return <div className="box_Manager_Group_Item_Detail">
                     <div className="box_Manager_Group_Item_Set">
                         <input
@@ -464,8 +494,10 @@ const ManagerComponent = () =>
                     <div>
                         <table className="table_Manager_Group_Item_Date">
                             <tr>
-                                <td>공동구매 시작시간표시</td>
-                                <td>공동구매 끝시간표시</td>
+                                <td>공동구매 기간 : </td>
+                                <td>2025.02.19</td>
+                                <td>~</td>
+                                <td>2025.02.26</td>
                             </tr>
                         </table>
                     </div>
@@ -498,7 +530,7 @@ const ManagerComponent = () =>
                         </table>
                     </div>
                     <div>
-                        {/* {AuthPagination()} */}
+                        {/* {authPagination()} */}
                     </div>
                 </div>
         }
