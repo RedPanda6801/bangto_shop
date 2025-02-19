@@ -56,6 +56,7 @@ public class Users {
     private Boolean snsAuth;
 
     // 참조 객체
+    @JsonIgnore
     @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<SellerAuths> sellers;
 

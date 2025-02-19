@@ -79,5 +79,56 @@ public class PayController {
 		}
 	}
 	
-	// 물품 배송중/배송완료 처리(판매자)
+	// 구매/판매물품 처리(판매자)
+	// 배송중, 배송완료 처리
+	// id, deliverInfo 필요
+	@PostMapping("/pay/modify")
+	public ResponseEntity modifySoldItem(HttpServletRequest request, @RequestBody SoldItemDTO dto) {
+		try {
+			// 토큰 인증
+			String token = jwtUtil.validateToken(request);
+			if(token != null) {
+				payService.modifySoldItem(Integer.parseInt(token), dto);
+				return ResponseEntity.ok().body("구매/판매물품 처리 완료");
+			} else {
+				return ResponseEntity.badRequest().body("토큰 인증 오류");
+			}
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	
+	// 매장 판매내역 확인(판매자)
+	@GetMapping("/pay/get-info/{storeId}/{page}")
+	public ResponseEntity getMySold(HttpServletRequest request, @PathVariable("storeId") Integer storeId, @PathVariable("page") Integer page) {
+		try {
+			// 토큰 인증
+			String token = jwtUtil.validateToken(request);
+			if(token != null) {
+				List<SoldItemDTO> soldItemList = payService.getSoldList(Integer.parseInt(token), storeId, page);
+				return ResponseEntity.ok().body(soldItemList);
+			} else {
+				return ResponseEntity.badRequest().body("토큰 인증 오류");
+			}
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	
+	// 매장 판매내역 확인(관리자)
+	@GetMapping("/pay/get-store-info/{storeId}/{page}")
+	public ResponseEntity getStoreSold(HttpServletRequest request, @PathVariable("storeId") Integer storeId, @PathVariable("page") Integer page) {
+		try {
+			String token = jwtUtil.validateToken(request);
+			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
+			Integer rootId = Integer.parseInt(token);
+			if(!authDAO.authRoot(rootId)) {
+				return ResponseEntity.badRequest().body("Forbidden Error");
+			}
+			List<SoldItemDTO> soldItemList = payService.getSoldList(-1, storeId, page);
+			return ResponseEntity.ok().body(soldItemList);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
 }

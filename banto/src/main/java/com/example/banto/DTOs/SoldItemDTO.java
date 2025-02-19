@@ -31,6 +31,7 @@ public class SoldItemDTO {
     private Integer itemPk;
     private Integer optionPk;
     private Users user;
+    private Integer storePk;
     
     public static SoldItemDTO toDTO(SoldItems entity) {
         return SoldItemDTO.builder()
@@ -45,6 +46,7 @@ public class SoldItemDTO {
                 .optionPk(entity.getOptionPk())
                 .soldDate(entity.getSoldDate())
                 .soldPrice(entity.getSoldPrice())
+                .storePk(entity.getStorePk())
                 .user(entity.getUser())
                 .build();
     }

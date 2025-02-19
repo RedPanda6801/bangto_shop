@@ -60,8 +60,12 @@ public class SoldItems {
 	@Column(name="OPTION_PK", nullable=false)
     private Integer optionPk;
 	
+	@Column(name="STORE_PK", nullable=false)
+	private Integer storePk;
+	
 	@JsonIgnore
 	@ManyToOne
     @JoinColumn(name="BUYER_PK")
     private Users user;
+	
 }

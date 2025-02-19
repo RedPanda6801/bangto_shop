@@ -15,15 +15,16 @@ import com.example.banto.DTOs.PayDTO;
 import com.example.banto.DTOs.SoldItemDTO;
 import com.example.banto.Entitys.Carts;
 import com.example.banto.Entitys.DeliverType;
-import com.example.banto.Entitys.Items;
 import com.example.banto.Entitys.Options;
 import com.example.banto.Entitys.SoldItems;
+import com.example.banto.Entitys.Stores;
 import com.example.banto.Entitys.Users;
 import com.example.banto.Entitys.Wallets;
 import com.example.banto.Repositorys.CartRepository;
-import com.example.banto.Repositorys.ItemRepository;
 import com.example.banto.Repositorys.OptionRepository;
 import com.example.banto.Repositorys.PayRepository;
+import com.example.banto.Repositorys.SellerRepository;
+import com.example.banto.Repositorys.StoreRepository;
 import com.example.banto.Repositorys.WalletRepository;
 
 import jakarta.transaction.Transactional;
@@ -38,6 +39,10 @@ public class PayDAO {
 	OptionRepository optionRepository;
 	@Autowired
 	WalletRepository walletRepository;
+	@Autowired
+	SellerRepository sellerRepository;
+	@Autowired
+	StoreRepository storeRepository;
 	@Autowired
 	AuthDAO authDAO;
 	
@@ -109,6 +114,7 @@ public class PayDAO {
 					soldItem.setOptionPk(cart.getOption().getId());
 					soldItem.setSoldPrice((cart.getItem().getPrice() + cart.getOption().getAddPrice()) * cart.getAmount());
 					soldItem.setUser(user);
+					soldItem.setStorePk(cart.getItem().getStore().getId());
 					Options option = cart.getOption();
 					option.setAmount(option.getAmount() - cart.getAmount());
 					optionRepository.save(option);
@@ -132,6 +138,62 @@ public class PayDAO {
 			List<SoldItemDTO> soldItemList = new ArrayList<SoldItemDTO>();
 			if(soldItems.isEmpty()) {
 				throw new Exception("결제 내역이 없습니다.");
+			}
+			else {
+				for(SoldItems soldItem : soldItems) {
+					SoldItemDTO dto = SoldItemDTO.toDTO(soldItem);
+					soldItemList.add(dto);
+				}
+				return soldItemList;
+			}
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+	
+	@Transactional
+	public void modifySoldItem(Integer userId, SoldItemDTO dto) throws Exception{
+		try {				
+			// 인증 유효 확인
+			authDAO.auth(userId);
+			Integer soldItemPk = dto.getId();
+			Optional<SoldItems> soldItemOpt = payRepository.findById(soldItemPk);
+			if(soldItemOpt.isEmpty()) {
+				throw new Exception("존재하지 않는 결제내역입니다.");
+			}
+			DeliverType deliverInfo = dto.getDeliverInfo();
+			if(deliverInfo == DeliverType.Delivering || deliverInfo == DeliverType.Delivered) {				
+				SoldItems soldItem = soldItemOpt.get();
+				Optional<Stores> storeOpt = storeRepository.findById(soldItem.getStorePk());
+				if(storeOpt.isEmpty()) {
+					throw new Exception ("존재하지 않는 매장입니다.");
+				}
+				Integer sellerId = storeOpt.get().getSeller().getUser().getId();
+				if(userId != sellerId) {
+					throw new Exception ("해당 물품의 판매자가 아닙니다.");
+				}
+				soldItem.setDeliverInfo(deliverInfo);
+				payRepository.save(soldItem);
+			}
+			else {
+				throw new Exception("유효하지 않은 처리입니다.");
+			}
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+	
+	public List<SoldItemDTO> getSoldList(Integer userId, Integer storeId, Integer page) throws Exception{
+		try {
+			if(userId == -1) {				
+				// 인증 유효 확인
+				authDAO.auth(userId);
+			}
+			Pageable pageable = PageRequest.of(page-1, 20, Sort.by("id").ascending());
+			Page<SoldItems> soldItems = payRepository.findAllByStoreId(storeId, pageable);
+			List<SoldItemDTO> soldItemList = new ArrayList<SoldItemDTO>();
+			if(soldItems.isEmpty()) {
+				throw new Exception("판매 내역이 없습니다.");
 			}
 			else {
 				for(SoldItems soldItem : soldItems) {
