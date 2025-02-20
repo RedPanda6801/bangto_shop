@@ -61,6 +61,7 @@ const UserAuthComponent = (props) =>
       }
     )
     const info = getInfo;
+    console.log(info.data);
     await props.setUserName(info.data.kakao_account.profile.nickname);
     await localStorage.setItem("kakaoAccessToken", accessToken);
     navigate("/");

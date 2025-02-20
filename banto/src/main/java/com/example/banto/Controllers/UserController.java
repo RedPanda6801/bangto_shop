@@ -13,10 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.example.banto.DAOs.AuthDAO;
 import com.example.banto.DTOs.LoginDTO;
 import com.example.banto.DTOs.UserDTO;
-import com.example.banto.DTOs.WalletDTO;
 import com.example.banto.JWTs.JwtUtil;
 import com.example.banto.Services.UserService;
-import com.example.banto.Services.WalletService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -144,7 +142,7 @@ public class UserController {
 		}
 	}
 	// 유저 단일 삭제(관리자)
-	@PostMapping("/user/delete/{userId}")
+	@PostMapping("/manager/user/delete/{userId}")
 	public ResponseEntity deleteUser(HttpServletRequest request, @PathVariable("userId") Integer userId) {
 		try {
 			String token = jwtUtil.validateToken(request);

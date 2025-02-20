@@ -9,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.example.banto.Configs.EnvConfig;
@@ -43,6 +45,11 @@ public class UserDAO {
 	@Autowired
 	EnvConfig envConfig;
 	
+
+	public BCryptPasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
+	
 	@Transactional
 	public void sign(UserDTO dto) throws Exception{
 		
@@ -52,6 +59,8 @@ public class UserDAO {
 		}
 		else {
 			try {
+				BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+				dto.setPw(passwordEncoder.encode(dto.getPw()));
 				Users user = Users.toEntity(dto);
 				userRepository.save(user);
 				// 개인 지갑은 1:1이기 때문에 만들어주기
@@ -73,7 +82,8 @@ public class UserDAO {
 			else {
 				Users user = userOpt.get();
 				// 비밀번호 불일치 시 예외
-				if(!user.getPw().equals(pw)) {
+				BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+				if(!passwordEncoder.matches(pw, user.getPw())) {
 					throw new Exception("비밀번호 불일치");
 				}
 				else {
