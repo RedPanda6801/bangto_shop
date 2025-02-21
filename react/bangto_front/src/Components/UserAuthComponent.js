@@ -22,6 +22,7 @@ const UserAuthComponent = (props) =>
         console.log("로그인 성공");
         console.log(response.data.token);
         localStorage.setItem("token",response.data.token);
+        props.setToken(response.data.token);
         navigate("/");
       } 
       else 
@@ -88,6 +89,7 @@ const UserAuthComponent = (props) =>
         console.log("로그인 성공");
         console.log(loginResponse.data.token);
         localStorage.setItem("token",loginResponse.data.token);
+        props.setToken(loginResponse.data.token);
         //alert("카카오 로그인 성공");
         navigate("/");
       } 

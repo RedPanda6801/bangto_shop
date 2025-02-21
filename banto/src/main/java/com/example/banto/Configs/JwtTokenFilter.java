@@ -66,15 +66,15 @@ public class JwtTokenFilter extends OncePerRequestFilter{
 			String userRole = null;
 			if(userOpt.isPresent() && userOpt.get().getEmail().equals(envConfig.get("ROOT_EMAIL"))) {
 				userRole = UserRole.ADMIN.name();
-				System.out.println("ADMIN 역할");
+				//System.out.println("ADMIN 역할");
 			}
 			else if(sellerOpt.isPresent()) {
 				userRole = UserRole.SELLER.name();
-				System.out.println("SELLER 역할");
+				//System.out.println("SELLER 역할");
 			}
 			else if(userOpt.isPresent()) {
 				userRole = UserRole.BUYER.name();
-				System.out.println("BUYER 역할");
+				//System.out.println("BUYER 역할");
 			}
 			
 			UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userId, null, List.of(new SimpleGrantedAuthority(userRole)));

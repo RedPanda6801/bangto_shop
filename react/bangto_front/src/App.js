@@ -8,6 +8,7 @@ import StoreModiComponent from './Components/StoreModiComponent';
 import StoreItemRegisterComponent from './Components/StoreItemRegisterComponent';
 import StoreGroupItemRegisterComponent from './Components/StoreGroupItemRegisterComponent';
 import UserCartComponent from './Components/UserCartComponent';
+import UserPayComponent from './Components/UserPayComponent';
 import './Components/LayoutComponent.css';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
@@ -16,6 +17,7 @@ import { useNavigate } from 'react-router-dom';
 function App() {
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
+  const [token, setToken] = useState("");
   const navigate = useNavigate();
 
   const rootEmail = process.env.REACT_APP_ROOT_EMAIL;
@@ -31,7 +33,7 @@ function App() {
     }).catch((err)=>{
         console.log(err);
     })
-  },[localStorage.getItem("token")])
+  },[token])
 
   const logout = () => {
     //카카오톡 소셜 로그인 사용자일 경우
@@ -69,7 +71,8 @@ function App() {
     
     localStorage.removeItem("token");
     setUserEmail("");
-    setUserName("");    
+    setUserName("");
+    setToken("");
     navigate("/");
   }
 
@@ -97,12 +100,12 @@ function App() {
             <div>
               <div className="header_Manager_Text">관리자님 환영합니다.</div>
               <div 
-                className="header_User header_User_Menu"
+                className="header_User header_Manager_Menu"
                 onClick={() => (navigate("/manager"))}>
                 관리자 페이지
               </div>
               <div 
-                className="header_User header_User_Menu"
+                className="header_User header_Manager_Menu"
                 onClick={logout}>
                 로그아웃
               </div>
@@ -151,13 +154,14 @@ function App() {
       <Routes>
         <Route path="/manager" element={<ManagerComponent setUserName={setUserName} />} />
         <Route path="/" element={<UserMainComponent />} />
-        <Route path="/login" element={<UserAuthComponent setUserName={setUserName} />} />
+        <Route path="/login" element={<UserAuthComponent setUserName={setUserName} setToken={setToken} />} />
         <Route path="/sign" element={<UserSignComponent />} />
         <Route path="/seller/apply" element={<StoreComponent setUserName={setUserName} />} />
         <Route path="/seller/storemodi" element={<StoreModiComponent setUserName={setUserName} />} />
         <Route path="/item/add_item" element={<StoreItemRegisterComponent setUserName={setUserName} />} />
         <Route path="/item/add_group_item" element={<StoreGroupItemRegisterComponent setUserName={setUserName} />} />
         <Route path="/user/cart" element={<UserCartComponent setUserName={setUserName} />} />
+        <Route path="/user/pay" element={<UserPayComponent setUserName={setUserName} />} />
       </Routes>
       
         <div className="layout_Footer_Buttons">
