@@ -72,9 +72,9 @@ public class SecurityConfig {
 						new AntPathRequestMatcher("/wallet/my")
 						).hasAnyAuthority("SELLER", "BUYER")
 				// 관리자, 판매자, 구매자 셋 다에게 허용된 URL
-				.requestMatchers(
+				/*.requestMatchers(
 						new AntPathRequestMatcher("/user/get-info")
-						).hasAnyAuthority("ADMIN", "SELLER", "BUYER")
+						).hasAnyAuthority("ADMIN", "SELLER", "BUYER")*/
 				// 모두에게 허용된 URL
 				.requestMatchers(
 						new AntPathRequestMatcher("/group-buy/current-event"),
@@ -83,7 +83,9 @@ public class SecurityConfig {
 						new AntPathRequestMatcher("/item/get-itemlist/**"),
 						new AntPathRequestMatcher("/item/get-detail/**"),
 						new AntPathRequestMatcher("/sign"),
-						new AntPathRequestMatcher("/login")
+						new AntPathRequestMatcher("/login"),
+						new AntPathRequestMatcher("/user/get-sns-signed/**"),
+						new AntPathRequestMatcher("/user/get-info")
 						).permitAll()
 				// 그 외 모든 요청 허용
 				.anyRequest().permitAll()

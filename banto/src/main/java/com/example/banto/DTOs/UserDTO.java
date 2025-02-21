@@ -21,6 +21,7 @@ public class UserDTO {
     private Boolean snsAuth;
 
     public static UserDTO toDTO(Users entity) {
+    	entity.setEmail(entity.getEmail().replace("@kakao", ""));
         return UserDTO.builder()
                 .id(entity.getId())
                 .email(entity.getEmail())

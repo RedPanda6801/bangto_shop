@@ -59,8 +59,13 @@ public class UserDAO {
 		}
 		else {
 			try {
-				BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-				dto.setPw(passwordEncoder.encode(dto.getPw()));
+				if(dto.getSnsAuth() == false) {					
+					BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+					dto.setPw(passwordEncoder.encode(dto.getPw()));
+				}
+				else {
+					dto.setEmail(dto.getEmail() + "@kakao");
+				}
 				Users user = Users.toEntity(dto);
 				userRepository.save(user);
 				// 개인 지갑은 1:1이기 때문에 만들어주기
@@ -73,23 +78,32 @@ public class UserDAO {
 		}
 	}
 	
-	public LoginDTO login(String email, String pw) throws Exception{
+	public LoginDTO login(String email, String pw, Boolean snsAuth) throws Exception{
 		try {
+			if(snsAuth != null && snsAuth == true) {
+				email += "@kakao";
+			}
 			Optional<Users> userOpt = userRepository.findByEmail(email);
 			if(userOpt.isEmpty()) {
 				throw new Exception("존재하지 않는 회원입니다.");
 			}
 			else {
 				Users user = userOpt.get();
-				// 비밀번호 불일치 시 예외
-				BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-				if(!passwordEncoder.matches(pw, user.getPw())) {
-					throw new Exception("비밀번호 불일치");
+				if(user.getSnsAuth() == false) {
+					if(pw == null) {
+						throw new Exception("입력 오류");
+					}
+					// 비밀번호 불일치 시 예외
+					BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+					if(!passwordEncoder.matches(pw, user.getPw())) {
+						throw new Exception("비밀번호 불일치");
+					}
 				}
 				else {
-					LoginDTO loginDTO = new LoginDTO(jwtUtil.generateToken(user.getId()));
-					return loginDTO;
+					
 				}
+				LoginDTO loginDTO = new LoginDTO(jwtUtil.generateToken(user.getId()));
+				return loginDTO;
 			}
 		}catch(Exception e) {
 			throw e;
@@ -194,11 +208,11 @@ public class UserDAO {
 			sellerRepository.delete(sellerOpt.get());
 			// 추후에 다른 항목들도 삭제해야 될 수도 있음.*/
 			
-			//Users user = authDAO.auth(userId);
-			//userRepository.delete(user);
+			Users user = authDAO.auth(userId);
+			userRepository.delete(user);
 			
-			Optional<Wallets> walletOpt = walletRepository.findByUser_Id(userId);
-			walletRepository.delete(walletOpt.get());
+			//Optional<Wallets> walletOpt = walletRepository.findByUser_Id(userId);
+			//walletRepository.delete(walletOpt.get());
 		}catch(Exception e) {
 			throw e;
 		}
@@ -207,6 +221,7 @@ public class UserDAO {
 	@Transactional
 	public void deleteUser(Integer userId) throws Exception{
 		try {
+			/*
 			// 지갑이 1:1관계로 바로 생성되므로 지갑을 삭제해야 됨.
 			Optional<Wallets> walletOpt = walletRepository.findByUser_Id(userId);
 			walletRepository.delete(walletOpt.get());
@@ -221,8 +236,21 @@ public class UserDAO {
 				sellerRepository.delete(sellerOpt.get());
 			}
 			// 추후에 다른 항목들도 삭제해야 될 수도 있음.
-			Optional<Users> userOpt = userRepository.findById(userId);
-			userRepository.delete(userOpt.get());
+			*/
+			Users user = authDAO.auth(userId);
+			userRepository.delete(user);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+	
+	public Boolean isSnsSigned(String email) throws Exception{
+		try {
+			Optional<Users> userOpt = userRepository.findByEmail(email + "@kakao");
+			if(userOpt.isEmpty()) {
+				return false;
+			}
+			return true;
 		}catch(Exception e) {
 			throw e;
 		}

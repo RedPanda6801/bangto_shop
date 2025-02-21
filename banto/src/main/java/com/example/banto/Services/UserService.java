@@ -14,12 +14,14 @@ public class UserService {
 	UserDAO userDAO;
 	
 	public void sign(UserDTO dto) throws Exception {
+		// SNS 로그인이 아님
+		if(dto.getSnsAuth() == null || dto.getSnsAuth().equals("")) {
+			dto.setSnsAuth(false);
+		}
 		// validation
-		if(dto.getEmail() == null || dto.getName() == null || dto.getPw() == null) {
+		if(dto.getEmail() == null || dto.getName() == null || (dto.getSnsAuth() == false && dto.getPw() == null)) {
 			throw new Exception("입력 오류");
 		}
-		// SNS 로그인이 아님
-		dto.setSnsAuth(false);
 		// 비밀번호 해시화 해야함(security 사용?)
 		//dto.setPw(securityConfig.passwordEncoder().encode(dto.getPw()));
 		try {
@@ -30,11 +32,11 @@ public class UserService {
 	}
 	
 	public LoginDTO login(UserDTO dto) throws Exception {
-		if(dto.getEmail() == null || dto.getPw() == null) {
+		if(dto.getEmail() == null) {
 			throw new Exception("입력 오류");
 		}
 		try {
-			return userDAO.login(dto.getEmail(), dto.getPw());
+			return userDAO.login(dto.getEmail(), dto.getPw(), dto.getSnsAuth());
 		}catch(Exception e) {
 			throw e;
 		}
@@ -85,6 +87,13 @@ public class UserService {
 	public void deleteUser(Integer userId) throws Exception {
 		try {
 			userDAO.deleteUser(userId);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+	public Boolean isSnsSigned(String email) throws Exception {
+		try {
+			return userDAO.isSnsSigned(email);
 		}catch(Exception e) {
 			throw e;
 		}
