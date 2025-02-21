@@ -44,9 +44,6 @@ const UserCartComponent = () =>
                             <td>
                                 개수
                             </td>
-                            <td>
-                                가격
-                            </td>
                         </tr>
                     </table>
                     <table>
@@ -77,9 +74,6 @@ const UserCartComponent = () =>
                             </td>
                             <td>
                                 개수
-                            </td>
-                            <td>
-                                가격
                             </td>
                         </tr>
                     </table>

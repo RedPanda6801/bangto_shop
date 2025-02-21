@@ -37,8 +37,7 @@ const UserSignComponent = () => {
         
       if(null != selectedAddress)
       {
-        addr = `${selectedAddress.roadAddr}!!${detailAddr}!!${selectedAddress.zipNo}`;
-        console.log(addr);
+        addr = `${selectedAddress.roadAddr} ${detailAddr}`;
       }
 
       const response = await axios.post("http://localhost:9000/sign", 
