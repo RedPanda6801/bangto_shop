@@ -157,7 +157,7 @@ public class UserController {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
-	// 이메일로 유저 조회(SNS 회원가입 여부 확인용)
+	// SNS 회원가입 여부 확인
 	@GetMapping("/user/get-sns-signed/{email}")
 	public ResponseEntity isSnsSigned(@PathVariable("email") String email) {
 		try {
