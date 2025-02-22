@@ -2,13 +2,11 @@ package com.example.banto.JWTs;
 
 import java.security.Key;
 import java.util.Date;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.example.banto.Configs.EnvConfig;
-import com.example.banto.Entitys.Users;
 import com.example.banto.Repositorys.UserRepository;
 
 import io.jsonwebtoken.ExpiredJwtException;
