@@ -6,6 +6,14 @@
 	margin-top: 80px;
 }
 
+@media (max-width: 1500px) 
+{
+    .layout_User_Pay 
+    {
+        grid-template-columns: repeat(19, 79px);
+    }    
+}
+
 .box_User_Pay
 {    
     grid-column: 7 / 14;
@@ -110,12 +118,10 @@
 	display: block;
 }
 
-
 .User_Pay_Addr_Search
 {	
-	position: absolute;
-	top: 462px;
-	left: 1130px;
+    position: relative;
+    left: 20px; 
 
 	height: 30px;
 	width: 60px;
@@ -137,6 +143,7 @@
 .User_Pay_Addr
 {
     margin-top: 20px;
+    margin-left: 60px;
 }
 
 .User_Pay_Cash
@@ -185,7 +192,7 @@
 .div_line
 {
     border: 1px solid #ccc;
-    width: 680px;
+    width: 95%;
     margin-top:10px;
 }
 

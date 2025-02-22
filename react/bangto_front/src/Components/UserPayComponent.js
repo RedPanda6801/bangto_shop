@@ -16,6 +16,7 @@ const UserPayComponent = () =>
     const [totalPage, setTotalPageNum] = useState(1);
     const [visiblePages, setPageNums] = useState([]);
     const [selectedAddress, setSelectedAddress] = useState("");
+    const [detailAddr, setDetailAddr] = useState("");
 
     const handlePayModal = () => 
     {
@@ -170,23 +171,19 @@ const UserPayComponent = () =>
                     </tr>
                 </table>
                 <line className="div_line"></line>
-                <table >
-                    <tr>
-                        <td>
-                            <input
-                                className="User_Pay_Addr"
-                                type="text" 
-                                value={keyword} 
-                                onChange={(e) => setKeyword(e.target.value)} 
-                                placeholder="주소 입력"/>
-                        </td>
-                    </tr>
-                </table>
-                <button
-                    className="User_Pay_Addr_Search"
-                    onClick={() => { setCurrentPage(1); getAddr(1)}}>
-                    검색
-                </button>
+                <div>
+                    <input
+                        className="User_Pay_Addr"
+                        type="text" 
+                        value={keyword} 
+                        onChange={(e) => setKeyword(e.target.value)} 
+                        placeholder="주소 입력"/>
+                    <button
+                        className="User_Pay_Addr_Search"
+                        onClick={() => { setCurrentPage(1); getAddr(1)}}>
+                        검색
+                    </button>
+                </div>
                 <table>
                 <tr>
                     <td>
@@ -194,7 +191,7 @@ const UserPayComponent = () =>
                             className="User_Pay_Addr_Road"
                             contentEditable={false}
                             tabindex="0">
-                            도로명주소
+                            {selectedAddress ? selectedAddress.roadAddr : "도로명 주소"}
                         </div>
                     </td>
                 </tr>
@@ -203,6 +200,8 @@ const UserPayComponent = () =>
                         <input 
                             className="User_Pay_Addr_Detail"
                             type="text" 
+                            value={detailAddr}
+                            onChange={(e) => setDetailAddr(e.target.value)}
                             placeholder="상세 주소"/>
                     </td>
                 </tr>
@@ -212,6 +211,7 @@ const UserPayComponent = () =>
                             className="User_Pay_Addr_Zip"
                             type="text"
                             placeholder="우편번호" 
+                            value={selectedAddress ? selectedAddress.zipNo : ""} 
                             readOnly/>
                     </td>
                 </tr>
