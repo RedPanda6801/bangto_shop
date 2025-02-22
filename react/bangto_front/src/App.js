@@ -6,6 +6,7 @@ import UserSignComponent from './Components/UserSignComponent';
 import StoreComponent from './Components/StoreComponent';
 import StoreModiComponent from './Components/StoreModiComponent';
 import StoreItemRegisterComponent from './Components/StoreItemRegisterComponent';
+import StoreItemModifyComponent from './Components/StoreItemModifyComponent';
 import StoreGroupItemRegisterComponent from './Components/StoreGroupItemRegisterComponent';
 import UserCartComponent from './Components/UserCartComponent';
 import UserPayComponent from './Components/UserPayComponent';
@@ -181,6 +182,7 @@ function App() {
         <Route path="/seller/apply" element={<StoreComponent setUserName={setUserName} />} />
         <Route path="/seller/storemodi" element={<StoreModiComponent setUserName={setUserName} />} />
         <Route path="/item/add_item" element={<StoreItemRegisterComponent setUserName={setUserName} />} />
+        <Route path="/item/modi" element={<StoreItemModifyComponent setUserName={setUserName} />} />
         <Route path="/item/add_group_item" element={<StoreGroupItemRegisterComponent setUserName={setUserName} />} />
         <Route path="/user/cart" element={<UserCartComponent setUserName={setUserName} />} />
         <Route path="/user/pay" element={<UserPayComponent setUserName={setUserName} />} />
