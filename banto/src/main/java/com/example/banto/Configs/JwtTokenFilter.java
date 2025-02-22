@@ -60,6 +60,13 @@ public class JwtTokenFilter extends OncePerRequestFilter{
 				filterChain.doFilter(request, response);
 				return;
 			}
+			
+			String header = request.getHeader("Authorization");
+			if(header == null) {
+				filterChain.doFilter(request, response);
+				return;
+			}
+			
 			Integer userId = Integer.parseInt(jwtUtil.validateToken(request));
 			Optional<Users> userOpt = userRepository.findById(userId);
 			Optional<Sellers> sellerOpt = sellerRepositoy.findByUser_Id(userId);

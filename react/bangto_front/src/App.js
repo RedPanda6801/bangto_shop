@@ -9,6 +9,7 @@ import StoreItemRegisterComponent from './Components/StoreItemRegisterComponent'
 import StoreGroupItemRegisterComponent from './Components/StoreGroupItemRegisterComponent';
 import UserCartComponent from './Components/UserCartComponent';
 import UserPayComponent from './Components/UserPayComponent';
+import ManagerItemInfoComponent from './Components/ManagerItemInfoComponent';
 import './Components/LayoutComponent.css';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
@@ -23,16 +24,26 @@ function App() {
   const rootEmail = process.env.REACT_APP_ROOT_EMAIL;
 
   useEffect(()=>{
-    axios.get("http://localhost:9000/user/get-info", {
-           headers: {
-             "Authorization": `Bearer ${localStorage.getItem("token")}`,
-           }
-         }).then((res)=> {
-        setUserEmail(res.data.email);
-        setUserName(res.data.name);
-    }).catch((err)=>{
-        console.log(err);
-    })
+    if(localStorage.getItem("token") == "")
+    {
+      alert("로그인해주세요");
+      navigate("/");
+    }
+    else
+    {
+      axios.get("http://localhost:9000/user/get-info", {
+            headers: {
+              "Authorization": `Bearer ${localStorage.getItem("token")}`,
+            }
+          }).then((res)=> {
+          setUserEmail(res.data.email);
+          setUserName(res.data.name);
+      }).catch((err)=>{
+          //console.log(err);
+          alert("로그인해주세요");
+          navigate("/");
+      })
+    }
   },[token])
 
   const logout = () => {
@@ -70,10 +81,10 @@ function App() {
     }
     
     localStorage.removeItem("token");
+    navigate("/");
     setUserEmail("");
     setUserName("");
     setToken("");
-    navigate("/");
   }
 
   return (  
@@ -81,21 +92,32 @@ function App() {
       <div className="layout_Header">
         <button className="header_Logo" onClick={() => (navigate("/"))}>
           <img src={`/images/01_logo/logo_01.jpg`} alt="로고 이미지" />
-        </button>
-        {userEmail == rootEmail ? (
+        </button>        
+        {token !== "" ? (
+          userEmail == rootEmail ? (
+              <>
+                <div className="header_Manager">관리자 메뉴</div>
+              </>
+            ):(
             <>
-              <div className="header_Manager">관리자 메뉴</div>
-            </>
-          ):(
-          <>
-            <div className="header_Menu">카테고리1</div>
-            <div className="header_Menu">카테고리2</div>
-            <div className="header_Menu">카테고리3</div>
-            <div className="header_Menu">카테고리4</div>
-            <div className="header_Menu">카테고리5</div>
-            <div className="header_Menu">공동구매</div>
-          </>)}
-        {userName !== "" ? (
+              <div className="header_Menu">카테고리1</div>
+              <div className="header_Menu">카테고리2</div>
+              <div className="header_Menu">카테고리3</div>
+              <div className="header_Menu">카테고리4</div>
+              <div className="header_Menu">카테고리5</div>
+              <div className="header_Menu">공동구매</div>
+            </>)            
+           ) : (
+            <>
+              <div className="header_Menu">카테고리1</div>
+              <div className="header_Menu">카테고리2</div>
+              <div className="header_Menu">카테고리3</div>
+              <div className="header_Menu">카테고리4</div>
+              <div className="header_Menu">카테고리5</div>
+              <div className="header_Menu">공동구매</div>
+            </>) 
+            }
+        {token !== "" ? (
            userEmail === rootEmail ? (
             <div>
               <div className="header_Manager_Text">관리자님 환영합니다.</div>
@@ -162,6 +184,7 @@ function App() {
         <Route path="/item/add_group_item" element={<StoreGroupItemRegisterComponent setUserName={setUserName} />} />
         <Route path="/user/cart" element={<UserCartComponent setUserName={setUserName} />} />
         <Route path="/user/pay" element={<UserPayComponent setUserName={setUserName} />} />
+        <Route path="/manager/store/info" element={<ManagerItemInfoComponent setUserName={setUserName} />} />
       </Routes>
       
         <div className="layout_Footer_Buttons">
@@ -175,7 +198,7 @@ function App() {
       <div className="layout_Footer_Info">
         <table className="footer_Info">
           <tr><td>(주)방토샵</td><td>구매안전서비스(채무자2지급보증)</td></tr>
-          <tr><td>대표 : 이방토<br/>주소 : 서울특별시 강남구 언주로 508 14층<br/>사업자등록번호:000-00-00000 | 통신판매업신고:0000-서울강남구-0000<br/>상담센터:0000-0000 | 팩스:02-0000-0000<br/>호스팅서비스:(주)방토샵</td><td>당사는 하나은행과 재무지급보증 계약을 체결하여 5만원 이상 현금 등으로 <br/>결제한 금액에 대해 안전거래를 보장하고 있습니다.<br/><br/>COPYRIGHT BANGTOSHOP CO.,LTD.ALL RIGHT RESERVED.</td></tr>
+          <tr><td>대표 : 이방토<br/>주소 : 서울특별시 강남구 언주로 508 14층<br/>사업자등록번호 : 000-00-00000 | 통신판매업신고 : 0000-서울강남구-0000<br/>상담센터 : 0000-0000 | 팩스 : 02-0000-0000<br/>호스팅서비스 : (주)방토샵</td><td>당사는 하나은행과 재무지급보증 계약을 체결하여 5만원 이상 현금 등으로 <br/>결제한 금액에 대해 안전거래를 보장하고 있습니다.<br/><br/>COPYRIGHT BANGTOSHOP CO.,LTD.ALL RIGHT RESERVED.</td></tr>
         </table>
       </div>
     </div>
