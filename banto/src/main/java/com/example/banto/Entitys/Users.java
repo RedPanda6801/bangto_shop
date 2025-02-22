@@ -58,7 +58,7 @@ public class Users {
     // 참조 객체
     @JsonIgnore
     @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<SellerAuths> sellers;
+    private List<SellerAuths> sellerAuths;
 
     @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Comments> comments;
@@ -84,6 +84,9 @@ public class Users {
     @JsonIgnore
     @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<SoldItems> soldItems;
+    
+    @OneToOne(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Sellers sellers;
 
     public static Users toEntity(UserDTO dto) {
         return Users.builder()

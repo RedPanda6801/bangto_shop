@@ -22,4 +22,16 @@ public class GroupBuyItemService {
 			throw e;
 		}
 	}
+
+	public void addItem(Integer userId, GroupBuyItemDTO dto) throws Exception {
+		try {
+			if(dto.getItemId() == null || dto.getLimitPerBuyer() == null
+			|| dto.getMaxAmount() == null || dto.getEventId() == null){
+				throw new Exception("필수 정보 오류");
+			}
+			groupBuyItemDAO.addItem(userId, dto);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
 }

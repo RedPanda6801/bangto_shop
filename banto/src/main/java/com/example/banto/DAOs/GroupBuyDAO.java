@@ -1,5 +1,7 @@
 package com.example.banto.DAOs;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +29,7 @@ public class GroupBuyDAO {
 		try {
 			// 시작 날짜 조회 후 날짜 중복 확인
 			Optional<GroupBuys> event = groupBuyRepository.findLatest();
-			// 시작 날짜가 가장 최근에 했던 이벤트 마감일보다 빠르면 예외 처리
+			// 시작 날짜가 가장 최근에 추가 했던 이벤트 마감일보다 빠르면 예외 처리
 			if(event.isPresent() && dto.getStartDate().isBefore(event.get().getEndDate())) {
 				throw new Exception("날짜 정보 오류");
 			}else {
@@ -56,10 +58,28 @@ public class GroupBuyDAO {
 			throw e;
 		}
 	}
+
+	public List<GroupBuyDTO> getChooseList() throws Exception{
+		try {
+			LocalDateTime currentDate = LocalDateTime.now();
+			List<GroupBuys> eventList = groupBuyRepository.findAbleEvent(currentDate);
+			// 시작 날짜가 가장 최근에 했던 이벤트 마감일보다 빠르면 예외 처리
+			List<GroupBuyDTO> dtos = new ArrayList<>();
+			for(GroupBuys event : eventList) {
+				dtos.add(GroupBuyDTO.toDTO(event));
+			}
+			return dtos;
+		}catch(Exception e) {
+			throw e;
+		}
+	}
 	
 	public GroupBuyDTO getCurrentEvent() throws Exception{
 		try {
-			Optional<GroupBuys> eventOpt = groupBuyRepository.findLatest();
+			LocalDateTime currentDate = LocalDateTime.now();
+
+			Optional<GroupBuys> eventOpt =
+					groupBuyRepository.findCurrentEvent(currentDate);
 			// 시작 날짜가 가장 최근에 했던 이벤트 마감일보다 빠르면 예외 처리
 			if(eventOpt.isEmpty()) {
 				throw new Exception("존재하는 이벤트 없음");

@@ -79,7 +79,7 @@ public class PayController {
 		}
 	}
 	
-	// 구매/판매물품 처리(판매자)
+	// 판매물품 처리(판매자)
 	// 배송중, 배송완료 처리
 	// id, deliverInfo 필요
 	@PostMapping("/pay/modify")
@@ -99,7 +99,7 @@ public class PayController {
 	}
 	
 	// 매장 판매내역 확인(판매자)
-	@GetMapping("/pay/get-info/{storeId}/{page}")
+	@GetMapping("/pay/get-my-store-info/{storeId}/{page}")
 	public ResponseEntity getMySold(HttpServletRequest request, @PathVariable("storeId") Integer storeId, @PathVariable("page") Integer page) {
 		try {
 			// 토큰 인증

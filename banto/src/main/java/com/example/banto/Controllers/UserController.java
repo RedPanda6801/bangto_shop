@@ -13,10 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.example.banto.DAOs.AuthDAO;
 import com.example.banto.DTOs.LoginDTO;
 import com.example.banto.DTOs.UserDTO;
-import com.example.banto.DTOs.WalletDTO;
 import com.example.banto.JWTs.JwtUtil;
 import com.example.banto.Services.UserService;
-import com.example.banto.Services.WalletService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -144,7 +142,7 @@ public class UserController {
 		}
 	}
 	// 유저 단일 삭제(관리자)
-	@PostMapping("/user/delete/{userId}")
+	@PostMapping("/manager/user/delete/{userId}")
 	public ResponseEntity deleteUser(HttpServletRequest request, @PathVariable("userId") Integer userId) {
 		try {
 			String token = jwtUtil.validateToken(request);
@@ -155,6 +153,16 @@ public class UserController {
 			}
 			userService.deleteUser(userId);
 			return ResponseEntity.ok().body("회원 추방 완료");
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	// SNS 회원가입 여부 확인
+	@GetMapping("/user/get-sns-signed/{email}")
+	public ResponseEntity isSnsSigned(@PathVariable("email") String email) {
+		try {
+			Boolean isSnsSigned = userService.isSnsSigned(email);
+			return ResponseEntity.ok().body(isSnsSigned);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
