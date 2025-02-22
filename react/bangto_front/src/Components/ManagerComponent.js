@@ -379,7 +379,7 @@ const ManagerComponent = () =>
                                     <td>{user.email}</td>
                                     <td>{user.name}</td>
                                     <td>{user.phone}</td>
-                                    <td>{user.addr}</td>
+                                    <td>{(user.addr != "undefined!!!!undefined") ? user.addr : ""}</td>
                                     <td>
                                         <button
                                             onClick={() => handleUserModi(user.id)}>
@@ -416,7 +416,10 @@ const ManagerComponent = () =>
                             {storelist.map((store) => (
                                 <tr>
                                     <td>{store.sellerName}</td>
-                                    <td>{store.name}</td>
+                                    <td
+                                        onClick={() => navigate(`/manager/store/info/?storename=${store.name}`)}>
+                                        {store.name}
+                                    </td>
                                     <td>{store.busiNum}</td>
                                     <td>
                                         <button
@@ -604,7 +607,6 @@ const ManagerComponent = () =>
                         <td>
                             <input 
                                 type="text"
-                                placeholder={getUserById(selectedUserId, "addr")}
                                 value={addr}
                                 onChange={(e) => setAddr(e.target.value)}/>
                         </td>
