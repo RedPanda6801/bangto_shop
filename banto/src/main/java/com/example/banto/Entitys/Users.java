@@ -60,6 +60,7 @@ public class Users {
     @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<SellerAuths> sellerAuths;
 
+    @JsonIgnore
     @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Comments> comments;
     
@@ -85,6 +86,7 @@ public class Users {
     @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<SoldItems> soldItems;
     
+    @JsonIgnore
     @OneToOne(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Sellers sellers;
 

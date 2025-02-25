@@ -54,6 +54,7 @@ public class Items {
     @OneToMany(mappedBy="item", cascade = CascadeType.ALL)  // 추가: cascade 설정
     private List<QNAs> qnas;
     
+    @JsonIgnore
     @OneToMany(mappedBy="item", cascade = CascadeType.ALL)  // 추가: cascade 설정
     private List<Comments> comments;
     
