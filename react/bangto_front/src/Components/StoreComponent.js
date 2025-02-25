@@ -254,7 +254,8 @@ const StoreAuthComponent = (props) =>
                 </tr>
                 <tr>
                   <td>1111</td>
-                  <td>2222</td>
+                  <td
+                    onClick={() => navigate("/qna/detail")}>2222</td>
                   <td>답변상태</td>
                 </tr>
                 <tr>
@@ -288,27 +289,31 @@ const StoreAuthComponent = (props) =>
             </div>;
     }    
     else if("공동 구매 관리" == menu)
-      {
-        return <div className="box_Group_Detail">              
-                <table>
-                  <tr>
-                    <th>상품명</th>
-                    <th>결제 인원</th>
-                    <th>일괄 배송</th>
-                  </tr>
-                  <tr>
-                    <td>1111</td>
-                    <td>2222</td>
-                    <td><button>일괄 배송</button></td>
-                  </tr>
-                  <tr>
-                    <td>3333</td>
-                    <td>4444</td>
-                    <td><button>일괄 배송</button></td>
-                  </tr>
-                </table>
-              </div>;
-      }
+    {
+      return <div className="box_Group_Detail">              
+              <table>
+                <tr>
+                  <th>상품명</th>
+                  <th>결제 인원</th>
+                  <th>일괄 배송</th>
+                </tr>
+                <tr>
+                  <td>1111</td>
+                  <td>2222</td>
+                  <td><button>일괄 배송</button></td>
+                </tr>
+                <tr>
+                  <td>3333</td>
+                  <td>4444</td>
+                  <td><button>일괄 배송</button></td>
+                </tr>
+              </table>
+            </div>;
+    }
+    else
+    {
+      return <div>선택 메뉴 없음</div>
+    }
   };
 
   return (

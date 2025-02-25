@@ -26,7 +26,7 @@ public class SecurityConfig {
 	    CorsConfiguration configuration = new CorsConfiguration();
 	    
 	    configuration.setAllowedOrigins(List.of("http://localhost:3000")); // 특정 Origin 허용
-	    configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // 허용할 HTTP 메서드
+	    configuration.setAllowedMethods(List.of("GET", "POST")); // 허용할 HTTP 메서드
 	    configuration.setAllowedHeaders(List.of("Authorization", "Content-Type")); // 허용할 헤더
 	    configuration.setAllowCredentials(true); // 쿠키 및 인증 정보 포함 허용
 
@@ -89,12 +89,16 @@ public class SecurityConfig {
 						new AntPathRequestMatcher("/qna/get-detail"),
 						new AntPathRequestMatcher("/user/modify"),
 						new AntPathRequestMatcher("/user/delete-me"),
-						new AntPathRequestMatcher("/wallet/my")
+						new AntPathRequestMatcher("/wallet/my"),
+						new AntPathRequestMatcher("/comment/write"),
+						new AntPathRequestMatcher("/comment/get-my/**")
 						).hasAnyAuthority("SELLER", "BUYER")
 				// 관리자, 판매자, 구매자 셋 다에게 허용된 URL
-				//.requestMatchers(
-				//		new AntPathRequestMatcher("/user/get-info")
-				//		).hasAnyAuthority("ADMIN", "SELLER", "BUYER")
+				.requestMatchers(
+						//new AntPathRequestMatcher("/user/get-info"),
+						new AntPathRequestMatcher("/comment/item/**"),
+						new AntPathRequestMatcher("/comment/get/**")
+						).hasAnyAuthority("ADMIN", "SELLER", "BUYER")
 				// 모두에게 허용된 URL
 				.requestMatchers(
 						new AntPathRequestMatcher("/group-buy/current-event"),

@@ -35,6 +35,9 @@ public class Comments {
 	
 	@Column(name = "WRITE_DATE", nullable=false, insertable = false, columnDefinition = "date default sysdate")
 	private LocalDateTime writeDate;
+	
+	@Column(name="IMG", nullable=true)
+    private String img;
 
 	@ManyToOne
 	@JoinColumn(name="BUYER_PK")
