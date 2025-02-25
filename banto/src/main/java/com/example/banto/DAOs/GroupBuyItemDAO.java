@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import com.example.banto.Entitys.Items;
+import com.example.banto.Entitys.Options;
 import com.example.banto.Repositorys.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -60,12 +61,65 @@ public class GroupBuyItemDAO {
 					throw new Exception("아이템 정보 오류");
 				}
 				else {
-					dto.setItem(itemOpt.get());
-					dto.setEvent(eventOpt.get());
-					GroupBuyItems itemObj = GroupBuyItems.toEntity(dto);
-					groupBuyItemRepository.save(itemObj);
-				}
+					Items item = itemOpt.get();
+					boolean isOption = false;
+					for(Options option : item.getOptions()) {
+						if(option.getId() == dto.getOptionId()) {
+							dto.setOption(option);
+							isOption = true;
+						}
+					}
+					if(!isOption) {
+						throw new Exception("옵션 정보 오류");
+					}
+					else {
+						if(dto.getOption().getAmount() < dto.getMaxAmount()) {
+							throw new Exception("최대 수량 초과 오류");
+						}
+						dto.setItem(item);
+						dto.setEvent(eventOpt.get());
+						
+						GroupBuyItems itemObj = GroupBuyItems.toEntity(dto);
+						itemObj.setNowAmount(dto.getMaxAmount());
+						groupBuyItemRepository.save(itemObj);
+					}
+					}
 			}
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+	
+	public void modifyItem(Integer userId, GroupBuyItemDTO dto) throws Exception {
+		try {
+			Optional<GroupBuyItems> groupItemOpt = groupBuyItemRepository.findById(dto.getId());
+			if(groupItemOpt.isEmpty() ||
+				!Objects.equals(groupItemOpt.get().getItem().getStore().getSeller().getUser().getId(), userId)){
+				throw new Exception("아이템 정보 오류");
+			}
+			else {
+				GroupBuyItems groupBuyItem = groupItemOpt.get();
+				// 판매량보다 낮은 값을 최대 수량으로 수정할 수 없음
+				int sellerAmount = groupBuyItem.getMaxAmount() - groupBuyItem.getNowAmount();
+				if(sellerAmount > dto.getMaxAmount()) {
+					throw new Exception("최대 수량 오류");
+				}
+				int nowAmount = dto.getMaxAmount() - sellerAmount;
+
+				// 수정 로직
+				groupBuyItem.setMaxAmount((dto.getMaxAmount() != null && !dto.getMaxAmount().equals("")) ?
+						dto.getMaxAmount() : groupBuyItem.getMaxAmount());
+				groupBuyItem.setLimitPerBuyer((dto.getLimitPerBuyer() != null && !dto.getLimitPerBuyer().equals("")) ?
+						dto.getLimitPerBuyer() : groupBuyItem.getLimitPerBuyer());
+				groupBuyItem.setNowAmount((dto.getMaxAmount() != null && !dto.getMaxAmount().equals("")) ?
+						nowAmount : groupBuyItem.getNowAmount());
+				groupBuyItemRepository.save(groupBuyItem);
+
+				GroupBuyItems itemObj = GroupBuyItems.toEntity(dto);
+				itemObj.setNowAmount(dto.getMaxAmount());
+				groupBuyItemRepository.save(itemObj);
+			}
+
 		}catch(Exception e) {
 			throw e;
 		}

@@ -37,7 +37,7 @@ public class GroupBuyItemController {
 		}
 	}
 
-	// 공동 구매 이벤트에 물건 추가(판매자만) - 양 조절 필요
+	// 공동 구매 이벤트에 물건 추가(판매자만)
 	@PostMapping("/group-buy/item/add")
 	public ResponseEntity addGroupItem(HttpServletRequest request, @RequestBody GroupBuyItemDTO groupBuyItemDTO) throws Exception{
 		try{
@@ -53,4 +53,21 @@ public class GroupBuyItemController {
 			return  ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
+	
+	// 공동 구매 이벤트에 올린 물건 수정(판매자만)
+		@PostMapping("/group-buy/item/modify")
+		public ResponseEntity modifyGroupItem(HttpServletRequest request, @RequestBody GroupBuyItemDTO groupBuyItemDTO) throws Exception{
+			try{
+				String token = jwtUtil.validateToken(request);
+				if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
+				Integer userId = Integer.parseInt(token);
+				if(!authDAO.authSeller(userId)){
+					return ResponseEntity.badRequest().body("권한 오류");
+				}
+				groupBuyItemService.modifyItem(userId, groupBuyItemDTO);
+				return ResponseEntity.ok().body(null);
+			}catch(Exception e){
+				return  ResponseEntity.badRequest().body(e.getMessage());
+			}
+		}
 }

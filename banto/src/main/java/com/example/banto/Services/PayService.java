@@ -27,13 +27,13 @@ public class PayService {
 		}
 	}
 	
-	public List<SoldItemDTO> getPayList(Integer userId, Integer page) throws Exception{
+	public List<SoldItemDTO> getPayList(Integer userId, Integer year, Integer page) throws Exception{
 		if(userId == null) { 
 			throw new Exception("권한 없음");
 		}
 		else {
 			try {
-				return payDAO.getPayList(userId, page);
+				return payDAO.getPayList(userId, year, page);
 			}catch(Exception e) {
 				throw e;
 			}

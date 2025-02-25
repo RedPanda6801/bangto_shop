@@ -3,7 +3,7 @@ package com.example.banto.DTOs;
 import com.example.banto.Entitys.GroupBuyItems;
 import com.example.banto.Entitys.GroupBuys;
 import com.example.banto.Entitys.Items;
-
+import com.example.banto.Entitys.Options;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,9 +26,15 @@ public class GroupBuyItemDTO {
 
 	private Integer eventId;
 
+	private Integer OptionId;
+	
 	private GroupBuys event;
-
+	
+	private Integer nowAmount;
+	
 	private Items item;
+	
+	private Options option;
 	
 	public static GroupBuyItemDTO toDTO(GroupBuyItems entity) {
 		return GroupBuyItemDTO.builder()
