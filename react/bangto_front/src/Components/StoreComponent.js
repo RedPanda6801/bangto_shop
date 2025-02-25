@@ -211,6 +211,7 @@ const StoreAuthComponent = (props) =>
                     <th>상품 설명</th>
                     <th>상품 가격</th>
                     <th>공동구매 등록</th>
+                    <th>상품 수정</th>
                     <th>상품 삭제</th>
                   </tr>
                     {itemlist.map((item) => (
@@ -222,6 +223,12 @@ const StoreAuthComponent = (props) =>
                         <button
                           onClick={() => navigate(`/item/add_group_item?storeName=${storeInfo.name}&itemTitle=${item.title}&itemId=${item.id}`)}>
                             공동구매 등록
+                        </button>
+                      </td>
+                      <td>
+                        <button
+                          onClick={() => navigate(`/item/modi?storeName=${storeInfo.name}&itemId=${item.id}`)}>
+                          수정
                         </button>
                       </td>
                       <td>

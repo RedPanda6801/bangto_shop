@@ -124,3 +124,62 @@
     font-weight: 600;
     cursor: pointer;
 }
+
+.modal_User_Pay_Option_Overlay
+{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal_User_Pay_Option
+{
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 300px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    align-items: center;
+}
+
+.modal_User_Pay_Option table
+{
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 18px;
+}
+
+.modal_User_Pay_Option td:nth-child(2)
+{
+    text-align: right;
+    height: 50px;
+}
+
+.modal_User_Pay_Option input
+{
+    width: 80px;
+    margin-right: 5px;
+}
+
+.modal_User_Pay_Option button
+{
+    width: 140px;
+    height: 40px;
+    border-radius: 7px;
+    border: none;
+    background-color: #f8c8c8;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    margin: 10px 0px;
+}

@@ -21,7 +21,6 @@ public class SecurityConfig {
 	@Autowired
 	JwtTokenFilter jwtTokenFilter;
 	
-	/*
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 	    CorsConfiguration configuration = new CorsConfiguration();
@@ -36,12 +35,11 @@ public class SecurityConfig {
 
 	    return source;
 	}
-	*/
 	
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 		return httpSecurity
-				//.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+				.cors(cors -> cors.configurationSource(corsConfigurationSource()))
 				.httpBasic(AbstractHttpConfigurer::disable)
 				.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
