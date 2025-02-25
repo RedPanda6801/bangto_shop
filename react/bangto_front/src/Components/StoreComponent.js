@@ -254,7 +254,8 @@ const StoreAuthComponent = (props) =>
                 </tr>
                 <tr>
                   <td>1111</td>
-                  <td>2222</td>
+                  <td
+                    onClick={() => navigate("/qna/detail")}>2222</td>
                   <td>답변상태</td>
                 </tr>
                 <tr>
