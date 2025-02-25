@@ -11,6 +11,7 @@ import StoreGroupItemRegisterComponent from './Components/StoreGroupItemRegister
 import StoreQNADetailComponent from './Components/StoreQNADetailComponent';
 import UserCartComponent from './Components/UserCartComponent';
 import UserPayComponent from './Components/UserPayComponent';
+import UserComponent from './Components/UserComponent';
 import ManagerItemInfoComponent from './Components/ManagerItemInfoComponent';
 import './Components/LayoutComponent.css';
 import axios from 'axios';
@@ -159,6 +160,13 @@ function App() {
                   카트
                 </div>
               </div>
+              <div>              
+                <div 
+                  className="header_User header_User_Menu"
+                  onClick={() => (navigate("/user"))}>
+                  사용자 페이지
+                </div>
+              </div>
             </>)
           ) : (
               <>
@@ -189,6 +197,7 @@ function App() {
         <Route path="/user/pay" element={<UserPayComponent setUserName={setUserName} />} />
         <Route path="/manager/store/info" element={<ManagerItemInfoComponent setUserName={setUserName} />} />
         <Route path="/qna/detail" element={<StoreQNADetailComponent setUserName={setUserName} />} />
+        <Route path="/user" element={<UserComponent setUserName={setUserName} />} />
       </Routes>
       
         <div className="layout_Footer_Buttons">
