@@ -34,6 +34,9 @@ public class GroupBuyItems {
 	@Column(name="MAX_AMOUNT",  nullable=false)
 	private Integer maxAmount;
 	
+	@Column(name="NOW_AMOUNT",  nullable=false)
+	private Integer nowAmount;
+	
 	// 참조 객체
 	@JsonIgnore
 	@ManyToOne
@@ -44,11 +47,17 @@ public class GroupBuyItems {
 	@ManyToOne
 	@JoinColumn(name="ITEM_PK")
 	private Items item;
+	
+	@JsonIgnore
+	@ManyToOne
+	@JoinColumn(name="OPTION_PK")
+	private Options option;
 
 	public static GroupBuyItems toEntity(GroupBuyItemDTO dto){
 		return GroupBuyItems.builder()
 				.event(dto.getEvent())
 				.item(dto.getItem())
+				.option(dto.getOption())
 				.limitPerBuyer(dto.getLimitPerBuyer())
 				.maxAmount(dto.getMaxAmount())
 				.build();

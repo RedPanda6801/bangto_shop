@@ -101,6 +101,7 @@ public class PayDAO {
 				wallet.setCash(wallet.getCash() - usingCash);
 				wallet.setCashBack(wallet.getCashBack() - dto.getUsingCashBack());
 				walletRepository.save(wallet);
+				
 				for(Integer cartPk : cartPks) {
 					Optional<Carts> cartOpt = cartRepository.findById(cartPk);
 					Carts cart = cartOpt.get();
@@ -110,7 +111,8 @@ public class PayDAO {
 					soldItem.setDeliverInfo(DeliverType.Preparing);
 					soldItem.setItemName(cart.getItem().getTitle());
 					soldItem.setItemPk(cart.getItem().getId());
-					soldItem.setItemPrice(cart.getItem().getPrice());					soldItem.setOptionInfo(cart.getOption().getOptionInfo());
+					soldItem.setItemPrice(cart.getItem().getPrice());					
+					soldItem.setOptionInfo(cart.getOption().getOptionInfo());
 					soldItem.setOptionPk(cart.getOption().getId());
 					soldItem.setSoldPrice((cart.getItem().getPrice() + cart.getOption().getAddPrice()) * cart.getAmount());
 					soldItem.setUser(user);
@@ -127,14 +129,14 @@ public class PayDAO {
 		}
 	}
 	
-	public List<SoldItemDTO> getPayList(Integer userId, Integer page) throws Exception{
+	public List<SoldItemDTO> getPayList(Integer userId, Integer year, Integer page) throws Exception{
 		try {
 			if(userId == -1) {				
 				// 인증 유효 확인
 				authDAO.auth(userId);
 			}
 			Pageable pageable = PageRequest.of(page-1, 20, Sort.by("id").ascending());
-			Page<SoldItems> soldItems = payRepository.findAllByUserId(userId, pageable);
+			Page<SoldItems> soldItems = payRepository.findAllByUserId(userId, year, pageable);
 			List<SoldItemDTO> soldItemList = new ArrayList<SoldItemDTO>();
 			if(soldItems.isEmpty()) {
 				throw new Exception("결제 내역이 없습니다.");

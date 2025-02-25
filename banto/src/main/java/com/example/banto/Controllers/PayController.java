@@ -46,13 +46,13 @@ public class PayController {
 	}
 	
 	// 개인 결제내역 확인
-	@GetMapping("/pay/get-info/{page}")
-	public ResponseEntity getMyPay(HttpServletRequest request, @PathVariable("page") Integer page) {
+	@GetMapping("/pay/get-info/{year}/{page}")
+	public ResponseEntity getMyPay(HttpServletRequest request, @PathVariable("year") Integer year, @PathVariable("page") Integer page) {
 		try {
 			// 토큰 인증
 			String token = jwtUtil.validateToken(request);
 			if(token != null) {
-				List<SoldItemDTO> soldItemList = payService.getPayList(Integer.parseInt(token), page);
+				List<SoldItemDTO> soldItemList = payService.getPayList(Integer.parseInt(token), year, page);
 				return ResponseEntity.ok().body(soldItemList);
 			} else {
 				return ResponseEntity.badRequest().body("토큰 인증 오류");
@@ -63,8 +63,8 @@ public class PayController {
 	}
 	
 	// 구매자 결제내역 확인(관리자)
-	@GetMapping("/pay/get-user-info/{userId}/{page}")
-	public ResponseEntity getUserPay(HttpServletRequest request, @PathVariable("userId") Integer userId, @PathVariable("page") Integer page) {
+	@GetMapping("/pay/get-user-info/{userId}/{year}/{page}")
+	public ResponseEntity getUserPay(HttpServletRequest request, @PathVariable("userId") Integer userId,@PathVariable("year") Integer year, @PathVariable("page") Integer page) {
 		try {
 			String token = jwtUtil.validateToken(request);
 			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
@@ -72,7 +72,7 @@ public class PayController {
 			if(!authDAO.authRoot(rootId)) {
 				return ResponseEntity.badRequest().body("Forbidden Error");
 			}
-			List<SoldItemDTO> soldItemList = payService.getPayList(-1, page);
+			List<SoldItemDTO> soldItemList = payService.getPayList(-1, year, page);
 			return ResponseEntity.ok().body(soldItemList);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());

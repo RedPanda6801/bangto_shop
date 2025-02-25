@@ -137,6 +137,8 @@ public class UserDAO {
 	@Transactional
 	public void modifyUser(Integer userId, UserDTO dto) throws Exception{
 		try {
+			BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+			
 			Users user = authDAO.auth(userId);
 			// 수정 로직
 			user.setEmail((dto.getEmail() != null && !dto.getEmail().equals("")) ?
@@ -144,7 +146,7 @@ public class UserDAO {
 			user.setName((dto.getName() != null && !dto.getName().equals("")) ?
 					dto.getName() : user.getName());
 			user.setPw((dto.getPw() != null && !dto.getPw().equals("")) ?
-					dto.getPw() : user.getPw());
+					passwordEncoder.encode(dto.getPw()) : user.getPw());
 			user.setPhone((dto.getPhone() != null && !dto.getPhone().equals("")) ?
 					dto.getPhone() : user.getPhone());
 			user.setAddr((dto.getAddr() != null && !dto.getAddr().equals("")) ?

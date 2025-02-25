@@ -69,10 +69,7 @@ public class Users {
     private List<Favorites> favorites;
 
     @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<GroupChatRooms> groupChatRooms;
-
-    @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<GroupChatMsgs> msgs;
+    private List<GroupItemPays> groupItemPays;
     
     @JsonIgnore
     @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
