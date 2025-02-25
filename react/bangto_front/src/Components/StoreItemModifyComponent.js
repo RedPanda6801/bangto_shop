@@ -20,7 +20,6 @@ const StoreItemModifyComponent = () => {
   const searchParams = new URLSearchParams(location.search);  
   const storeName = searchParams.get("storeName");
   const storePk = searchParams.get("storePk");
-  const itemTitle = searchParams.get("itemTitle");
 
   const handleImageChange = (e) => 
   {

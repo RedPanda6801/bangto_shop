@@ -8,6 +8,7 @@ import StoreModiComponent from './Components/StoreModiComponent';
 import StoreItemRegisterComponent from './Components/StoreItemRegisterComponent';
 import StoreItemModifyComponent from './Components/StoreItemModifyComponent';
 import StoreGroupItemRegisterComponent from './Components/StoreGroupItemRegisterComponent';
+import StoreQNADetailComponent from './Components/StoreQNADetailComponent';
 import UserCartComponent from './Components/UserCartComponent';
 import UserPayComponent from './Components/UserPayComponent';
 import ManagerItemInfoComponent from './Components/ManagerItemInfoComponent';
@@ -187,6 +188,7 @@ function App() {
         <Route path="/user/cart" element={<UserCartComponent setUserName={setUserName} />} />
         <Route path="/user/pay" element={<UserPayComponent setUserName={setUserName} />} />
         <Route path="/manager/store/info" element={<ManagerItemInfoComponent setUserName={setUserName} />} />
+        <Route path="/qna/detail" element={<StoreQNADetailComponent setUserName={setUserName} />} />
       </Routes>
       
         <div className="layout_Footer_Buttons">
