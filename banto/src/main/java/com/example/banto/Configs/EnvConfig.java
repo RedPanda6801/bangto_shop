@@ -10,6 +10,7 @@ public class EnvConfig {
 	
 	public EnvConfig() {
 		this.dotenv = Dotenv.configure().ignoreIfMissing().load();
+		System.out.println("Loaded JWT_SECRET: " + dotenv.get("JWT_SECRET"));
 	}
 	
 	public String get(String key) {

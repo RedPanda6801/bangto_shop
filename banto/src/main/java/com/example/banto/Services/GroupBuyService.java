@@ -32,6 +32,14 @@ public class GroupBuyService {
 			throw e;
 		}
 	}
+
+	public List<GroupBuyDTO> getChooseList() throws Exception {
+		try {
+			return groupBuyDAO.getChooseList();
+		}catch(Exception e) {
+			throw e;
+		}
+	}
 	
 	public GroupBuyDTO getCurrentEvent() throws Exception {
 		try {

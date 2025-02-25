@@ -3,6 +3,8 @@ package com.example.banto.Entitys;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import com.example.banto.DTOs.GroupBuyItemDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,11 +35,22 @@ public class GroupBuyItems {
 	private Integer maxAmount;
 	
 	// 참조 객체
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name="EVENT_PK")
 	private GroupBuys event;
-	
+
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name="ITEM_PK")
 	private Items item;
+
+	public static GroupBuyItems toEntity(GroupBuyItemDTO dto){
+		return GroupBuyItems.builder()
+				.event(dto.getEvent())
+				.item(dto.getItem())
+				.limitPerBuyer(dto.getLimitPerBuyer())
+				.maxAmount(dto.getMaxAmount())
+				.build();
+	}
 }

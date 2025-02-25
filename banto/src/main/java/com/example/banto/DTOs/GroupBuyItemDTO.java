@@ -21,7 +21,11 @@ public class GroupBuyItemDTO {
 	private Integer limitPerBuyer;
 
 	private Integer maxAmount;
-	
+
+	private Integer itemId;
+
+	private Integer eventId;
+
 	private GroupBuys event;
 
 	private Items item;
