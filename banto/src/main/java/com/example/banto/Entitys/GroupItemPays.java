@@ -12,6 +12,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -24,6 +26,12 @@ public class GroupItemPays {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
+    @Column(name="ITEM_TITLE")
+    private String itemTitle;
+
+    @Column(name="OPTION_INFO")
+    private String optionInfo;
+
     @Column(name="AMOUNT", nullable=false)
     private Integer amount;
     
@@ -31,18 +39,17 @@ public class GroupItemPays {
     private Integer pay;
     
     @Column(name="DELEVER_INFO", nullable=false)
-    private DeliverType deleverInfo;
-    
+    private DeliverType deliverInfo;
+
+    @Column(name="SOLD_DATE", nullable=false, insertable = false, columnDefinition = "date default sysdate")
+    private LocalDateTime soldDate;
+
     @ManyToOne
-    @JoinColumn(name="OPTION_PK")
-    private Options Option;
-    
+    @JoinColumn(name="ITEM_PK")
+    private Items item;
+
     @ManyToOne
     @JoinColumn(name="BUYER_PK")
     private Users user;
-
-    @ManyToOne
-    @JoinColumn(name="GROUP_ITEM_PK")
-    private GroupBuyItems groupBuyItem;
 
 }

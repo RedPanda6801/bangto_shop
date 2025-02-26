@@ -37,6 +37,7 @@ public class Users {
     @Column(name="EMAIL", nullable=false, unique=true)
     private String email;
 
+    @JsonIgnore
     @Column(name="PW", nullable=true)
     private String pw;
 
@@ -68,6 +69,7 @@ public class Users {
     @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Favorites> favorites;
 
+    @JsonIgnore
     @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<GroupItemPays> groupItemPays;
     
