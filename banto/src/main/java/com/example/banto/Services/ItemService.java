@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.banto.DAOs.ItemDAO;
 import com.example.banto.DTOs.ItemDTO;
@@ -38,6 +39,30 @@ public class ItemService {
 		}
 	}
 	
+	public List<ItemDTO> getItemListByTitle(Integer userId, String title, Integer page) throws Exception {
+		try {
+			if(page == null || page < 1) {
+				throw new Exception("페이지 입력 오류");
+		}else {
+				return itemDAO.getItemListByTitle(userId, title, page);
+			}
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+	
+	public List<ItemDTO> getItemListByStoreName(Integer userId, String storeName, Integer page) throws Exception {
+		try {
+			if(page == null || page < 1) {
+				throw new Exception("페이지 입력 오류");
+		}else {
+				return itemDAO.getItemListByStoreName(userId, storeName, page);
+			}
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+	
 	public ItemDTO getItemDetail(Integer userId, Integer itemId) throws Exception {
 		try {
 			return itemDAO.getItemDetail(userId, itemId);
@@ -46,9 +71,9 @@ public class ItemService {
 		}
 	}
 	
-	public void addItem(Integer userId, ItemDTO itemDTO) throws Exception {
+	public void addItem(Integer userId, ItemDTO itemDTO, List<MultipartFile> files) throws Exception {
 		try {
-			itemDAO.addItem(userId, itemDTO);
+			itemDAO.addItem(userId, itemDTO, files);
 		}catch(Exception e) {
 			throw e;
 		}

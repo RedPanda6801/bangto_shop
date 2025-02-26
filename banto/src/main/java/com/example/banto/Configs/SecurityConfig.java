@@ -94,11 +94,9 @@ public class SecurityConfig {
 						new AntPathRequestMatcher("/comment/get-my/**")
 						).hasAnyAuthority("SELLER", "BUYER")
 				// 관리자, 판매자, 구매자 셋 다에게 허용된 URL
-				.requestMatchers(
+				//.requestMatchers(
 						//new AntPathRequestMatcher("/user/get-info"),
-						new AntPathRequestMatcher("/comment/item/**"),
-						new AntPathRequestMatcher("/comment/get/**")
-						).hasAnyAuthority("ADMIN", "SELLER", "BUYER")
+						//).hasAnyAuthority("ADMIN", "SELLER", "BUYER")
 				// 모두에게 허용된 URL
 				.requestMatchers(
 						new AntPathRequestMatcher("/group-buy/current-event"),
@@ -109,7 +107,11 @@ public class SecurityConfig {
 						new AntPathRequestMatcher("/sign"),
 						new AntPathRequestMatcher("/login"),
 						new AntPathRequestMatcher("/user/get-sns-signed/**"),
-						new AntPathRequestMatcher("/user/get-info")
+						new AntPathRequestMatcher("/user/get-info"),
+						new AntPathRequestMatcher("/comment/item/**"),
+						new AntPathRequestMatcher("/comment/get/**"),
+						new AntPathRequestMatcher("/item/get-by-store-name/**"),
+						new AntPathRequestMatcher("/item/get-itemlist/**")
 						).permitAll()
 				// 그 외 모든 요청 허용
 				.anyRequest().permitAll()

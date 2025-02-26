@@ -75,7 +75,6 @@ public class Items {
     public static Items toEntity(ItemDTO dto) {
     	return Items.builder()
     			.title(dto.getTitle())
-    			.img(dto.getImg())
     			.price(dto.getPrice())
     			.content(dto.getContent())
     			.category(dto.getCategory())
