@@ -37,7 +37,7 @@ public class GroupBuyItemController {
 		}
 	}
 
-	// 공동 구매 이벤트에 물건 추가(판매자만)
+	// 공동 구매 이벤트에 물건 추가(판매자만) - 옵션 별로 추가해야 함
 	@PostMapping("/group-buy/item/add")
 	public ResponseEntity addGroupItem(HttpServletRequest request, @RequestBody GroupBuyItemDTO groupBuyItemDTO) throws Exception{
 		try{
