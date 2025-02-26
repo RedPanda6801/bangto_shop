@@ -3,18 +3,27 @@ package com.example.banto.Controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.banto.DAOs.AuthDAO;
 import com.example.banto.DTOs.ItemDTO;
 import com.example.banto.DTOs.OptionDTO;
+import com.example.banto.Entitys.Items;
 import com.example.banto.Entitys.Options;
 import com.example.banto.JWTs.JwtUtil;
+import com.example.banto.Repositorys.ItemRepository;
 import com.example.banto.Services.ItemService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,6 +36,8 @@ public class ItemController {
 	JwtUtil jwtUtil;
 	@Autowired
 	AuthDAO authDAO;
+	@Autowired
+	ItemRepository itemRepository;
 	
 	// 물품 전체 조회
 	@GetMapping("/item/get-all-list/{page}")
@@ -40,6 +51,35 @@ public class ItemController {
 	}
 	
 	// 검색어 별 조회, 카테고리 별 조회...
+	// 물품 검색어 별 물건 조회(20개 씩)
+	@GetMapping("/item/get-by-title/{title}/{page}")
+	public ResponseEntity getItemListByTitle(HttpServletRequest request, @PathVariable("title") String title, @PathVariable("page") Integer page) throws Exception{
+		try {
+			String token = jwtUtil.validateToken(request);
+			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
+			Integer userId = Integer.parseInt(token);
+			List<ItemDTO> itemList = itemService.getItemListByTitle(userId, title, page);
+			//Pageable pageable = PageRequest.of(page-1, 20, Sort.by("id").ascending());
+			//Page<Items> items = itemRepository.getItemsByTitle(title, pageable);
+			return ResponseEntity.ok().body(itemList);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	
+	// 매장 검색어 별 물건 조회(20개 씩)
+	@GetMapping("/item/get-by-store-name/{storeName}/{page}")
+	public ResponseEntity getItemListByStoreName(HttpServletRequest request, @PathVariable("storeName") String storeName, @PathVariable("page") Integer page) throws Exception{
+		try {
+			String token = jwtUtil.validateToken(request);
+			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
+			Integer userId = Integer.parseInt(token);
+			List<ItemDTO> itemList = itemService.getItemListByStoreName(userId, storeName, page);
+			return ResponseEntity.ok().body(itemList);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
 	
 	// 매장 별 물건 조회(20개 씩)
 	@GetMapping("/item/get-itemlist/{storeId}/{page}")
@@ -68,13 +108,13 @@ public class ItemController {
 		}
 	}
 	// 물건 추가 
-	@PostMapping("/item/add-item")
-	public ResponseEntity addItem(HttpServletRequest request, @RequestBody ItemDTO itemDTO) throws Exception {
+	@PostMapping(path = "/item/add-item", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity addItem(HttpServletRequest request, @RequestPart("dto") ItemDTO itemDTO, @RequestPart(name = "files", required = false) List<MultipartFile> files) throws Exception {
 		try {
 			String token = jwtUtil.validateToken(request);
 			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
 			Integer userId = Integer.parseInt(token);
-			itemService.addItem(userId, itemDTO);
+			itemService.addItem(userId, itemDTO, files);
 			return ResponseEntity.ok().body(null);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());

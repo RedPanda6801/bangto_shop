@@ -81,6 +81,7 @@ public class ItemDTO {
                 .qnas(entity.getQnas())
                 .comments(entity.getComments())
                 .options(entity.getOptions())
+                .storePk(entity.getStore().getId())
                 .build();
     }
 
