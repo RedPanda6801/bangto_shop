@@ -36,7 +36,9 @@ public class GroupBuyItems {
 	
 	@Column(name="NOW_AMOUNT",  nullable=false)
 	private Integer nowAmount;
-	
+
+	@Column(name="SELLER_PK", nullable = false)
+	private Integer sellerPk;
 	// 참조 객체
 	@JsonIgnore
 	@ManyToOne
@@ -60,6 +62,7 @@ public class GroupBuyItems {
 				.option(dto.getOption())
 				.limitPerBuyer(dto.getLimitPerBuyer())
 				.maxAmount(dto.getMaxAmount())
+				.sellerPk(dto.getSellerPk())
 				.build();
 	}
 }

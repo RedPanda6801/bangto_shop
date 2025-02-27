@@ -44,7 +44,7 @@ public class GroupBuyDAO {
 	public List<GroupBuyDTO> getEventList(Integer userId) throws Exception{
 		try {
 			// 인증 유효 확인
-			if(!authDAO.authRoot(userId) && !authDAO.authSeller(userId)) {
+			if(!authDAO.authRoot(userId) && authDAO.authSeller(userId) == -1) {
 				throw new Exception("권한 없음");
 			}
 			List<GroupBuys> eventList = groupBuyRepository.findAll();
@@ -85,6 +85,20 @@ public class GroupBuyDAO {
 				throw new Exception("존재하는 이벤트 없음");
 			}
 			return GroupBuyDTO.toDTO(eventOpt.get());
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+
+	public List<GroupBuyDTO> getEventListToSeller(Integer userId) throws Exception{
+		try {
+			List<GroupBuys> eventList = groupBuyRepository.findAllBySellerPk(userId);
+			// 시작 날짜가 가장 최근에 했던 이벤트 마감일보다 빠르면 예외 처리
+			List<GroupBuyDTO> dtos = new ArrayList<>();
+			for(GroupBuys event : eventList) {
+				dtos.add(GroupBuyDTO.toDTO(event));
+			}
+			return dtos;
 		}catch(Exception e) {
 			throw e;
 		}
