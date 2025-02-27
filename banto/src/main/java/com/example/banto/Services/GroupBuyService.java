@@ -48,4 +48,12 @@ public class GroupBuyService {
 			throw e;
 		}
 	}
+
+	public List<GroupBuyDTO> getEventListToSeller(Integer userId) throws Exception {
+		try {
+			return groupBuyDAO.getEventListToSeller(userId);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
 }

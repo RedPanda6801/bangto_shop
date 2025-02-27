@@ -47,13 +47,13 @@ public class AuthDAO {
 			throw e;
 		}
 	}
-	public boolean authSeller(Integer userId) throws Exception{
+	public Integer authSeller(Integer userId) throws Exception{
 		try {
 			Optional<Sellers> seller = sellerRepository.findByUser_Id(userId);
 			if(seller.isEmpty()) {
-				return false;
+				return -1;
 			}else {
-				return true;
+				return seller.get().getId();
 			}
 		}catch(Exception e) {
 			throw e;

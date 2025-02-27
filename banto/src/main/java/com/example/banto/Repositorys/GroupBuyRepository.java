@@ -19,4 +19,7 @@ public interface GroupBuyRepository extends JpaRepository<GroupBuys, Integer> {
 
 	@Query("SELECT gb FROM GroupBuys gb ORDER BY gb.startDate DESC LIMIT 1")
 	Optional<GroupBuys> findLatest();
+
+	@Query("SELECT gb FROM GroupBuys gb JOIN gb.items gi WHERE gi.sellerPk = :sellerId")
+	List<GroupBuys> findAllBySellerPk(@Param("sellerId") Integer sellerId);
 }

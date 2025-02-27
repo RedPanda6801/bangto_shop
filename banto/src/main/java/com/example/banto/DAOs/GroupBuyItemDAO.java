@@ -51,11 +51,11 @@ public class GroupBuyItemDAO {
 	public void addItem(Integer userId, GroupBuyItemDTO dto) throws Exception {
 		try {
 			// 추가할 이벤트 찾기
-			Optional<GroupBuys> eventOpt = groupBuyRepository.findById(dto.getEventId());
+			Optional<GroupBuys> eventOpt = groupBuyRepository.findById(dto.getEventPk());
 			if(eventOpt.isEmpty()) {
 				throw new Exception("이벤트 정보 없음");
 			}else {
-				Optional<Items> itemOpt = itemRepository.findById(dto.getItemId());
+				Optional<Items> itemOpt = itemRepository.findById(dto.getItemPk());
 				if(itemOpt.isEmpty() ||
 					!Objects.equals(itemOpt.get().getStore().getSeller().getUser().getId(), userId)){
 					throw new Exception("아이템 정보 오류");
@@ -64,7 +64,7 @@ public class GroupBuyItemDAO {
 					Items item = itemOpt.get();
 					boolean isOption = false;
 					for(Options option : item.getOptions()) {
-						if(option.getId() == dto.getOptionId()) {
+						if(Objects.equals(option.getId(), dto.getOptionPk())) {
 							dto.setOption(option);
 							isOption = true;
 						}
@@ -78,7 +78,8 @@ public class GroupBuyItemDAO {
 						}
 						dto.setItem(item);
 						dto.setEvent(eventOpt.get());
-						
+
+						dto.setSellerPk(userId);
 						GroupBuyItems itemObj = GroupBuyItems.toEntity(dto);
 						itemObj.setNowAmount(dto.getMaxAmount());
 						groupBuyItemRepository.save(itemObj);

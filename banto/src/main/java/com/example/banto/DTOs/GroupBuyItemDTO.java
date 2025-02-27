@@ -22,16 +22,18 @@ public class GroupBuyItemDTO {
 
 	private Integer maxAmount;
 
-	private Integer itemId;
+	private Integer itemPk;
 
-	private Integer eventId;
+	private Integer eventPk;
 
-	private Integer OptionId;
+	private Integer optionPk;
 	
 	private GroupBuys event;
 	
 	private Integer nowAmount;
-	
+
+	private Integer sellerPk;
+
 	private Items item;
 	
 	private Options option;
@@ -42,6 +44,7 @@ public class GroupBuyItemDTO {
 				.limitPerBuyer(entity.getLimitPerBuyer())
 				.maxAmount(entity.getMaxAmount())
 				.item(entity.getItem())
+				.sellerPk(entity.getSellerPk())
 				.build();
 	}
 }

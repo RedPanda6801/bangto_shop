@@ -26,7 +26,7 @@ public class GroupItemPayService {
 	public void payGroupItem(Integer userId, GroupItemPayDTO dto) throws Exception {
 		try {
 			// Validation
-			if(dto.getAmount() == null || dto.getItemPk() == null
+			if(dto.getAmount() == null || dto.getItemPk() == null || dto.getAddress() == null
 					|| dto.getOptionPk() == null || dto.getGroupItemPk() == null){
 				throw new Exception("필수 정보 오류");
 			}
@@ -39,6 +39,30 @@ public class GroupItemPayService {
 	public List<GroupItemPayDTO> getMyGroupPayList(Integer userId, Integer year) throws Exception {
 		try {
 			return groupItemPayDAO.getMyGroupPayList(userId, year);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+
+	public void deliveringCheck(Integer sellerId, GroupItemPayDTO dto) throws Exception {
+		try {
+			// Validation
+			if(dto.getId() == null){
+				throw new Exception("필수 정보 오류");
+			}
+			groupItemPayDAO.deliveringCheck(sellerId, dto);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+
+	public void deliveredCheck(Integer sellerId, GroupItemPayDTO dto) throws Exception {
+		try {
+			// Validation
+			if(dto.getId() == null){
+				throw new Exception("필수 정보 오류");
+			}
+			groupItemPayDAO.deliveredCheck(sellerId, dto);
 		}catch(Exception e) {
 			throw e;
 		}

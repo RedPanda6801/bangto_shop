@@ -25,7 +25,7 @@ public class GroupBuyController {
 	@Autowired
 	GroupBuyService groupBuyService;
 	
-	// 현재 공동 구매 기간 조회 (무권한) - 수정 필요
+	// 현재 공동 구매 기간 조회 (무권한)
 	@GetMapping("/group-buy/current-event")
 	public ResponseEntity getCurrentEvent() throws Exception {
 		try {
@@ -54,15 +54,15 @@ public class GroupBuyController {
 		}
 	}
 	
-	// 관리자 OR 판매자만 조회 가능
+	// 관리자 OR 판매자만 조회 가능(전체 조회)
 	@GetMapping("/group-buy/get-list")
 	public ResponseEntity getEventList(HttpServletRequest request) throws Exception {
 		try {
 			String token = jwtUtil.validateToken(request);
 			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
 			Integer userId = Integer.parseInt(token);
-			List<GroupBuyDTO> evenList = groupBuyService.getEventList(userId);
-			return ResponseEntity.ok().body(evenList);
+			List<GroupBuyDTO> eventList = groupBuyService.getEventList(userId);
+			return ResponseEntity.ok().body(eventList);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
@@ -76,11 +76,29 @@ public class GroupBuyController {
 			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
 			Integer userId = Integer.parseInt(token);
 			// 판매자 체크
-			if(!authDAO.authSeller(userId)) {
+			if(authDAO.authSeller(userId) == -1) {
 				return ResponseEntity.badRequest().body("Forbidden Error");
 			}
-			List<GroupBuyDTO> evenList = groupBuyService.getChooseList();
-			return ResponseEntity.ok().body(evenList);
+			List<GroupBuyDTO> eventList = groupBuyService.getChooseList();
+			return ResponseEntity.ok().body(eventList);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+
+	// 올린 물건이 있는 이벤트만 조회 (판매자)
+	@GetMapping("/group-buy/seller/get-list")
+	public ResponseEntity getEventListToSeller(HttpServletRequest request) throws Exception {
+		try {
+			String token = jwtUtil.validateToken(request);
+			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
+			Integer userId = Integer.parseInt(token);
+			// 판매자 체크
+			if(authDAO.authSeller(userId) == -1) {
+				return ResponseEntity.badRequest().body("Forbidden Error");
+			}
+			List<GroupBuyDTO> eventList = groupBuyService.getEventListToSeller(userId);
+			return ResponseEntity.ok().body(eventList);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
