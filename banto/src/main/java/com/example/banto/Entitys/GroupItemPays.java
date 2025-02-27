@@ -34,12 +34,18 @@ public class GroupItemPays {
 
     @Column(name="AMOUNT", nullable=false)
     private Integer amount;
-    
+
+    @Column(name="ADDRESS")
+    private String address;
+
     @Column(name="PAY", nullable=false)
     private Integer pay;
     
-    @Column(name="DELEVER_INFO", nullable=false)
+    @Column(name="DELIVER_INFO", nullable=false)
     private DeliverType deliverInfo;
+
+    @Column(name="GROUP_ITEM_PK", nullable=false)
+    private Integer groupItemPk;
 
     @Column(name="SOLD_DATE", nullable=false, insertable = false, columnDefinition = "date default sysdate")
     private LocalDateTime soldDate;

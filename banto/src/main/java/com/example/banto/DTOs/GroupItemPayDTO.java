@@ -27,6 +27,8 @@ public class GroupItemPayDTO {
 
 	private String itemTitle;
 
+	private String address;
+
 	private String optionInfo;
 
 	private LocalDateTime soldDate;
@@ -50,8 +52,10 @@ public class GroupItemPayDTO {
 				.itemTitle(entity.getItemTitle())
 				.optionInfo(entity.getOptionInfo())
 				.soldDate(entity.getSoldDate())
+				.groupItemPk(entity.getGroupItemPk())
 				.item(entity.getItem())
 				.user(entity.getUser())
+				.address(entity.getAddress())
 				.build();
 	}
 }

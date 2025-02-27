@@ -37,7 +37,7 @@ public class GroupItemPayController {
 			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
 			Integer userId = Integer.parseInt(token);
 			
-			if(!authDAO.authSeller(userId)){
+			if(authDAO.authSeller(userId) == -1){
 				return ResponseEntity.badRequest().body("권한 오류");
 			}
 			List<GroupItemPayDTO> payList = groupItemPayService.getPayListByItem(dto);
@@ -77,4 +77,38 @@ public class GroupItemPayController {
 	}
 
 	// 배송 처리
+	@PostMapping("/group-pay/delivering-check")
+	public ResponseEntity deliveringCheck(HttpServletRequest request, @RequestBody GroupItemPayDTO dto) {
+		try {
+			String token = jwtUtil.validateToken(request);
+			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
+			Integer sellerId = authDAO.authSeller(Integer.parseInt(token));
+			// 판매자 확인
+			if(sellerId == -1){
+				return ResponseEntity.badRequest().body("권한 오류");
+			}
+			groupItemPayService.deliveringCheck(sellerId, dto);
+			return ResponseEntity.ok().body(null);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+
+	// 배송 완료 처리
+	@PostMapping("/group-pay/delivered-check")
+	public ResponseEntity deliveredCheck(HttpServletRequest request, @RequestBody GroupItemPayDTO dto) {
+		try {
+			String token = jwtUtil.validateToken(request);
+			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
+			Integer sellerId = authDAO.authSeller(Integer.parseInt(token));
+			// 판매자 확인
+			if(sellerId == -1){
+				return ResponseEntity.badRequest().body("권한 오류");
+			}
+			groupItemPayService.deliveredCheck(sellerId, dto);
+			return ResponseEntity.ok().body(null);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
 }
