@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
+import { useNavigate } from 'react-router-dom';
 import './UserComponent.css';
 
 Modal.setAppElement('#root');
 
 const UserComponent = () => 
 {
-    const [selectedMenu, setSelectedMenu] = useState("결제 내역");
+    const navigate = useNavigate();
+    const [selectedMenu, setSelectedMenu] = useState("주문 내역");
     const [isUserInfoOpen, setIsUserInfoOpen] = useState(false);
     const [email, setEmail] = useState("");
     const [name, setName] = useState("");
@@ -22,6 +24,11 @@ const UserComponent = () =>
     const [isAddressSearchOpen, setIsAddressSearchOpen] = useState(false);
     const [totalPage, setTotalPageNum] = useState(1);
     const [visiblePages, setPageNums] = useState([]);
+    const [selectYear01, setSelectYear01] = useState(false);
+    const [selectYear02, setSelectYear02] = useState(false);
+    const [selectYear03, setSelectYear03] = useState(false);
+    const [selectYear04, setSelectYear04] = useState(false);
+    const [selectYear05, setSelectYear05] = useState(false);
 
     const handleUserInfo = () => 
     {
@@ -30,7 +37,7 @@ const UserComponent = () =>
 
     const closeModalAndChangeMenu = () => {
         setIsUserInfoOpen(false);
-        setSelectedMenu("결제 내역");
+        setSelectedMenu("주문 내역");
     };
 
     const getAddr = (page = 1) => 
@@ -124,6 +131,51 @@ const UserComponent = () =>
         updatePageNums(page, totalPage);
     };
 
+    const selectSort01 = () =>
+    {
+        setSelectYear01((prev) => !prev);
+        setSelectYear02(false);
+        setSelectYear03(false);
+        setSelectYear04(false);
+        setSelectYear05(false);
+    }
+
+    const selectSort02 = () =>
+    {
+        setSelectYear02((prev) => !prev);
+        setSelectYear01(false);
+        setSelectYear03(false);
+        setSelectYear04(false);
+        setSelectYear05(false);
+    }
+
+    const selectSort03 = () =>
+    {
+        setSelectYear03((prev) => !prev);
+        setSelectYear01(false);
+        setSelectYear02(false);
+        setSelectYear04(false);
+        setSelectYear05(false);
+    }
+
+    const selectSort04 = () =>
+    {
+        setSelectYear04((prev) => !prev);
+        setSelectYear01(false);
+        setSelectYear02(false);
+        setSelectYear03(false);
+        setSelectYear05(false);
+    }
+
+    const selectSort05 = () =>
+    {
+        setSelectYear05((prev) => !prev);
+        setSelectYear01(false);
+        setSelectYear02(false);
+        setSelectYear03(false);
+        setSelectYear04(false);
+    }
+
     const renderContentForMenu = (menu) => {
         if("내 정보 조회" == menu)
         {
@@ -186,6 +238,10 @@ const UserComponent = () =>
                             value={selectedAddress ? selectedAddress.zipNo : ""} 
                             placeholder="우편번호" 
                             readOnly/>
+                        <button
+                            className="btn_User_Info">
+                            회원탈퇴
+                        </button>
                     <Modal 
                         isOpen={isAddressSearchOpen} 
                         onRequestClose={() => setIsAddressSearchOpen(false)}
@@ -236,9 +292,9 @@ const UserComponent = () =>
                     </Modal>
             </div>;
         }
-        else if("결제 내역" == menu)
+        else if("주문 내역" == menu)
         {
-            return <div className="box_User_Paid">
+            return <><div className="box_User_Paid">
                     <div className="box_User_Cash">
                         <table className="table_User_Cash">
                             <tr>
@@ -248,10 +304,6 @@ const UserComponent = () =>
                                 <td>
                                     100,000 원
                                 </td>
-                            </tr>
-                        </table>
-                        <table className="table_User_Cash">
-                            <tr>
                                 <td>
                                     캐시백
                                 </td>
@@ -261,6 +313,36 @@ const UserComponent = () =>
                             </tr>
                         </table>
                     </div>
+                </div>
+                <div className="box_User_List">
+                    <h2>주문 목록</h2>
+                    <button 
+                        className={`btn_sort_list ${selectYear01 ? "btn_sort_list_selected" : ""}`}
+                        onClick={() => selectSort01()}>
+                        최근 6개월
+                    </button>
+                    <button 
+                        className={`btn_sort_list ${selectYear02 ? "btn_sort_list_selected" : ""}`}
+                        onClick={() => selectSort02()}>
+                        2025
+                    </button>
+                    <button 
+                        className={`btn_sort_list ${selectYear03 ? "btn_sort_list_selected" : ""}`}
+                        onClick={() => selectSort03()}>
+                        2024
+                    </button>
+                    <button 
+                        className={`btn_sort_list ${selectYear04 ? "btn_sort_list_selected" : ""}`}
+                        onClick={() => selectSort04()}>
+                        2023
+                    </button>
+                    <button 
+                        className={`btn_sort_list ${selectYear05 ? "btn_sort_list_selected" : ""}`}
+                        onClick={() => selectSort05()}>
+                        2022
+                    </button>
+                </div>
+                <div className="box_User_Paid">
                     <table className="table_User_Paid">
                         <tr>
                             <td colSpan={4}>결제일</td>
@@ -287,7 +369,10 @@ const UserComponent = () =>
                                 결제금액
                             </td>
                             <td>
-                                <button>후기작성</button>
+                                <button
+                                    onClick={() => navigate("/user/review")}>
+                                    후기작성
+                                </button>
                             </td>
                         </tr>
                     </table>
@@ -317,11 +402,14 @@ const UserComponent = () =>
                                 결제금액
                             </td>
                             <td>
-                                <button>후기작성</button>
+                                <button
+                                    onClick={() => navigate("/user/review")}>
+                                    후기작성
+                                </button>
                             </td>
                         </tr>
                     </table>
-            </div>;
+            </div></>;
         }
         else if("내 QNA" == menu)
         {
@@ -381,8 +469,8 @@ const UserComponent = () =>
                 </button>
                 <button
                     className="btn_User_Menu"
-                    onClick={() => setSelectedMenu("결제 내역")}>
-                    결제 내역
+                    onClick={() => setSelectedMenu("주문 내역")}>
+                    주문 내역
                 </button>
                 <button
                     className="btn_User_Menu"
