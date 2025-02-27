@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +25,7 @@ import com.example.banto.JWTs.JwtUtil;
 import com.example.banto.Repositorys.SellerRepository;
 import com.example.banto.Repositorys.UserRepository;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,35 +42,62 @@ public class JwtTokenFilter extends OncePerRequestFilter{
 	@Autowired
 	SellerRepository sellerRepositoy;
 	
-	/*
-	// 비밀번호 해시 기능
-	@Bean
-    public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
-    */
-	
 	public enum UserRole {
 		BUYER, SELLER, ADMIN;
+	}
+	
+	// 토큰이 있어야 하는 URL인지 확인
+	public boolean requiresAuthentication(HttpServletRequest request) {
+		String path = request.getRequestURI();
+		// 토큰이 필요없는 모든 URL들 등록
+		return !(path.startsWith("/group-buy/current-event")
+				|| path.startsWith("/group-buy/item/current-list")
+				|| path.startsWith("/item/get-all-list")
+				|| path.startsWith("/item/get-itemlist")
+				|| path.startsWith("/item/get-detail")
+				|| path.startsWith("/sign")
+				|| path.startsWith("/login")
+				|| path.startsWith("/user/get-sns-signed")
+				|| path.startsWith("/user/get-info")
+				|| path.startsWith("/comment/item")
+				|| path.startsWith("/comment/get")
+				|| path.startsWith("/item/get-by-title")
+				|| path.startsWith("/item/get-by-store-name")
+				|| path.startsWith("/item/get-by-category"));
 	}
 	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 		try {
+			if(!requiresAuthentication(request)) {
+				filterChain.doFilter(request, response);
+				return;
+			}
+			
 			String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 			if(authorizationHeader == null) {
-				filterChain.doFilter(request, response);
+				response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "토큰이 필요합니다.");
 				return;
 			}
 			
-			String header = request.getHeader("Authorization");
-			if(header == null) {
-				filterChain.doFilter(request, response);
-				return;
+			String token = jwtUtil.extractToken(request);
+			String userIdString = jwtUtil.parseToken(token);
+			if(userIdString == null) {
+				if(jwtUtil.isTokenExpired(token)) {
+					response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "만료된 토큰입니다.");
+					return;
+				}
+				else {
+					response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "유효하지 않은 토큰입니다.");
+					return;
+				}
 			}
-			
-			Integer userId = Integer.parseInt(jwtUtil.validateToken(request));
+			Integer userId = Integer.parseInt(userIdString);
 			Optional<Users> userOpt = userRepository.findById(userId);
+			if(userOpt.isEmpty()) {
+				response.sendError(HttpServletResponse.SC_FORBIDDEN, "권한이 없습니다.");
+				return;
+			}
 			Optional<Sellers> sellerOpt = sellerRepositoy.findByUser_Id(userId);
 			String userRole = null;
 			if(userOpt.isPresent() && userOpt.get().getEmail().equals(envConfig.get("ROOT_EMAIL"))) {
@@ -90,7 +119,8 @@ public class JwtTokenFilter extends OncePerRequestFilter{
 			
 			filterChain.doFilter(request, response);
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new ServletException(e);
+			//throw e;
 		}
         
 	}

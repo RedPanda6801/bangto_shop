@@ -63,6 +63,18 @@ public class ItemService {
 		}
 	}
 	
+	public List<ItemDTO> getItemListByCategory(Integer userId, String category, Integer page) throws Exception {
+		try {
+			if(page == null || page < 1) {
+				throw new Exception("페이지 입력 오류");
+		}else {
+				return itemDAO.getItemListByCategory(userId, category, page);
+			}
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+	
 	public ItemDTO getItemDetail(Integer userId, Integer itemId) throws Exception {
 		try {
 			return itemDAO.getItemDetail(userId, itemId);

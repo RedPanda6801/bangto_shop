@@ -15,6 +15,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class JwtUtil {
@@ -95,7 +96,7 @@ public class JwtUtil {
 		if(userId == null) {
 			if(isTokenExpired(token)) {
 				throw new Exception("만료된 토큰입니다.");
-			} else {			
+			} else {
 				throw new Exception("유효하지 않은 토큰입니다.");
 			}
 		} else {

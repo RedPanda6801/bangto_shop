@@ -15,6 +15,7 @@ import com.example.banto.JWTs.JwtUtil;
 import com.example.banto.Services.WalletService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
 public class WalletController {
@@ -29,7 +30,7 @@ public class WalletController {
 	
 	// 내 지갑 조회
 	@GetMapping("/wallet/my/get-info")
-	public ResponseEntity getWallet(HttpServletRequest request) {
+	public ResponseEntity getWallet(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			// 토큰 인증
 			String token = jwtUtil.validateToken(request);

@@ -25,7 +25,7 @@ public class ItemDTO {
 
     private String title;
 
-	private Integer category;
+	private String category;
 
     private Integer price;
     
@@ -51,7 +51,7 @@ public class ItemDTO {
 
     private List<Carts> carts;
     
-    public ItemDTO(Integer id, String title, Integer category, Integer price, 
+    public ItemDTO(Integer id, String title, String category, Integer price, 
         String content, String img, Integer amount, Integer star) {
 		 this.id = id;
 		 this.title = title;
@@ -71,7 +71,7 @@ public class ItemDTO {
         return ItemDTO.builder()
                 .id(entity.getId())
                 .title(entity.getTitle())
-                .category(entity.getCategory())
+                .category(entity.getCategory().toString())
                 .price(entity.getPrice())
                 .content(entity.getContent())
                 .img(entity.getImg())

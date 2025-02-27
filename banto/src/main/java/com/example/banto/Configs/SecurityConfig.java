@@ -110,8 +110,9 @@ public class SecurityConfig {
 						new AntPathRequestMatcher("/user/get-info"),
 						new AntPathRequestMatcher("/comment/item/**"),
 						new AntPathRequestMatcher("/comment/get/**"),
+						new AntPathRequestMatcher("/item/get-by-title/**"),
 						new AntPathRequestMatcher("/item/get-by-store-name/**"),
-						new AntPathRequestMatcher("/item/get-itemlist/**")
+						new AntPathRequestMatcher("/item/get-by-category/**")
 						).permitAll()
 				// 그 외 모든 요청 허용
 				.anyRequest().permitAll()

@@ -20,6 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.banto.DAOs.AuthDAO;
 import com.example.banto.DTOs.ItemDTO;
 import com.example.banto.DTOs.OptionDTO;
+import com.example.banto.DTOs.ResponseDTO;
+import com.example.banto.Entitys.CategoryType;
 import com.example.banto.Entitys.Items;
 import com.example.banto.Entitys.Options;
 import com.example.banto.JWTs.JwtUtil;
@@ -50,7 +52,6 @@ public class ItemController {
 		}
 	}
 	
-	// 검색어 별 조회, 카테고리 별 조회...
 	// 물품 검색어 별 물건 조회(20개 씩)
 	@GetMapping("/item/get-by-title/{title}/{page}")
 	public ResponseEntity getItemListByTitle(HttpServletRequest request, @PathVariable("title") String title, @PathVariable("page") Integer page) throws Exception{
@@ -59,8 +60,14 @@ public class ItemController {
 			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
 			Integer userId = Integer.parseInt(token);
 			List<ItemDTO> itemList = itemService.getItemListByTitle(userId, title, page);
-			//Pageable pageable = PageRequest.of(page-1, 20, Sort.by("id").ascending());
-			//Page<Items> items = itemRepository.getItemsByTitle(title, pageable);
+			/*Pageable pageable = PageRequest.of(page-1, 20, Sort.by("id").ascending());
+			Page<Items> items = itemRepository.getItemsByTitle(title, pageable);
+			ResponseDTO dto = new ResponseDTO();
+			dto.setContent(itemList);
+			dto.setSize(items.getSize());
+			dto.setTotalElements(items.getTotalElements());
+			dto.setTotalPages(items.getTotalPages());
+			return ResponseEntity.ok().body(dto);*/
 			return ResponseEntity.ok().body(itemList);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -75,6 +82,20 @@ public class ItemController {
 			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
 			Integer userId = Integer.parseInt(token);
 			List<ItemDTO> itemList = itemService.getItemListByStoreName(userId, storeName, page);
+			return ResponseEntity.ok().body(itemList);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	
+	// 카테고리 별 물건 조회(20개 씩)
+	@GetMapping("/item/get-by-category/{category}/{page}")
+	public ResponseEntity getItemListByCategory(HttpServletRequest request, @PathVariable("category") String category, @PathVariable("page") Integer page) throws Exception{
+		try {
+			String token = jwtUtil.validateToken(request);
+			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
+			Integer userId = Integer.parseInt(token);
+			List<ItemDTO> itemList = itemService.getItemListByCategory(userId, category, page);
 			return ResponseEntity.ok().body(itemList);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());

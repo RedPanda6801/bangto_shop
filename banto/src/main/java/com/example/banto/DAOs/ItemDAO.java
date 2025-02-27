@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.banto.Configs.EnvConfig;
 import com.example.banto.DTOs.ItemDTO;
 import com.example.banto.DTOs.OptionDTO;
+import com.example.banto.Entitys.CategoryType;
 import com.example.banto.Entitys.Items;
 import com.example.banto.Entitys.Options;
 import com.example.banto.Entitys.Stores;
@@ -118,6 +119,27 @@ public class ItemDAO {
 		}
 	}
 	
+	public List<ItemDTO> getItemListByCategory(Integer userId, String category, Integer page) throws Exception{
+		try {
+			// 인증 유효 확인
+			authDAO.auth(userId);
+			// storeId로 가져오기
+			Pageable pageable = PageRequest.of(page-1, 20, Sort.by("id").ascending());
+			Page<Items> items = itemRepository.getItemsByCategory(category, pageable);
+			if(items.isEmpty() || items == null) {
+				throw new Exception("검색 결과가 없습니다.");
+			}
+			List<ItemDTO> itemList = new ArrayList<ItemDTO>();
+			for(Items item : items) {
+				ItemDTO dto = ItemDTO.toDTO(item);
+				itemList.add(dto);
+			}
+			return itemList;
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+	
 	public ItemDTO getItemDetail(Integer userId, Integer itemId) throws Exception{
 		try {
 			// 인증 유효 확인
@@ -193,7 +215,7 @@ public class ItemDAO {
 						item.setTitle((dto.getTitle() != null && !dto.getTitle().equals("")) ?
 								dto.getTitle() : item.getTitle());
 						item.setCategory((dto.getCategory() != null && !dto.getCategory().equals("")) ?
-								dto.getCategory() : item.getCategory());
+								CategoryType.valueOf(dto.getCategory()) : item.getCategory());
 						item.setImg((dto.getImg() != null && !dto.getImg().equals("")) ?
 								dto.getImg() : item.getImg());
 						item.setContent((dto.getContent() != null && !dto.getContent().equals("")) ?
