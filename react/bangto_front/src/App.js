@@ -12,6 +12,7 @@ import StoreQNADetailComponent from './Components/StoreQNADetailComponent';
 import UserCartComponent from './Components/UserCartComponent';
 import UserPayComponent from './Components/UserPayComponent';
 import UserComponent from './Components/UserComponent';
+import UserReviewComponent from './Components/UserReviewComponent';
 import ManagerItemInfoComponent from './Components/ManagerItemInfoComponent';
 import './Components/LayoutComponent.css';
 import axios from 'axios';
@@ -198,6 +199,7 @@ function App() {
         <Route path="/manager/store/info" element={<ManagerItemInfoComponent setUserName={setUserName} />} />
         <Route path="/qna/detail" element={<StoreQNADetailComponent setUserName={setUserName} />} />
         <Route path="/user" element={<UserComponent setUserName={setUserName} />} />
+        <Route path="/user/review" element={<UserReviewComponent setUserName={setUserName} />} />
       </Routes>
       
         <div className="layout_Footer_Buttons">
