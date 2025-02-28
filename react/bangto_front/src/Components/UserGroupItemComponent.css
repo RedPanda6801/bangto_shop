@@ -1,0 +1,77 @@
+.layout_Group_Contents
+{  
+    display: grid;
+    grid-template-columns: repeat(38, 50px);
+    grid-auto-rows: minmax(15px, auto);
+    padding-top: 40px;
+}
+
+.box_Group_Promote
+{    
+    grid-column: 10 / 28;
+    grid-row: 3 / 20;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border: 1px solid black;
+}
+
+.box_Group_Date
+{
+    grid-column: 10 / 28;
+    grid-row: 20 / 23;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border: 1px solid black;
+}
+
+.box_Group_Guide
+{
+    grid-column: 10 / 28;
+    grid-row: 23 / 28;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border: 1px solid black;
+}
+
+.box_Group_Itemlist
+{
+    grid-column: 10 / 28;
+    grid-row: 28 / 30;
+
+    margin-bottom: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    border: 1px solid black;
+}
+
+.box_Group_Itemlist input
+{
+  width: 380px;
+  height: 240px;
+  border: 1px solid #ccc;
+}
+
+.table_Group_Itemlist
+{
+  border: 1px solid #ccc;
+  text-align: center;
+  width: 44%;
+  height: 380px;
+  padding: 5px;
+  margin: 15px;
+  padding-top: 13px;
+  text-align: center;
+}

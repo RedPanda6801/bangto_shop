@@ -3,18 +3,19 @@
   display: grid;
   grid-template-columns: repeat(38, 50px);
   grid-auto-rows: minmax(15px, auto);
-  padding-top: 80px;
+  padding-top: 40px;
 }
 
 .box_Category
 {  
   grid-column: 10 / 11;
-  grid-row: 4 / 8;
+  grid-row: 3 / 7;
 
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .box_Category input
@@ -25,7 +26,7 @@
 .box_Search
 {
   grid-column: 11 / 28;
-  grid-row: 4 / 8;
+  grid-row: 3 / 7;
 
   display: flex;
   flex-direction: column;
@@ -36,8 +37,8 @@
 
 .box_Slide
 {
-  grid-column: 10 / 27;
-  grid-row: 9 / 29;
+  grid-column: 10 / 28;
+  grid-row: 9 / 28;
 
   display: flex;
   flex-direction: column;
@@ -48,7 +49,7 @@
 .box_Wishlist
 {
   grid-column: 10 / 28;
-  grid-row: 30 / 44;
+  grid-row: 31 / 43;
 
   padding: 0px 20px;
 }
@@ -56,15 +57,12 @@
 .box_Itemlist
 {
   grid-column: 10 / 28;
-  grid-row: 45 / 100;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  grid-row: 45 / 59;
+  
   margin-bottom: 30px;
-
-  border: 1px solid black;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .box_Cartlist
@@ -230,13 +228,16 @@
 {
   width: 100%;
   height: 120px;
-  border: 1px solid black;
+  border: 1px solid #ccc;
 }
 
 .text_Wishlist
 {
-  font-size: 18px;
+  font-size: 24px;
   font-weight: 600;
+  margin-bottom: 20px;
+  color: #333;
+  width: 100%;
 }
 
 .btn_cartlist
@@ -254,7 +255,7 @@
 
 .cart_Item
 {
-  border: 1px solid black;
+  border: 1px solid #ccc;
   border-radius: 7px;
   padding: 10px;
 }
@@ -262,4 +263,85 @@
 .cart_Item input
 {
   margin-bottom: 10px;
+}
+
+.table_Itemlist
+{
+  border: 1px solid #ccc;
+  text-align: center;
+  width: 22%;
+  height: 280px;
+  padding: 5px;
+  margin: 5px;
+  padding-top: 13px;
+  text-align: center;
+}
+
+.box_Itemlist input
+{
+  width: 180px;
+  height: 180px;
+  border: 1px solid #ccc;
+}
+
+.text_Recommend 
+{
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #333;
+  width: 100%;
+  margin-left: 15px;
+}
+
+.btn_Category 
+{
+  color: black;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 550; 
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-top: 25px;
+  padding-bottom: 25px;
+  margin: 0px 10px;
+}
+
+.box_Category:hover .list_Category
+{
+  opacity: 1;
+  max-height: 500px;
+  transition: opacity 1s ease, max-height 1s ease;
+}
+
+.list_Category
+{
+  display: block;
+  position: absolute;
+  background-color: white;
+  width: 170px;
+  z-index: 1;
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: opacity 0.1s ease, max-height 0.1s ease;    
+  left: -350%;
+  top: 35%;
+  border: 1px solid #ddd;
+}
+
+.btn_Main_Category
+{  
+  border: none;
+  background-color: white;
+  font-size: 15px;
+  text-align: left;
+  cursor: pointer;
+  padding: 3px;
+  margin: 15px;
+  border-bottom: 1px solid #ddd;
+  display: block;
+  width: 80%;
 }
