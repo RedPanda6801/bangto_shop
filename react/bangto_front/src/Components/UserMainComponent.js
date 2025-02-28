@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import './UserMainComponent.css';
 
 const UserMainComponent = () => 
 {
+    const navigate = useNavigate();
     const [searchText, setSearchText] = useState("");
     const [currentSlide, setCurrentSlide] = useState(0); 
     const [currentWishlist, setCurrentWishlist] = useState(0);
+
     const slides = ["/images/03_main/main_01.jpg", "/images/03_main/main_02.jpg", "/images/03_main/main_03.jpg"];
     const wishlistItems = [
         { name: "물품 1", price: "10,000 원" },
@@ -17,7 +20,8 @@ const UserMainComponent = () =>
         { name: "물품 7", price: "70,000 원" },
         { name: "물품 8", price: "80,000 원" },
         { name: "물품 9", price: "90,000 원" },
-        { name: "물품 10", price: "100,000 원" }
+        { name: "물품 10", price: "100,000 원" },
+        { name: "물품 11", price: "10,000 원" }
     ];
     const totalSlides = slides.length;
     const totalWishlistItems = wishlistItems.length;
@@ -52,10 +56,53 @@ const UserMainComponent = () =>
         <div className="layout_Main_Contents">   
             <div className="box_Category">
                 <input
+                    className="btn_Category"
                     type="image"
                     src={`/images/02_icon/icon_03.jpg`}
                     alt="카테고리버튼">
                 </input>
+                <div className="list_Category">
+                    <button
+                        className="btn_Main_Category">
+                        의류
+                    </button>
+                    <button
+                        className="btn_Main_Category">
+                        화장품
+                    </button>
+                    <button
+                        className="btn_Main_Category">
+                        전자기기
+                    </button>
+                    <button
+                        className="btn_Main_Category">
+                        가구
+                    </button>
+                    <button
+                        className="btn_Main_Category">
+                        식품
+                    </button>
+                    <button
+                        className="btn_Main_Category">
+                        스포츠 용품
+                    </button>
+                    <button
+                        className="btn_Main_Category">
+                        유아 용품
+                    </button>
+                    <button
+                        className="btn_Main_Category">
+                        차량 용품
+                    </button>
+                    <button
+                        className="btn_Main_Category">
+                        반려동물 용품
+                    </button>
+                    <button
+                        className="btn_Main_Category">
+                        도서
+                    </button>
+                </div>
             </div>
             <div className="box_Search">
                 <div className="box_Search_Container">
@@ -98,7 +145,8 @@ const UserMainComponent = () =>
                 <div className="wishlist_Item">
                     <button 
                         className="wishlist_arrow left"
-                        onClick={moveToPrevWishlist}>
+                        onClick={moveToPrevWishlist}
+                        style={{ cursor: currentWishlist === 0 ? 'default' : 'pointer' }}>
                         &#10094;
                     </button>
                     <div className="wishlist_Row">
@@ -116,15 +164,104 @@ const UserMainComponent = () =>
                                 ))}
                         </div>
                     </div>
-                    <button 
-                        className="wishlist_arrow right"
-                        onClick={moveToNextWishlist}>
-                        &#10095;
-                    </button>
+                    {currentWishlist < Math.ceil(totalWishlistItems / itemsPerPage) - 1 && (
+                        <button 
+                            className="wishlist_arrow right"
+                            onClick={moveToNextWishlist}>
+                            &#10095;
+                        </button>
+                    )}                    
                 </div>
             </div>
             <div className="box_Itemlist">
-                제품리스트
+                <div className="text_Recommend">
+                    추천상품
+                </div>
+                <div className="table_Itemlist">
+                            <input
+                                onClick={() => navigate("/user/item")}
+                                type="image" 
+                                alt="물품 이미지"/><br/><br/>
+                            물품 이름<br/><br/>
+                            물품 가격
+                </div>
+                <div className="table_Itemlist">
+                            <input 
+                                type="image" 
+                                alt="물품 이미지"/><br/><br/>
+                            물품 이름<br/><br/>
+                            물품 가격
+                </div>
+                <div className="table_Itemlist">
+                            <input 
+                                type="image" 
+                                alt="물품 이미지"/><br/><br/>
+                            물품 이름<br/><br/>
+                            물품 가격
+                </div>
+                <div className="table_Itemlist">
+                            <input 
+                                type="image" 
+                                alt="물품 이미지"/><br/><br/>
+                            물품 이름<br/><br/>
+                            물품 가격
+                </div>
+                <div className="table_Itemlist">
+                            <input 
+                                type="image" 
+                                alt="물품 이미지"/><br/><br/>
+                            물품 이름<br/><br/>
+                            물품 가격
+                </div>
+                <div className="table_Itemlist">
+                            <input 
+                                type="image" 
+                                alt="물품 이미지"/><br/><br/>
+                            물품 이름<br/><br/>
+                            물품 가격
+                </div>
+                <div className="table_Itemlist">
+                            <input 
+                                type="image" 
+                                alt="물품 이미지"/><br/><br/>
+                            물품 이름<br/><br/>
+                            물품 가격
+                </div>
+                <div className="table_Itemlist">
+                            <input 
+                                type="image" 
+                                alt="물품 이미지"/><br/><br/>
+                            물품 이름<br/><br/>
+                            물품 가격
+                </div>
+                <div className="table_Itemlist">
+                            <input 
+                                type="image" 
+                                alt="물품 이미지"/><br/><br/>
+                            물품 이름<br/><br/>
+                            물품 가격
+                </div>
+                <div className="table_Itemlist">
+                            <input 
+                                type="image" 
+                                alt="물품 이미지"/><br/><br/>
+                            물품 이름<br/><br/>
+                            물품 가격
+                </div>
+                <div className="table_Itemlist">
+                            <input 
+                                type="image" 
+                                alt="물품 이미지"/><br/><br/>
+                            물품 이름<br/><br/>
+                            물품 가격
+                </div>
+                <div className="table_Itemlist">
+                            <input 
+                                type="image" 
+                                alt="물품 이미지"/><br/><br/>
+                            물품 이름<br/><br/>
+                            물품 가격
+                </div>
             </div>
             <div className="box_Cartlist">
                 <div className="cart_Item">
@@ -134,7 +271,11 @@ const UserMainComponent = () =>
                     <input 
                         type="image" 
                         alt="물품 이미지"/>
-                    <button className="btn_cartlist">장바구니로이동</button>
+                    <button 
+                        className="btn_cartlist"
+                        onClick={() => navigate("/user/cart")}>
+                        장바구니로이동
+                    </button>
                 </div>
             </div>
         </div>

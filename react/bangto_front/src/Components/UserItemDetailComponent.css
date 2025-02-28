@@ -1,0 +1,228 @@
+.layout_Item_Detail_Contents
+{  
+    display: grid;
+    grid-template-columns: repeat(38, 50px);
+    grid-auto-rows: minmax(15px, auto);
+    padding-top: 80px;
+}
+
+.box_Item_Category
+{
+    grid-column: 10 / 12;
+    grid-row: 2 / 3;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border: 1px solid black;
+}
+
+.box_Item_Img
+{
+    grid-column: 10 / 18;
+    grid-row: 4 / 15;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border: 1px solid black;
+}
+
+.box_Item_Store
+{
+    grid-column: 20 / 27;
+    grid-row: 4 / 5;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    border: 1px solid black;
+}
+
+.box_Item_Wishlist
+{
+    grid-column: 27 / 28;
+    grid-row: 4 / 5;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border: 1px solid black;
+}
+
+.box_Item_Name
+{
+    grid-column: 20 / 28;
+    grid-row: 6 / 7;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    border: 1px solid black;
+}
+
+.box_Item_Opt
+{
+    grid-column: 20 / 28;
+    grid-row: 8 / 9;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    border: 1px solid black;
+}
+
+.box_Item_Price
+{
+    grid-column: 20 / 28;
+    grid-row: 10 / 11;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    border: 1px solid black;
+}
+
+.box_Item_Amount
+{
+    grid-column: 20 / 28;
+    grid-row: 12 / 13;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    border: 1px solid black;
+}
+
+.box_Item_Cart
+{
+    grid-column: 20 / 28;
+    grid-row: 14 / 15;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    border: 1px solid black;
+}
+
+.box_Item_Menu
+{
+    grid-column: 10 / 28;
+    grid-row: 17 / 20;
+    
+    border: 1px solid #ccc; 
+    border-top: 2px solid black;
+}
+
+.box_Item_Contents
+{
+    grid-column: 10 / 28;
+    grid-row: 20 / 60;
+
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 30px;
+    border: 1px solid #ccc; 
+    border-top: none;
+}
+
+.btn_Item_Menu
+{
+    width: 33.33%;
+    height: 100%;
+    border: none;
+    background-color: white;
+    font-size: 18px;
+    font-weight: 700;
+    text-align: left;
+    cursor: pointer;
+    padding: 3px;  
+    text-align: center; 
+}
+
+.btn_Item_Menu_Center
+{
+    border-left: 1px solid #ccc; 
+    border-right: 1px solid #ccc; 
+}
+
+.box_Item_Review
+{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.table_Item_Review
+{
+    width: 95%;
+    border-collapse: collapse;
+    border: 1px solid #bbb;
+    margin: 10px 0px;
+}
+
+.table_Item_Review td
+{
+    padding: 5px;
+}
+
+.table_Item_Review tr:nth-child(1) td:nth-child(2)
+{
+    border: 1px solid #bbb;
+    width: 80%;
+}
+
+.table_Item_Review td:first-child
+{
+    text-align: center;
+}
+
+.btn_Regi_QNA
+{
+    width: 120PX;
+    height: 40px;
+    background-color: white;
+    color: black;
+    border: 1px solid #f8c8c8;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    margin-left: 85.5%;
+    margin-top: 10px;
+}
+
+.table_Item_QNA
+{
+  width: 95%;
+  border-collapse: collapse;
+  border: 1px solid #bbb;
+  margin: 10px 2.5%;
+}
+
+.table_Item_QNA td
+{
+  padding: 5px;
+  border: 1px solid #bbb;
+}
+
+.table_Item_QNA td:nth-child(2)
+{
+  width: 15%;
+  text-align: center;
+}
