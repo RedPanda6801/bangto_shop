@@ -11,7 +11,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
+import com.example.banto.DTOs.PageDTO;
 import com.example.banto.DTOs.PayDTO;
+import com.example.banto.DTOs.ResponseDTO;
 import com.example.banto.DTOs.SoldItemDTO;
 import com.example.banto.Entitys.Carts;
 import com.example.banto.Entitys.DeliverType;
@@ -129,7 +131,7 @@ public class PayDAO {
 		}
 	}
 	
-	public List<SoldItemDTO> getPayList(Integer userId, Integer year, Integer page) throws Exception{
+	public ResponseDTO getPayList(Integer userId, Integer year, Integer page) throws Exception{
 		try {
 			if(userId == -1) {				
 				// 인증 유효 확인
@@ -146,7 +148,7 @@ public class PayDAO {
 					SoldItemDTO dto = SoldItemDTO.toDTO(soldItem);
 					soldItemList.add(dto);
 				}
-				return soldItemList;
+				return new ResponseDTO(soldItemList, new PageDTO(soldItems.getSize(), soldItems.getTotalElements(), soldItems.getTotalPages()));
 			}
 		}catch(Exception e) {
 			throw e;
@@ -185,7 +187,7 @@ public class PayDAO {
 		}
 	}
 	
-	public List<SoldItemDTO> getSoldList(Integer userId, Integer storeId, Integer page) throws Exception{
+	public ResponseDTO getSoldList(Integer userId, Integer storeId, Integer page) throws Exception{
 		try {
 			if(userId == -1) {				
 				// 인증 유효 확인
@@ -202,7 +204,7 @@ public class PayDAO {
 					SoldItemDTO dto = SoldItemDTO.toDTO(soldItem);
 					soldItemList.add(dto);
 				}
-				return soldItemList;
+				return new ResponseDTO(soldItemList, new PageDTO(soldItems.getSize(), soldItems.getTotalElements(), soldItems.getTotalPages()));
 			}
 		}catch(Exception e) {
 			throw e;

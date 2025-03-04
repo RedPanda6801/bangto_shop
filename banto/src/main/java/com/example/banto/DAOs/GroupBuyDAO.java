@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.example.banto.DTOs.GroupBuyDTO;
+import com.example.banto.DTOs.ResponseDTO;
 import com.example.banto.Entitys.GroupBuys;
 import com.example.banto.Entitys.Users;
 import com.example.banto.Repositorys.GroupBuyRepository;
@@ -41,7 +42,7 @@ public class GroupBuyDAO {
 		}
 	}
 	
-	public List<GroupBuyDTO> getEventList(Integer userId) throws Exception{
+	public ResponseDTO getEventList(Integer userId) throws Exception{
 		try {
 			// 인증 유효 확인
 			if(!authDAO.authRoot(userId) && authDAO.authSeller(userId) == -1) {
@@ -53,13 +54,13 @@ public class GroupBuyDAO {
 			for(GroupBuys event : eventList) {
 				dtos.add(GroupBuyDTO.toDTO(event));
 			}
-			return dtos;
+			return new ResponseDTO(dtos, null);
 		}catch(Exception e) {
 			throw e;
 		}
 	}
 
-	public List<GroupBuyDTO> getChooseList() throws Exception{
+	public ResponseDTO getChooseList() throws Exception{
 		try {
 			LocalDateTime currentDate = LocalDateTime.now();
 			List<GroupBuys> eventList = groupBuyRepository.findAbleEvent(currentDate);
@@ -68,13 +69,13 @@ public class GroupBuyDAO {
 			for(GroupBuys event : eventList) {
 				dtos.add(GroupBuyDTO.toDTO(event));
 			}
-			return dtos;
+			return new ResponseDTO(dtos, null);
 		}catch(Exception e) {
 			throw e;
 		}
 	}
 	
-	public GroupBuyDTO getCurrentEvent() throws Exception{
+	public ResponseDTO getCurrentEvent() throws Exception{
 		try {
 			LocalDateTime currentDate = LocalDateTime.now();
 
@@ -84,13 +85,13 @@ public class GroupBuyDAO {
 			if(eventOpt.isEmpty()) {
 				throw new Exception("존재하는 이벤트 없음");
 			}
-			return GroupBuyDTO.toDTO(eventOpt.get());
+			return new ResponseDTO(GroupBuyDTO.toDTO(eventOpt.get()), null);
 		}catch(Exception e) {
 			throw e;
 		}
 	}
 
-	public List<GroupBuyDTO> getEventListToSeller(Integer userId) throws Exception{
+	public ResponseDTO getEventListToSeller(Integer userId) throws Exception{
 		try {
 			List<GroupBuys> eventList = groupBuyRepository.findAllBySellerPk(userId);
 			// 시작 날짜가 가장 최근에 했던 이벤트 마감일보다 빠르면 예외 처리
@@ -98,7 +99,7 @@ public class GroupBuyDAO {
 			for(GroupBuys event : eventList) {
 				dtos.add(GroupBuyDTO.toDTO(event));
 			}
-			return dtos;
+			return new ResponseDTO(dtos, null);
 		}catch(Exception e) {
 			throw e;
 		}

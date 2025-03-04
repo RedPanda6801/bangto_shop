@@ -35,7 +35,7 @@ public class Items {
     private String title;
     
 	@Column(name="CATEGORY",  nullable=false)
-	private Integer category;
+	private CategoryType category;
     
     @Column(name="PRICE", nullable=false)
     private Integer price;
@@ -77,7 +77,7 @@ public class Items {
     			.title(dto.getTitle())
     			.price(dto.getPrice())
     			.content(dto.getContent())
-    			.category(dto.getCategory())
+    			.category(CategoryType.valueOf(dto.getCategory()))
     			.build();
     }
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.banto.DTOs.GroupBuyDTO;
 import com.example.banto.DTOs.GroupBuyItemDTO;
+import com.example.banto.DTOs.ResponseDTO;
 import com.example.banto.Services.GroupBuyItemService;
 
 @Controller
@@ -30,7 +31,7 @@ public class GroupBuyItemController {
 	@GetMapping("/group-item/event/get-list")
 	public ResponseEntity getCurrentEvent(@RequestBody GroupBuyDTO groupBuyDTO) throws Exception {
 		try {
-			List<GroupBuyItemDTO> event = groupBuyItemService.getCurrentItemList(groupBuyDTO);
+			ResponseDTO event = groupBuyItemService.getCurrentItemList(groupBuyDTO);
 			return ResponseEntity.ok().body(event);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());

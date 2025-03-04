@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.example.banto.DTOs.ResponseDTO;
 import com.example.banto.DTOs.SellerDTO;
 import com.example.banto.Entitys.Users;
 import com.example.banto.Entitys.Sellers;
@@ -20,7 +21,7 @@ public class SellerDAO {
 	@Autowired
 	AuthDAO authDAO;
 	
-	public SellerDTO findSeller(Integer userId) throws Exception{
+	public ResponseDTO findSeller(Integer userId) throws Exception{
 		try {
 			// 인증 유효 확인
 			authDAO.auth(userId);
@@ -30,7 +31,7 @@ public class SellerDAO {
 			}
 			else {
 				Sellers seller = sellerOpt.get();
-				return SellerDTO.toDTO(seller);
+				return new ResponseDTO(SellerDTO.toDTO(seller), null);
 			}
 		}catch(Exception e) {
 			throw e;

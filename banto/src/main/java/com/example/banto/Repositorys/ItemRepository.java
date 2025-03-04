@@ -21,4 +21,7 @@ public interface ItemRepository extends JpaRepository<Items, Integer> {
 	
 	@Query("SELECT i FROM Items i WHERE i.store.name LIKE %:storeName%")
 	Page<Items> getItemsByStoreName(@Param("storeName") String storeName, Pageable pageable);
+	
+	@Query("SELECT i FROM Items i WHERE i.category = :category")
+	Page<Items> getItemsByCategory(@Param("storeName") String category, Pageable pageable);
 }

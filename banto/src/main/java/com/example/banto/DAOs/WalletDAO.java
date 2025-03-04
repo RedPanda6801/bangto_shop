@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.example.banto.DTOs.ResponseDTO;
 import com.example.banto.DTOs.WalletDTO;
 import com.example.banto.Entitys.Users;
 import com.example.banto.Entitys.Wallets;
@@ -22,7 +23,7 @@ public class WalletDAO {
 	@Autowired
 	AuthDAO authDAO;
 	
-	public WalletDTO findWallet(Integer userId) throws Exception{
+	public ResponseDTO findWallet(Integer userId) throws Exception{
 		try {
 			Optional<Users> userOpt = userRepository.findById(userId);
 			if(userOpt.isEmpty()) {
@@ -35,7 +36,7 @@ public class WalletDAO {
 				}
 				else {
 					Wallets wallet = walletOpt.get();
-					return WalletDTO.toDTO(wallet);
+					return new ResponseDTO(WalletDTO.toDTO(wallet), null);
 				}
 			}
 		}catch(Exception e) {

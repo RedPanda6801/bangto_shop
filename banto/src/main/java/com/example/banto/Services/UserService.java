@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.banto.DAOs.UserDAO;
 import com.example.banto.DTOs.LoginDTO;
+import com.example.banto.DTOs.ResponseDTO;
 import com.example.banto.DTOs.UserDTO;
 
 @Service
@@ -31,7 +32,7 @@ public class UserService {
 		}
 	}
 	
-	public LoginDTO login(UserDTO dto) throws Exception {
+	public ResponseDTO login(UserDTO dto) throws Exception {
 		if(dto.getEmail() == null) {
 			throw new Exception("입력 오류");
 		}
@@ -42,14 +43,14 @@ public class UserService {
 		}
 	}
 	
-	public List<UserDTO> getUserListForRoot(Integer page) throws Exception {
+	public ResponseDTO getUserListForRoot(Integer page) throws Exception {
 		try {
 				return userDAO.getUserListForRoot(page);
 		}catch(Exception e) {
 			throw e;
 		}
 	}
-	public UserDTO getUser(Integer userId) throws Exception {
+	public ResponseDTO getUser(Integer userId) throws Exception {
 		try {
 				return userDAO.getUser(userId);
 		}catch(Exception e) {
@@ -63,7 +64,7 @@ public class UserService {
 			throw e;
 		}
 	}
-	public UserDTO getUserForRoot(Integer userId) throws Exception {
+	public ResponseDTO getUserForRoot(Integer userId) throws Exception {
 		try {
 				return userDAO.getUserForRoot(userId);
 		}catch(Exception e) {
@@ -91,7 +92,7 @@ public class UserService {
 			throw e;
 		}
 	}
-	public Boolean isSnsSigned(String email) throws Exception {
+	public ResponseDTO isSnsSigned(String email) throws Exception {
 		try {
 			return userDAO.isSnsSigned(email);
 		}catch(Exception e) {

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.banto.DAOs.AuthDAO;
+import com.example.banto.DTOs.ResponseDTO;
 import com.example.banto.DTOs.StoreDTO;
 import com.example.banto.DTOs.WalletDTO;
 import com.example.banto.JWTs.JwtUtil;
@@ -51,7 +52,7 @@ public class StoreController {
 			String token = jwtUtil.validateToken(request);
 			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
 			Integer userId = Integer.parseInt(token);
-			List<StoreDTO> stores = storeService.getMyStores(userId);
+			ResponseDTO stores = storeService.getMyStores(userId);
 			return ResponseEntity.ok().body(stores);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -65,7 +66,7 @@ public class StoreController {
 			String token = jwtUtil.validateToken(request);
 			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
 			Integer userId = Integer.parseInt(token);
-			StoreDTO store = storeService.getStoreDetail(userId, storeId);
+			ResponseDTO store = storeService.getStoreDetail(userId, storeId);
 			return ResponseEntity.ok().body(store);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -98,7 +99,7 @@ public class StoreController {
 			if(!authDAO.authRoot(rootId)) {
 				return ResponseEntity.badRequest().body("Forbidden Error");
 			}
-			List<StoreDTO> stores = storeService.getMyStoresByRoot(page);
+			ResponseDTO stores = storeService.getMyStoresByRoot(page);
 			return ResponseEntity.ok().body(stores);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());

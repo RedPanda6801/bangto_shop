@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.banto.DTOs.FavoriteDTO;
 import com.example.banto.DTOs.ItemDTO;
+import com.example.banto.DTOs.ResponseDTO;
 import com.example.banto.JWTs.JwtUtil;
 import com.example.banto.Repositorys.FavoriteRepository;
 import com.example.banto.Services.FavoriteService;
@@ -33,7 +34,7 @@ public class FavoriteController {
 			String token = jwtUtil.validateToken(request);
 			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
 			Integer userId = Integer.parseInt(token);
-			List<FavoriteDTO> itemList = favoriteService.getAllFavorites(userId, page);
+			ResponseDTO itemList = favoriteService.getAllFavorites(userId, page);
 			return ResponseEntity.ok().body(itemList);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -46,7 +47,7 @@ public class FavoriteController {
 			String token = jwtUtil.validateToken(request);
 			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
 			Integer userId = Integer.parseInt(token);
-			 favoriteService.addFavorite(userId, itemDTO);
+			favoriteService.addFavorite(userId, itemDTO);
 			return ResponseEntity.ok().body(null);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());

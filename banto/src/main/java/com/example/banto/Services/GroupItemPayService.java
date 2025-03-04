@@ -9,13 +9,14 @@ import com.example.banto.DAOs.GroupItemPayDAO;
 import com.example.banto.DTOs.GroupBuyDTO;
 import com.example.banto.DTOs.GroupBuyItemDTO;
 import com.example.banto.DTOs.GroupItemPayDTO;
+import com.example.banto.DTOs.ResponseDTO;
 
 @Service
 public class GroupItemPayService {
 	@Autowired
 	GroupItemPayDAO groupItemPayDAO;
 	
-	public List<GroupItemPayDTO> getPayListByItem(GroupBuyItemDTO dto) throws Exception {
+	public ResponseDTO getPayListByItem(GroupBuyItemDTO dto) throws Exception {
 		try {
 			return groupItemPayDAO.getPayListByItem(dto);
 		}catch(Exception e) {
@@ -36,7 +37,7 @@ public class GroupItemPayService {
 		}
 	}
 
-	public List<GroupItemPayDTO> getMyGroupPayList(Integer userId, Integer year) throws Exception {
+	public ResponseDTO getMyGroupPayList(Integer userId, Integer year) throws Exception {
 		try {
 			return groupItemPayDAO.getMyGroupPayList(userId, year);
 		}catch(Exception e) {

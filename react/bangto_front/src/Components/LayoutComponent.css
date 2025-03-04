@@ -56,8 +56,8 @@
 	background-color: white; 
     border: none;
 
-	margin-left: 25%;
-	margin-right: 53px;
+	margin-left: 20%;
+	margin-right: 4%;
 }
 
 .header_Logo img
@@ -115,7 +115,7 @@
 
 .header_User_First
 {
-	margin-left: 53px;
+	margin-left: 5%;
 }
 
 .header_Manager_Text
@@ -138,13 +138,18 @@
 .header_User_Menu
 {
 	text-align: right;
-	margin: 10px 3px;
+	margin: 5px 12px;
+}
+
+.header_User_Menu_Top
+{
+	margin-top: 10px;
 }
 
 .header_Manager_Menu
 {
 	text-align: right;
-	margin: 0px;
+	margin: 5px 0px;
 }
 
 .footer_Btn

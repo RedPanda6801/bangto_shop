@@ -17,6 +17,9 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.banto.Configs.EnvConfig;
 import com.example.banto.DTOs.ItemDTO;
 import com.example.banto.DTOs.OptionDTO;
+import com.example.banto.DTOs.PageDTO;
+import com.example.banto.DTOs.ResponseDTO;
+import com.example.banto.Entitys.CategoryType;
 import com.example.banto.Entitys.Items;
 import com.example.banto.Entitys.Options;
 import com.example.banto.Entitys.Stores;
@@ -41,7 +44,7 @@ public class ItemDAO {
 	@Autowired
 	EnvConfig envConfig;
 	
-	public List<ItemDTO> getAllItemList(Integer page) throws Exception{
+	public ResponseDTO getAllItemList(Integer page) throws Exception{
 		try {
 			Pageable pageable = PageRequest.of(page-1, 20, Sort.by("id").ascending());
 			Page<Items>items = itemRepository.findAll(pageable);
@@ -50,13 +53,13 @@ public class ItemDAO {
 				ItemDTO dto = ItemDTO.toDTO(item);
 				itemList.add(dto);
 			}
-			return itemList;
+			return new ResponseDTO(itemList, new PageDTO(items.getSize(), items.getTotalElements(), items.getTotalPages()));
 		}catch(Exception e) {
 			throw e;
 		}
 	}
 	
-	public List<ItemDTO> getItemList(Integer userId, Integer storeId, Integer page) throws Exception{
+	public ResponseDTO getItemList(Integer userId, Integer storeId, Integer page) throws Exception{
 		try {
 			// 인증 유효 확인
 			if(userId != -1) {
@@ -70,13 +73,13 @@ public class ItemDAO {
 				ItemDTO dto = ItemDTO.toDTO(item);
 				itemList.add(dto);
 			}
-			return itemList;
+			return new ResponseDTO(itemList, new PageDTO(items.getSize(), items.getTotalElements(), items.getTotalPages()));
 		}catch(Exception e) {
 			throw e;
 		}
 	}
 	
-	public List<ItemDTO> getItemListByTitle(Integer userId, String title, Integer page) throws Exception{
+	public ResponseDTO getItemListByTitle(Integer userId, String title, Integer page) throws Exception{
 		try {
 			// 인증 유효 확인
 			authDAO.auth(userId);
@@ -91,13 +94,13 @@ public class ItemDAO {
 				ItemDTO dto = ItemDTO.toDTO(item);
 				itemList.add(dto);
 			}
-			return itemList;
+			return new ResponseDTO(itemList, new PageDTO(items.getSize(), items.getTotalElements(), items.getTotalPages()));
 		}catch(Exception e) {
 			throw e;
 		}
 	}
 	
-	public List<ItemDTO> getItemListByStoreName(Integer userId, String storeName, Integer page) throws Exception{
+	public ResponseDTO getItemListByStoreName(Integer userId, String storeName, Integer page) throws Exception{
 		try {
 			// 인증 유효 확인
 			authDAO.auth(userId);
@@ -112,13 +115,34 @@ public class ItemDAO {
 				ItemDTO dto = ItemDTO.toDTO(item);
 				itemList.add(dto);
 			}
-			return itemList;
+			return new ResponseDTO(itemList, new PageDTO(items.getSize(), items.getTotalElements(), items.getTotalPages()));
 		}catch(Exception e) {
 			throw e;
 		}
 	}
 	
-	public ItemDTO getItemDetail(Integer userId, Integer itemId) throws Exception{
+	public ResponseDTO getItemListByCategory(Integer userId, String category, Integer page) throws Exception{
+		try {
+			// 인증 유효 확인
+			authDAO.auth(userId);
+			// storeId로 가져오기
+			Pageable pageable = PageRequest.of(page-1, 20, Sort.by("id").ascending());
+			Page<Items> items = itemRepository.getItemsByCategory(category, pageable);
+			if(items.isEmpty() || items == null) {
+				throw new Exception("검색 결과가 없습니다.");
+			}
+			List<ItemDTO> itemList = new ArrayList<ItemDTO>();
+			for(Items item : items) {
+				ItemDTO dto = ItemDTO.toDTO(item);
+				itemList.add(dto);
+			}
+			return new ResponseDTO(itemList, new PageDTO(items.getSize(), items.getTotalElements(), items.getTotalPages()));
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+	
+	public ResponseDTO getItemDetail(Integer userId, Integer itemId) throws Exception{
 		try {
 			// 인증 유효 확인
 			if(userId != -1) {
@@ -129,7 +153,7 @@ public class ItemDAO {
 				throw new Exception("물건 조회 오류");
 			}else {
 				ItemDTO dto = ItemDTO.toDTO(item.get());
-				return dto;
+				return new ResponseDTO(dto, null);
 			}
 		}catch(Exception e) {
 			throw e;
@@ -193,7 +217,7 @@ public class ItemDAO {
 						item.setTitle((dto.getTitle() != null && !dto.getTitle().equals("")) ?
 								dto.getTitle() : item.getTitle());
 						item.setCategory((dto.getCategory() != null && !dto.getCategory().equals("")) ?
-								dto.getCategory() : item.getCategory());
+								CategoryType.valueOf(dto.getCategory()) : item.getCategory());
 						item.setImg((dto.getImg() != null && !dto.getImg().equals("")) ?
 								dto.getImg() : item.getImg());
 						item.setContent((dto.getContent() != null && !dto.getContent().equals("")) ?

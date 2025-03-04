@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.example.banto.DAOs.AuthDAO;
 import com.example.banto.DTOs.ApplyDTO;
 import com.example.banto.DTOs.ProcessDTO;
+import com.example.banto.DTOs.ResponseDTO;
 import com.example.banto.JWTs.JwtUtil;
 import com.example.banto.Services.ApplyService;
 
@@ -50,9 +51,9 @@ public class ApplyController {
 		try {
 			// 토큰 인증
 			String token = jwtUtil.validateToken(request);
-			if(token != null) {		
-				List<ApplyDTO> authInfo = applyService.getAuthInfo(Integer.parseInt(token));
-				return ResponseEntity.ok().body(authInfo);
+			if(token != null) {
+				ResponseDTO apply = applyService.getAuthInfo(Integer.parseInt(token));
+				return ResponseEntity.ok().body(apply);
 			} else {
 				return ResponseEntity.badRequest().body("토큰 인증 오류");
 			}
@@ -90,8 +91,8 @@ public class ApplyController {
 			if(!authDAO.authRoot(rootId)) {
 				return ResponseEntity.badRequest().body("Forbidden Error");
 			}
-			List<ApplyDTO> applies = applyService.getApplyList(page);
-			return ResponseEntity.ok().body(applies);
+			ResponseDTO applyList = applyService.getApplyList(page);
+			return ResponseEntity.ok().body(applyList);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
@@ -108,7 +109,7 @@ public class ApplyController {
 			if(!authDAO.authRoot(rootId)) {
 				return ResponseEntity.badRequest().body("Forbidden Error");
 			}
-			ApplyDTO apply = applyService.getApply(sellerAuthId);
+			ResponseDTO apply = applyService.getApply(sellerAuthId);
 			return ResponseEntity.ok().body(apply);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());

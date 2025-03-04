@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.example.banto.DAOs.AuthDAO;
+import com.example.banto.DTOs.ResponseDTO;
 import com.example.banto.DTOs.SellerDTO;
 import com.example.banto.JWTs.JwtUtil;
 import com.example.banto.Services.SellerService;
@@ -34,7 +35,7 @@ public class SellerController {
 			// 토큰 인증
 			String token = jwtUtil.validateToken(request);
 			if(token != null) {		
-				SellerDTO seller = sellerService.getSellerInfo(Integer.parseInt(token));
+				ResponseDTO seller = sellerService.getSellerInfo(Integer.parseInt(token));
 				return ResponseEntity.ok().body(seller);
 			} else {
 				return ResponseEntity.badRequest().body("토큰 인증 오류");

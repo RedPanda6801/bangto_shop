@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.banto.DAOs.SellerDAO;
+import com.example.banto.DTOs.ResponseDTO;
 import com.example.banto.DTOs.SellerDTO;
 
 @Service
@@ -11,7 +12,7 @@ public class SellerService {
 	@Autowired
 	SellerDAO sellerDAO;
 	
-	public SellerDTO getSellerInfo(Integer userId) throws Exception{
+	public ResponseDTO getSellerInfo(Integer userId) throws Exception{
 		if(userId == null) { 
 			throw new Exception("권한 없음");
 		}

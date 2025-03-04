@@ -9,12 +9,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.banto.DAOs.AuthDAO;
+import com.example.banto.DTOs.ResponseDTO;
 import com.example.banto.DTOs.SellerDTO;
 import com.example.banto.DTOs.WalletDTO;
 import com.example.banto.JWTs.JwtUtil;
 import com.example.banto.Services.WalletService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
 public class WalletController {
@@ -29,12 +31,12 @@ public class WalletController {
 	
 	// 내 지갑 조회
 	@GetMapping("/wallet/my/get-info")
-	public ResponseEntity getWallet(HttpServletRequest request) {
+	public ResponseEntity getWallet(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			// 토큰 인증
 			String token = jwtUtil.validateToken(request);
 			if(token != null) {
-				WalletDTO wallet = walletService.getMyWallet(Integer.parseInt(token));
+				ResponseDTO wallet = walletService.getMyWallet(Integer.parseInt(token));
 				return ResponseEntity.ok().body(wallet);
 			} else {
 				return ResponseEntity.badRequest().body("토큰 인증 오류");
@@ -54,7 +56,7 @@ public class WalletController {
 			if(!authDAO.authRoot(rootId)) {
 				return ResponseEntity.badRequest().body("Forbidden Error");
 			}
-			WalletDTO wallet = walletService.getMyWallet(userId);
+			ResponseDTO wallet = walletService.getMyWallet(userId);
 			return ResponseEntity.ok().body(wallet);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
