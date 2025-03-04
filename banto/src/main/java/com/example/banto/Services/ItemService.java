@@ -9,13 +9,14 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.banto.DAOs.ItemDAO;
 import com.example.banto.DTOs.ItemDTO;
 import com.example.banto.DTOs.OptionDTO;
+import com.example.banto.DTOs.ResponseDTO;
 
 @Service
 public class ItemService {
 	@Autowired
 	ItemDAO itemDAO;
 	
-	public List<ItemDTO> getAllItemList(Integer page) throws Exception {
+	public ResponseDTO getAllItemList(Integer page) throws Exception {
 		try {
 			if(page == null || page < 1) {
 				throw new Exception("페이지 입력 오류");
@@ -27,7 +28,7 @@ public class ItemService {
 		}
 	}
 	
-	public List<ItemDTO> getItemList(Integer userId, Integer storeId, Integer page) throws Exception {
+	public ResponseDTO getItemList(Integer userId, Integer storeId, Integer page) throws Exception {
 		try {
 			if(page == null || page < 1) {
 				throw new Exception("페이지 입력 오류");
@@ -39,7 +40,7 @@ public class ItemService {
 		}
 	}
 	
-	public List<ItemDTO> getItemListByTitle(Integer userId, String title, Integer page) throws Exception {
+	public ResponseDTO getItemListByTitle(Integer userId, String title, Integer page) throws Exception {
 		try {
 			if(page == null || page < 1) {
 				throw new Exception("페이지 입력 오류");
@@ -51,7 +52,7 @@ public class ItemService {
 		}
 	}
 	
-	public List<ItemDTO> getItemListByStoreName(Integer userId, String storeName, Integer page) throws Exception {
+	public ResponseDTO getItemListByStoreName(Integer userId, String storeName, Integer page) throws Exception {
 		try {
 			if(page == null || page < 1) {
 				throw new Exception("페이지 입력 오류");
@@ -63,7 +64,7 @@ public class ItemService {
 		}
 	}
 	
-	public List<ItemDTO> getItemListByCategory(Integer userId, String category, Integer page) throws Exception {
+	public ResponseDTO getItemListByCategory(Integer userId, String category, Integer page) throws Exception {
 		try {
 			if(page == null || page < 1) {
 				throw new Exception("페이지 입력 오류");
@@ -75,7 +76,7 @@ public class ItemService {
 		}
 	}
 	
-	public ItemDTO getItemDetail(Integer userId, Integer itemId) throws Exception {
+	public ResponseDTO getItemDetail(Integer userId, Integer itemId) throws Exception {
 		try {
 			return itemDAO.getItemDetail(userId, itemId);
 		}catch(Exception e) {

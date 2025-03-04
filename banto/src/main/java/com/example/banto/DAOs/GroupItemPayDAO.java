@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import com.example.banto.DTOs.GroupBuyItemDTO;
 import com.example.banto.DTOs.GroupItemPayDTO;
+import com.example.banto.DTOs.ResponseDTO;
 
 @Component
 public class GroupItemPayDAO {
@@ -34,19 +35,19 @@ public class GroupItemPayDAO {
 	UserRepository userRepository;
 
 
-	public List<GroupItemPayDTO> getPayListByItem(GroupBuyItemDTO dto) throws Exception {
+	public ResponseDTO getPayListByItem(GroupBuyItemDTO dto) throws Exception {
 		try {
 			// 현재 이벤트 찾기
 			List<GroupItemPays> pays = groupItemPayRepository.findByItemId(dto.getItemPk());
 			// 비어있으면 빈값 주기
 			if(pays.isEmpty()) {
-				return new ArrayList<GroupItemPayDTO>();
+				return new ResponseDTO();
 			}else {
 				List<GroupItemPayDTO> dtos = new ArrayList<>();
 				for(GroupItemPays pay : pays) {
 					dtos.add(GroupItemPayDTO.toDTO(pay));
 				}
-				return dtos;
+				return new ResponseDTO(dtos, null);
 			}
 		}catch(Exception e) {
 			throw e;
@@ -124,20 +125,20 @@ public class GroupItemPayDAO {
 		}
 	}
 
-	public List<GroupItemPayDTO> getMyGroupPayList(Integer userId, Integer year) throws Exception {
+	public ResponseDTO getMyGroupPayList(Integer userId, Integer year) throws Exception {
 		try {
 			Users user = authDAO.auth(userId);
 			// 현재 이벤트 찾기
 			List<GroupItemPays> pays = groupItemPayRepository.findByUserIdAndYear(userId, year);
 			// 비어있으면 빈값 주기
 			if(pays.isEmpty()) {
-				return new ArrayList<GroupItemPayDTO>();
+				return new ResponseDTO();
 			}else {
 				List<GroupItemPayDTO> dtos = new ArrayList<>();
 				for(GroupItemPays pay : pays) {
 					dtos.add(GroupItemPayDTO.toDTO(pay));
 				}
-				return dtos;
+				return new ResponseDTO(dtos, null);
 			}
 		}catch(Exception e) {
 			throw e;

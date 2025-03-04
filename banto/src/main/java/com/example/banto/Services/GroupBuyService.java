@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.banto.DAOs.GroupBuyDAO;
 import com.example.banto.DTOs.GroupBuyDTO;
+import com.example.banto.DTOs.ResponseDTO;
 
 @Service
 public class GroupBuyService {
@@ -25,7 +26,7 @@ public class GroupBuyService {
 		}
 	}
 	
-	public List<GroupBuyDTO> getEventList(Integer userId) throws Exception {
+	public ResponseDTO getEventList(Integer userId) throws Exception {
 		try {
 			return groupBuyDAO.getEventList(userId);
 		}catch(Exception e) {
@@ -33,7 +34,7 @@ public class GroupBuyService {
 		}
 	}
 
-	public List<GroupBuyDTO> getChooseList() throws Exception {
+	public ResponseDTO getChooseList() throws Exception {
 		try {
 			return groupBuyDAO.getChooseList();
 		}catch(Exception e) {
@@ -41,7 +42,7 @@ public class GroupBuyService {
 		}
 	}
 	
-	public GroupBuyDTO getCurrentEvent() throws Exception {
+	public ResponseDTO getCurrentEvent() throws Exception {
 		try {
 			return groupBuyDAO.getCurrentEvent();
 		}catch(Exception e) {
@@ -49,7 +50,7 @@ public class GroupBuyService {
 		}
 	}
 
-	public List<GroupBuyDTO> getEventListToSeller(Integer userId) throws Exception {
+	public ResponseDTO getEventListToSeller(Integer userId) throws Exception {
 		try {
 			return groupBuyDAO.getEventListToSeller(userId);
 		}catch(Exception e) {

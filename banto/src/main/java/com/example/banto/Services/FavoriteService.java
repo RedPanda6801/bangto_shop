@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.example.banto.DAOs.FavoriteDAO;
 import com.example.banto.DTOs.FavoriteDTO;
 import com.example.banto.DTOs.ItemDTO;
+import com.example.banto.DTOs.ResponseDTO;
 
 @Service
 public class FavoriteService {
@@ -36,7 +37,7 @@ public class FavoriteService {
 		}
 	}
 	
-	public List<FavoriteDTO> getAllFavorites(Integer userId, Integer page) throws Exception {
+	public ResponseDTO getAllFavorites(Integer userId, Integer page) throws Exception {
 		try {
 			return favoriteDAO.getAllFavorites(userId, page);
 		}catch(Exception e) {

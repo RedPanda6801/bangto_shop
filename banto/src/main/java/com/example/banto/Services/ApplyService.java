@@ -8,13 +8,14 @@ import org.springframework.stereotype.Service;
 import com.example.banto.DAOs.ApplyDAO;
 import com.example.banto.DTOs.ApplyDTO;
 import com.example.banto.DTOs.ProcessDTO;
+import com.example.banto.DTOs.ResponseDTO;
 
 @Service
 public class ApplyService {
 	@Autowired
 	ApplyDAO applyDAO;
 	
-	public List<ApplyDTO> getAuthInfo(Integer userId) throws Exception{
+	public ResponseDTO getAuthInfo(Integer userId) throws Exception{
 		if(userId == null) { 
 			throw new Exception("권한 없음");
 		}
@@ -48,7 +49,7 @@ public class ApplyService {
 		}
 	}
 	
-	public List<ApplyDTO> getApplyList(Integer page) throws Exception {
+	public ResponseDTO getApplyList(Integer page) throws Exception {
 		try {
 			return applyDAO.getApplyList(page);
 		}catch(Exception e) {
@@ -56,7 +57,7 @@ public class ApplyService {
 		}
 	}
 	
-	public ApplyDTO getApply(Integer userId) throws Exception {
+	public ResponseDTO getApply(Integer userId) throws Exception {
 		try {
 			return applyDAO.getApply(userId);
 		}catch(Exception e) {

@@ -1,7 +1,7 @@
 package com.example.banto.Repositorys;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import java.util.List;
 import java.util.Optional;
 
 
@@ -16,5 +16,5 @@ public interface FavoriteRepository extends JpaRepository<Favorites, Integer>{
 	Optional<Favorites> findByUserAndItem(@Param("userId") Integer userId, @Param("itemId") Integer itemId);
 	
 	@Query("SELECT f FROM Favorites f WHERE f.user.id = :userId")
-	List<Favorites> findAllByUserId(@Param("userId") Integer userId, Pageable page);
+	Page<Favorites> findAllByUserId(@Param("userId") Integer userId, Pageable page);
 }

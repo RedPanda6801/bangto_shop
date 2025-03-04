@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.example.banto.DAOs.AuthDAO;
 import com.example.banto.DTOs.GroupBuyItemDTO;
 import com.example.banto.DTOs.GroupItemPayDTO;
+import com.example.banto.DTOs.ResponseDTO;
 import com.example.banto.JWTs.JwtUtil;
 import com.example.banto.Services.GroupItemPayService;
 
@@ -40,7 +41,7 @@ public class GroupItemPayController {
 			if(authDAO.authSeller(userId) == -1){
 				return ResponseEntity.badRequest().body("권한 오류");
 			}
-			List<GroupItemPayDTO> payList = groupItemPayService.getPayListByItem(dto);
+			ResponseDTO payList = groupItemPayService.getPayListByItem(dto);
 			return ResponseEntity.ok().body(payList);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -54,7 +55,7 @@ public class GroupItemPayController {
 			String token = jwtUtil.validateToken(request);
 			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
 			Integer userId = Integer.parseInt(token);
-			List<GroupItemPayDTO> payList = groupItemPayService.getMyGroupPayList(userId, year);
+			ResponseDTO payList = groupItemPayService.getMyGroupPayList(userId, year);
 			return ResponseEntity.ok().body(payList);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());

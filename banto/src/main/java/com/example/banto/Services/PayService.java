@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.banto.DAOs.PayDAO;
 import com.example.banto.DTOs.PayDTO;
+import com.example.banto.DTOs.ResponseDTO;
 import com.example.banto.DTOs.SoldItemDTO;
 
 @Service
@@ -27,7 +28,7 @@ public class PayService {
 		}
 	}
 	
-	public List<SoldItemDTO> getPayList(Integer userId, Integer year, Integer page) throws Exception{
+	public ResponseDTO getPayList(Integer userId, Integer year, Integer page) throws Exception{
 		if(userId == null) { 
 			throw new Exception("권한 없음");
 		}
@@ -53,7 +54,7 @@ public class PayService {
 		}
 	}
 	
-	public List<SoldItemDTO> getSoldList(Integer userId, Integer storeId, Integer page) throws Exception{
+	public ResponseDTO getSoldList(Integer userId, Integer storeId, Integer page) throws Exception{
 		if(userId == null) { 
 			throw new Exception("권한 없음");
 		}

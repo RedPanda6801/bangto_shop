@@ -17,6 +17,8 @@ import com.example.banto.Configs.EnvConfig;
 import com.example.banto.DTOs.CartDTO;
 import com.example.banto.DTOs.CommentDTO;
 import com.example.banto.DTOs.ItemDTO;
+import com.example.banto.DTOs.PageDTO;
+import com.example.banto.DTOs.ResponseDTO;
 import com.example.banto.Entitys.Carts;
 import com.example.banto.Entitys.Comments;
 import com.example.banto.Entitys.DeliverType;
@@ -96,7 +98,7 @@ public class CommentDAO {
 		}
 	}
 	
-	public List<CommentDTO> getItemComment(Integer userId, Integer itemId, Integer page) throws Exception{
+	public ResponseDTO getItemComment(Integer userId, Integer itemId, Integer page) throws Exception{
 		try {
 			// 인증 유효 확인
 			authDAO.auth(userId);
@@ -107,13 +109,13 @@ public class CommentDAO {
 				CommentDTO dto = CommentDTO.toDTO(comment);
 				commentList.add(dto);
 			}
-			return commentList;
+			return new ResponseDTO(commentList, new PageDTO(comments.getSize(), comments.getTotalElements(), comments.getTotalPages()));
 		}catch(Exception e) {
 			throw e;
 		}
 	}
 	
-	public CommentDTO getComment(Integer userId, Integer commentId) throws Exception{
+	public ResponseDTO getComment(Integer userId, Integer commentId) throws Exception{
 		try {
 			// 인증 유효 확인
 			authDAO.auth(userId);
@@ -124,14 +126,14 @@ public class CommentDAO {
 			else {
 				Comments comment = commentOpt.get();
 				CommentDTO dto = CommentDTO.toDTO(comment);
-				return dto;
+				return new ResponseDTO(dto, null);
 			}
 		}catch(Exception e) {
 			throw e;
 		}
 	}
 	
-	public List<CommentDTO> getMyComment(Integer userId, Integer page) throws Exception{
+	public ResponseDTO getMyComment(Integer userId, Integer page) throws Exception{
 		try {
 			// 인증 유효 확인
 			authDAO.auth(userId);
@@ -142,7 +144,7 @@ public class CommentDAO {
 				CommentDTO dto = CommentDTO.toDTO(comment);
 				commentList.add(dto);
 			}
-			return commentList;
+			return new ResponseDTO(commentList, new PageDTO(comments.getSize(), comments.getTotalElements(), comments.getTotalPages()));
 		}catch(Exception e) {
 			throw e;
 		}

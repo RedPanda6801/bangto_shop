@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.example.banto.DAOs.GroupBuyItemDAO;
 import com.example.banto.DTOs.GroupBuyDTO;
 import com.example.banto.DTOs.GroupBuyItemDTO;
+import com.example.banto.DTOs.ResponseDTO;
 
 @Service
 public class GroupBuyItemService {
@@ -15,7 +16,7 @@ public class GroupBuyItemService {
 	GroupBuyItemDAO groupBuyItemDAO;
 	
 	
-	public List<GroupBuyItemDTO> getCurrentItemList(GroupBuyDTO dto) throws Exception {
+	public ResponseDTO getCurrentItemList(GroupBuyDTO dto) throws Exception {
 		try {
 			return groupBuyItemDAO.getCurrentItemList(dto);
 		}catch(Exception e) {

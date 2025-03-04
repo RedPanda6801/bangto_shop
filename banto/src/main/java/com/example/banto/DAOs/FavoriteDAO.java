@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Component;
 
 import com.example.banto.DTOs.FavoriteDTO;
 import com.example.banto.DTOs.ItemDTO;
+import com.example.banto.DTOs.PageDTO;
+import com.example.banto.DTOs.ResponseDTO;
 import com.example.banto.Entitys.Favorites;
 import com.example.banto.Entitys.Items;
 import com.example.banto.Entitys.Options;
@@ -73,13 +76,13 @@ public class FavoriteDAO {
 		}
 	}
 	
-	public List<FavoriteDTO> getAllFavorites(Integer userId, Integer page) throws Exception{
+	public ResponseDTO getAllFavorites(Integer userId, Integer page) throws Exception{
 		try {
 			// 인증 유효 확인
 			authDAO.auth(userId);
 			Pageable pageable = PageRequest.of(page-1, 20, Sort.by("id").ascending());
-			List<Favorites> favoriteList = favoriteRepository.findAllByUserId(userId, pageable);
-			if(favoriteList.size() == 0) {
+			Page<Favorites> favoriteList = favoriteRepository.findAllByUserId(userId, pageable);
+			if(favoriteList.getSize() == 0) {
 				throw new Exception("찜 없음");
 			}
 			else {
@@ -88,7 +91,7 @@ public class FavoriteDAO {
 					FavoriteDTO dto = FavoriteDTO.toDTO(favorite);
 					dtos.add(dto);
 				}
-				return dtos;
+				return new ResponseDTO(dtos, new PageDTO(favoriteList.getSize(), favoriteList.getTotalElements(), favoriteList.getTotalPages()));
 			}
 			// 있으면 아무것도 하지 않음
 		}catch(Exception e) {

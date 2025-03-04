@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.banto.DAOs.StoreDAO;
+import com.example.banto.DTOs.ResponseDTO;
 import com.example.banto.DTOs.StoreDTO;
 
 @Service
@@ -26,7 +27,7 @@ public class StoreService {
 		}
 	}
 	
-	public List<StoreDTO> getMyStores(Integer userId) throws Exception {
+	public ResponseDTO getMyStores(Integer userId) throws Exception {
 		try {
 			return storeDAO.getMyStores(userId);
 		}catch(Exception e) {
@@ -34,7 +35,7 @@ public class StoreService {
 		}
 	}
 	
-	public StoreDTO getStoreDetail(Integer userId, Integer storeId) throws Exception {
+	public ResponseDTO getStoreDetail(Integer userId, Integer storeId) throws Exception {
 		try {
 			return storeDAO.getStore(userId, storeId);
 		}catch(Exception e) {
@@ -52,7 +53,7 @@ public class StoreService {
 		}
 	}
 	
-	public List<StoreDTO> getMyStoresByRoot(Integer page) throws Exception {
+	public ResponseDTO getMyStoresByRoot(Integer page) throws Exception {
 		try {
 			return storeDAO.getMyStoresByRoot(page);
 		}catch(Exception e) {

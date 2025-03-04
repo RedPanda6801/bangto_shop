@@ -7,12 +7,15 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
+import com.example.banto.DTOs.PageDTO;
 import com.example.banto.DTOs.QNADTO;
+import com.example.banto.DTOs.ResponseDTO;
 import com.example.banto.Entitys.Items;
 import com.example.banto.Entitys.QNAs;
 import com.example.banto.Entitys.Sellers;
@@ -95,7 +98,7 @@ public class QNADAO {
 		}
 	}
 	
-	public List<QNADTO> getMyList(Integer userId, Integer page) throws Exception{
+	public ResponseDTO getMyList(Integer userId, Integer page) throws Exception{
 		try {
 			authDAO.auth(userId);
 			List<QNAs> qnaList = qnaRepository.findAllByUserId(userId);
@@ -104,13 +107,13 @@ public class QNADAO {
 				QNADTO dto = QNADTO.toDTO(qna);
 				dtos.add(dto);
 			}
-			return dtos;
+			return new ResponseDTO(dtos, null);
 		}catch(Exception e) {
 			throw e;
 		}
 	}
 	
-	public List<QNADTO> getListByStore(QNADTO qnaDTO, Integer page) throws Exception{
+	public ResponseDTO getListByStore(QNADTO qnaDTO, Integer page) throws Exception{
 		try {
 			authDAO.auth(qnaDTO.getUserPk());
 			
@@ -121,27 +124,27 @@ public class QNADAO {
 				throw new Exception("본인 매장 불일치");
 			}else {
 				Pageable pageable = PageRequest.of(page-1, 20, Sort.by("id").ascending());
-				List<QNAs> qnaList = qnaRepository.findAllByStore(qnaDTO.getStorePk(), pageable);
+				Page<QNAs> qnaList = qnaRepository.findAllByStore(qnaDTO.getStorePk(), pageable);
 				List<QNADTO> dtos = new ArrayList<>();
 				for(QNAs qna : qnaList) {
 					QNADTO dto = QNADTO.toDTO(qna);
 					dtos.add(dto);
 				}
-				return dtos;
+				return new ResponseDTO(dtos, new PageDTO(qnaList.getSize(), qnaList.getTotalElements(), qnaList.getTotalPages()));
 			}
 		}catch(Exception e) {
 			throw e;
 		}
 	}
 	
-	public QNADTO getQnaDetail(Integer userId, QNADTO qnaDTO) throws Exception{
+	public ResponseDTO getQnaDetail(Integer userId, QNADTO qnaDTO) throws Exception{
 		try {
 			authDAO.auth(userId);
 			Optional<QNAs> qnaOpt = qnaRepository.findById(qnaDTO.getId());
 			if(qnaOpt.isEmpty()) {
 				return null;
 			}
-			return QNADTO.toDTO(qnaOpt.get());
+			return new ResponseDTO(QNADTO.toDTO(qnaOpt.get()), null);
 		}catch(Exception e) {
 			throw e;
 		}

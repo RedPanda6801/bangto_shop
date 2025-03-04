@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.banto.DAOs.AuthDAO;
 import com.example.banto.DTOs.LoginDTO;
+import com.example.banto.DTOs.ResponseDTO;
 import com.example.banto.DTOs.UserDTO;
 import com.example.banto.JWTs.JwtUtil;
 import com.example.banto.Services.UserService;
@@ -44,8 +45,7 @@ public class UserController {
 	@PostMapping("/login")
 	public ResponseEntity login(@RequestBody UserDTO dto) {
 		try {
-			// 단순히 유저 찾기에 불과, JWT 토큰 또는 세션이나 비밀번호 해시화에 대해 넣을 필요가 있음
-			LoginDTO token = userService.login(dto);
+			ResponseDTO token = userService.login(dto);
 			return ResponseEntity.ok().body(token);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -59,7 +59,7 @@ public class UserController {
 			String token = jwtUtil.validateToken(request);
 			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
 			Integer userId = Integer.parseInt(token);
-			UserDTO user = userService.getUser(userId);
+			ResponseDTO user = userService.getUser(userId);
 			return ResponseEntity.ok().body(user);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -103,7 +103,7 @@ public class UserController {
 			if(!authDAO.authRoot(rootId)) {
 				return ResponseEntity.badRequest().body("Forbidden Error");
 			}
-			List<UserDTO> user = userService.getUserListForRoot(page);
+			ResponseDTO user = userService.getUserListForRoot(page);
 			return ResponseEntity.ok().body(user);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -119,7 +119,7 @@ public class UserController {
 			if(!authDAO.authRoot(rootId)) {
 				return ResponseEntity.badRequest().body("Forbidden Error");
 			}
-			UserDTO user = userService.getUserForRoot(userId);
+			ResponseDTO user = userService.getUserForRoot(userId);
 			return ResponseEntity.ok().body(user);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -161,7 +161,7 @@ public class UserController {
 	@GetMapping("/user/get-sns-signed/{email}")
 	public ResponseEntity isSnsSigned(@PathVariable("email") String email) {
 		try {
-			Boolean isSnsSigned = userService.isSnsSigned(email);
+			ResponseDTO isSnsSigned = userService.isSnsSigned(email);
 			return ResponseEntity.ok().body(isSnsSigned);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.banto.DAOs.CartDAO;
 import com.example.banto.DTOs.CartDTO;
+import com.example.banto.DTOs.ResponseDTO;
 
 @Service
 public class CartService {
@@ -26,7 +27,7 @@ public class CartService {
 		}
 	}
 	
-	public List<CartDTO> readCart(Integer userId) throws Exception{
+	public ResponseDTO readCart(Integer userId) throws Exception{
 		if(userId == null) { 
 			throw new Exception("권한 없음");
 		}

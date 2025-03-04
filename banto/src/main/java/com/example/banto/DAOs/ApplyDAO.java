@@ -24,7 +24,9 @@ import jakarta.transaction.Transactional;
 
 import com.example.banto.Configs.EnvConfig;
 import com.example.banto.DTOs.ApplyDTO;
+import com.example.banto.DTOs.PageDTO;
 import com.example.banto.DTOs.ProcessDTO;
+import com.example.banto.DTOs.ResponseDTO;
 
 @Component
 public class ApplyDAO {
@@ -39,7 +41,7 @@ public class ApplyDAO {
 	@Autowired
 	EnvConfig envConfig;
 	
-	public List<ApplyDTO> getSellerAuth(Integer userId) throws Exception{
+	public ResponseDTO getSellerAuth(Integer userId) throws Exception{
 		try {
 			// 인증 유효 확인
 			authDAO.auth(userId);
@@ -53,7 +55,7 @@ public class ApplyDAO {
 					ApplyDTO dto = ApplyDTO.toDTO(auth);
 					applyList.add(dto);
 				}
-				return applyList;
+				return new ResponseDTO(applyList, null);
 			}
 		}catch(Exception e) {
 			throw e;
@@ -120,7 +122,7 @@ public class ApplyDAO {
 		}
 	}
 	
-	public List<ApplyDTO> getApplyList(Integer page) throws Exception{
+	public ResponseDTO getApplyList(Integer page) throws Exception{
 		try {
 			Pageable pageable = PageRequest.of(page-1, 20, Sort.by("id").ascending());
 			Page<SellerAuths> applies = applyRepository.findAll(pageable);
@@ -132,13 +134,13 @@ public class ApplyDAO {
 				ApplyDTO dto = ApplyDTO.toDTO(apply);
 				applyList.add(dto);
 			}
-			return applyList;
+			return new ResponseDTO(applyList, new PageDTO(applies.getSize(), applies.getTotalElements(), applies.getTotalPages()));
 		}catch(Exception e) {
 			throw e;
 		}
 	}
 	
-	public ApplyDTO getApply(Integer sellerAuthId) throws Exception{
+	public ResponseDTO getApply(Integer sellerAuthId) throws Exception{
 		try {			
 			Optional<SellerAuths> sellerAuthOpt = applyRepository.findById(sellerAuthId);
 			if(sellerAuthOpt.isEmpty()) {
@@ -152,7 +154,7 @@ public class ApplyDAO {
 				dto.setId(auth.getId());
 				dto.setSignDate(auth.getSignDate());
 				dto.setUserPk(auth.getUser().getId());
-				return dto;
+				return new ResponseDTO(dto, null);
 			}
 		}catch(Exception e) {
 			throw e;

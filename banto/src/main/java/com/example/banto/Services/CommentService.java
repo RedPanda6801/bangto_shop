@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.banto.DAOs.CommentDAO;
 import com.example.banto.DTOs.CommentDTO;
+import com.example.banto.DTOs.ResponseDTO;
 
 @Service
 public class CommentService {
@@ -27,7 +28,7 @@ public class CommentService {
 		}
 	}
 	
-	public List<CommentDTO> getItemComment(Integer userId, Integer itemId, Integer page) throws Exception{
+	public ResponseDTO getItemComment(Integer userId, Integer itemId, Integer page) throws Exception{
 		if(userId == null) { 
 			throw new Exception("권한 없음");
 		}
@@ -40,7 +41,7 @@ public class CommentService {
 		}
 	}
 	
-	public CommentDTO getComment(Integer userId, Integer commentId) throws Exception{
+	public ResponseDTO getComment(Integer userId, Integer commentId) throws Exception{
 		if(userId == null) { 
 			throw new Exception("권한 없음");
 		}
@@ -53,7 +54,7 @@ public class CommentService {
 		}
 	}
 	
-	public List<CommentDTO> getMyComment(Integer userId, Integer page) throws Exception{
+	public ResponseDTO getMyComment(Integer userId, Integer page) throws Exception{
 		if(userId == null) { 
 			throw new Exception("권한 없음");
 		}

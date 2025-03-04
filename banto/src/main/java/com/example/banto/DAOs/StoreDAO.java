@@ -12,6 +12,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import com.example.banto.Configs.EnvConfig;
+import com.example.banto.DTOs.PageDTO;
+import com.example.banto.DTOs.ResponseDTO;
 import com.example.banto.DTOs.SellerDTO;
 import com.example.banto.DTOs.StoreDTO;
 import com.example.banto.Entitys.Sellers;
@@ -55,26 +57,26 @@ public class StoreDAO {
 		}
 	}
 	
-	public List<StoreDTO> getMyStores(Integer userId) throws Exception {
+	public ResponseDTO getMyStores(Integer userId) throws Exception {
 		try {
 			// 인증 유효 확인
 			authDAO.auth(userId);
 			// 판매자 가져오기
-			SellerDTO sellerDTO = sellerDAO.findSeller(userId);
+			ResponseDTO sellerDTO = sellerDAO.findSeller(userId);
 			//판매자 pk로 store 전부 찾기
-			List<StoreDTO> storeList = storeRepository.findAllBySellerId(sellerDTO.getId());
-			return storeList;
+			List<StoreDTO> storeList = storeRepository.findAllBySellerId(((SellerDTO)sellerDTO.getContent()).getId());
+			return new ResponseDTO(storeList, null);
 		}catch(Exception e) {
 			throw e;
 		}
 	}
 	
-	public StoreDTO getStore(Integer userId, Integer storeId) throws Exception {
+	public ResponseDTO getStore(Integer userId, Integer storeId) throws Exception {
 		try {
 			// 인증 유효 확인
 			authDAO.auth(userId);
 			// 판매자 가져오기
-			SellerDTO sellerDTO = sellerDAO.findSeller(userId);
+			ResponseDTO sellerDTO = sellerDAO.findSeller(userId);
 			//판매자 pk로 store 전부 찾기
 			Optional<Stores> storeOpt = storeRepository.findById(storeId);
 			if(storeOpt.isEmpty()) {
@@ -82,10 +84,10 @@ public class StoreDAO {
 			}
 			else {
 				Stores store = storeOpt.get();
-				if(sellerDTO.getId() == store.getSeller().getId()) {
+				if(((SellerDTO)sellerDTO.getContent()).getId() == store.getSeller().getId()) {
 					// 필요한 데이터만 조회
 					store.setItems(null);
-					return StoreDTO.toDTO(store);
+					return new ResponseDTO(StoreDTO.toDTO(store), null);
 				}
 				else {
 					throw new Exception("판매자 권한 오류");
@@ -120,7 +122,7 @@ public class StoreDAO {
 		}
 	}
 	
-	public List<StoreDTO> getMyStoresByRoot(Integer page) throws Exception {
+	public ResponseDTO getMyStoresByRoot(Integer page) throws Exception {
 		try {
 			// 10명씩 끊기
 			Pageable pageable = PageRequest.of(page-1, 10, Sort.by("id").ascending());
@@ -129,7 +131,7 @@ public class StoreDAO {
 			for(Stores store : storeListPage) {
 				storeList.add(StoreDTO.toDTO(store));
 			}
-			return storeList;
+			return new ResponseDTO(storeList, new PageDTO(storeListPage.getSize(), storeListPage.getTotalElements(), storeListPage.getTotalPages()));
 		}catch(Exception e) {
 			throw e;
 		}

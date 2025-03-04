@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.banto.DTOs.CommentDTO;
+import com.example.banto.DTOs.ResponseDTO;
 import com.example.banto.JWTs.JwtUtil;
 import com.example.banto.Services.CommentService;
 
@@ -49,7 +50,7 @@ public class CommentController {
 			// 토큰 인증
 			String token = jwtUtil.validateToken(request);
 			if(token != null) {
-				List<CommentDTO> comments = commentService.getItemComment(Integer.parseInt(token), itemId, page);
+				ResponseDTO comments = commentService.getItemComment(Integer.parseInt(token), itemId, page);
 				return ResponseEntity.ok().body(comments);
 			} else {
 				return ResponseEntity.badRequest().body("토큰 인증 오류");
@@ -66,7 +67,7 @@ public class CommentController {
 			// 토큰 인증
 			String token = jwtUtil.validateToken(request);
 			if(token != null) {
-				CommentDTO comment = commentService.getComment(Integer.parseInt(token), commentId);
+				ResponseDTO comment = commentService.getComment(Integer.parseInt(token), commentId);
 				return ResponseEntity.ok().body(comment);
 			} else {
 				return ResponseEntity.badRequest().body("토큰 인증 오류");
@@ -83,7 +84,7 @@ public class CommentController {
 			// 토큰 인증
 			String token = jwtUtil.validateToken(request);
 			if(token != null) {
-				List<CommentDTO> comments = commentService.getMyComment(Integer.parseInt(token), page);
+				ResponseDTO comments = commentService.getMyComment(Integer.parseInt(token), page);
 				return ResponseEntity.ok().body(comments);
 			} else {
 				return ResponseEntity.badRequest().body("토큰 인증 오류");

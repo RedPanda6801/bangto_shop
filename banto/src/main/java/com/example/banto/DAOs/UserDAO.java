@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 
 import com.example.banto.Configs.EnvConfig;
 import com.example.banto.DTOs.LoginDTO;
+import com.example.banto.DTOs.PageDTO;
+import com.example.banto.DTOs.ResponseDTO;
 import com.example.banto.DTOs.UserDTO;
 import com.example.banto.DTOs.WalletDTO;
 import com.example.banto.Entitys.SellerAuths;
@@ -78,7 +80,7 @@ public class UserDAO {
 		}
 	}
 	
-	public LoginDTO login(String email, String pw, Boolean snsAuth) throws Exception{
+	public ResponseDTO login(String email, String pw, Boolean snsAuth) throws Exception{
 		try {
 			if(snsAuth != null && snsAuth == true) {
 				email += "@kakao";
@@ -103,14 +105,14 @@ public class UserDAO {
 					
 				}
 				LoginDTO loginDTO = new LoginDTO(jwtUtil.generateToken(user.getId()));
-				return loginDTO;
+				return new ResponseDTO(loginDTO, null);
 			}
 		}catch(Exception e) {
 			throw e;
 		}
 	}
 	
-	public List<UserDTO> getUserListForRoot(Integer page) throws Exception{
+	public ResponseDTO getUserListForRoot(Integer page) throws Exception{
 		try {
 				// 10명씩 끊기
 				Pageable pageable = PageRequest.of(page-1, 10, Sort.by("id").ascending());
@@ -120,15 +122,15 @@ public class UserDAO {
 					UserDTO dto = UserDTO.toDTO(user);
 					userList.add(dto);
 				}				
-				return userList;
+				return new ResponseDTO(userList, new PageDTO(users.getSize(), users.getTotalElements(), users.getTotalPages()));
 		}catch(Exception e) {
 			throw e;
 		}
 	}
 	
-	public UserDTO getUser(Integer userId) throws Exception{
+	public ResponseDTO getUser(Integer userId) throws Exception{
 		try {
-			return UserDTO.toDTO(authDAO.auth(userId));
+			return new ResponseDTO(UserDTO.toDTO(authDAO.auth(userId)), null);
 		}catch(Exception e) {
 			throw e;
 		}
@@ -157,13 +159,13 @@ public class UserDAO {
 		}
 	}
 
-	public UserDTO getUserForRoot(Integer userId) throws Exception{
+	public ResponseDTO getUserForRoot(Integer userId) throws Exception{
 		try {
 			Optional<Users>user = userRepository.findById(userId);
 			if(user.isEmpty()) {
 				throw new Exception("조회할 유저가 없음");
 			}
-			return UserDTO.toDTO(user.get());
+			return new ResponseDTO(UserDTO.toDTO(user.get()), null);
 		}catch(Exception e) {
 			throw e;
 		}
@@ -246,13 +248,13 @@ public class UserDAO {
 		}
 	}
 	
-	public Boolean isSnsSigned(String email) throws Exception{
+	public ResponseDTO isSnsSigned(String email) throws Exception{
 		try {
 			Optional<Users> userOpt = userRepository.findByEmail(email + "@kakao");
 			if(userOpt.isEmpty()) {
-				return false;
+				return new ResponseDTO(false, null);
 			}
-			return true;
+			return new ResponseDTO(true, null);
 		}catch(Exception e) {
 			throw e;
 		}

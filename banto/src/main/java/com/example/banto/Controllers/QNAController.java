@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.example.banto.DTOs.FavoriteDTO;
 import com.example.banto.DTOs.ItemDTO;
 import com.example.banto.DTOs.QNADTO;
+import com.example.banto.DTOs.ResponseDTO;
 import com.example.banto.JWTs.JwtUtil;
 import com.example.banto.Services.QNAService;
 
@@ -35,7 +36,7 @@ public class QNAController {
 			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
 			Integer userId = Integer.parseInt(token);
 			qnaDTO.setUserPk(userId);
-			List<QNADTO> itemList = qnaService.getListByStore(qnaDTO, page);
+			ResponseDTO itemList = qnaService.getListByStore(qnaDTO, page);
 			return ResponseEntity.ok().body(itemList);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -49,7 +50,7 @@ public class QNAController {
 			String token = jwtUtil.validateToken(request);
 			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
 			Integer userId = Integer.parseInt(token);
-			List<QNADTO> favoriteList = qnaService.getMyList(userId, page);
+			ResponseDTO favoriteList = qnaService.getMyList(userId, page);
 			return ResponseEntity.ok().body(favoriteList);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -63,7 +64,7 @@ public class QNAController {
 			String token = jwtUtil.validateToken(request);
 			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
 			Integer userId = Integer.parseInt(token);
-			QNADTO itemList = qnaService.getQnaDetail(userId, qnaDTO);
+			ResponseDTO itemList = qnaService.getQnaDetail(userId, qnaDTO);
 			return ResponseEntity.ok().body(itemList);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());

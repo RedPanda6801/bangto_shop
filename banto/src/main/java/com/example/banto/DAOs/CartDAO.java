@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.example.banto.DTOs.CartDTO;
+import com.example.banto.DTOs.ResponseDTO;
 import com.example.banto.Entitys.Carts;
 import com.example.banto.Entitys.Items;
 import com.example.banto.Entitys.Options;
@@ -74,7 +75,7 @@ public class CartDAO {
 		}
 	}
 	
-	public List<CartDTO> readCart(Integer userId) throws Exception{
+	public ResponseDTO readCart(Integer userId) throws Exception{
 		try {
 			// 인증 유효 확인
 			authDAO.auth(userId);
@@ -94,7 +95,7 @@ public class CartDAO {
 					dto.setTotalPrice((cart.getItem().getPrice() + cart.getOption().getAddPrice()) * cart.getAmount());
 					cartList.add(dto);
 				}
-				return cartList;
+				return new ResponseDTO(cartList, null);
 			}
 		}catch(Exception e) {
 			throw e;

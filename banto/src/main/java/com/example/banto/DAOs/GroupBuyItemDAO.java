@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.example.banto.DTOs.GroupBuyDTO;
 import com.example.banto.DTOs.GroupBuyItemDTO;
+import com.example.banto.DTOs.ResponseDTO;
 import com.example.banto.Entitys.GroupBuyItems;
 import com.example.banto.Entitys.GroupBuys;
 import com.example.banto.Repositorys.GroupBuyItemRepository;
@@ -27,7 +28,7 @@ public class GroupBuyItemDAO {
 	@Autowired
 	private ItemRepository itemRepository;
 
-	public List<GroupBuyItemDTO> getCurrentItemList(GroupBuyDTO dto) throws Exception {
+	public ResponseDTO getCurrentItemList(GroupBuyDTO dto) throws Exception {
 		try {
 			// 현재 이벤트 찾기
 			Optional<GroupBuys> eventOpt = groupBuyRepository.findById(dto.getId());
@@ -41,7 +42,7 @@ public class GroupBuyItemDAO {
 				for(GroupBuyItems groupItem : groupItemList) {
 					dtos.add(GroupBuyItemDTO.toDTO(groupItem));
 				}
-				return dtos;
+				return new ResponseDTO(dtos, null);
 			}
 		}catch(Exception e) {
 			throw e;

@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ResponseDTO {
-	Object content;
-	PageDTO page;
+public class PageDTO {
+	Integer size;
+	long totalElements;
+	Integer totalPages;
 }

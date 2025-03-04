@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.banto.DAOs.AuthDAO;
 import com.example.banto.DTOs.GroupBuyDTO;
+import com.example.banto.DTOs.ResponseDTO;
 import com.example.banto.JWTs.JwtUtil;
 import com.example.banto.Services.GroupBuyService;
 
@@ -29,7 +30,7 @@ public class GroupBuyController {
 	@GetMapping("/group-buy/current-event")
 	public ResponseEntity getCurrentEvent() throws Exception {
 		try {
-			GroupBuyDTO event = groupBuyService.getCurrentEvent();
+			ResponseDTO event = groupBuyService.getCurrentEvent();
 			return ResponseEntity.ok().body(event);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -61,7 +62,7 @@ public class GroupBuyController {
 			String token = jwtUtil.validateToken(request);
 			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
 			Integer userId = Integer.parseInt(token);
-			List<GroupBuyDTO> eventList = groupBuyService.getEventList(userId);
+			ResponseDTO eventList = groupBuyService.getEventList(userId);
 			return ResponseEntity.ok().body(eventList);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -79,7 +80,7 @@ public class GroupBuyController {
 			if(authDAO.authSeller(userId) == -1) {
 				return ResponseEntity.badRequest().body("Forbidden Error");
 			}
-			List<GroupBuyDTO> eventList = groupBuyService.getChooseList();
+			ResponseDTO eventList = groupBuyService.getChooseList();
 			return ResponseEntity.ok().body(eventList);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -97,7 +98,7 @@ public class GroupBuyController {
 			if(authDAO.authSeller(userId) == -1) {
 				return ResponseEntity.badRequest().body("Forbidden Error");
 			}
-			List<GroupBuyDTO> eventList = groupBuyService.getEventListToSeller(userId);
+			ResponseDTO eventList = groupBuyService.getEventListToSeller(userId);
 			return ResponseEntity.ok().body(eventList);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());

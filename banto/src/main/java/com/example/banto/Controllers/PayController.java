@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.banto.DAOs.AuthDAO;
 import com.example.banto.DTOs.PayDTO;
+import com.example.banto.DTOs.ResponseDTO;
 import com.example.banto.DTOs.SoldItemDTO;
 import com.example.banto.JWTs.JwtUtil;
 import com.example.banto.Services.PayService;
@@ -52,7 +53,7 @@ public class PayController {
 			// 토큰 인증
 			String token = jwtUtil.validateToken(request);
 			if(token != null) {
-				List<SoldItemDTO> soldItemList = payService.getPayList(Integer.parseInt(token), year, page);
+				ResponseDTO soldItemList = payService.getPayList(Integer.parseInt(token), year, page);
 				return ResponseEntity.ok().body(soldItemList);
 			} else {
 				return ResponseEntity.badRequest().body("토큰 인증 오류");
@@ -72,7 +73,7 @@ public class PayController {
 			if(!authDAO.authRoot(rootId)) {
 				return ResponseEntity.badRequest().body("Forbidden Error");
 			}
-			List<SoldItemDTO> soldItemList = payService.getPayList(-1, year, page);
+			ResponseDTO soldItemList = payService.getPayList(-1, year, page);
 			return ResponseEntity.ok().body(soldItemList);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -105,7 +106,7 @@ public class PayController {
 			// 토큰 인증
 			String token = jwtUtil.validateToken(request);
 			if(token != null) {
-				List<SoldItemDTO> soldItemList = payService.getSoldList(Integer.parseInt(token), storeId, page);
+				ResponseDTO soldItemList = payService.getSoldList(Integer.parseInt(token), storeId, page);
 				return ResponseEntity.ok().body(soldItemList);
 			} else {
 				return ResponseEntity.badRequest().body("토큰 인증 오류");
@@ -125,7 +126,7 @@ public class PayController {
 			if(!authDAO.authRoot(rootId)) {
 				return ResponseEntity.badRequest().body("Forbidden Error");
 			}
-			List<SoldItemDTO> soldItemList = payService.getSoldList(-1, storeId, page);
+			ResponseDTO soldItemList = payService.getSoldList(-1, storeId, page);
 			return ResponseEntity.ok().body(soldItemList);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());

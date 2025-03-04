@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.banto.DTOs.CartDTO;
+import com.example.banto.DTOs.ResponseDTO;
 import com.example.banto.JWTs.JwtUtil;
 import com.example.banto.Services.CartService;
 
@@ -47,7 +48,7 @@ public class CartController {
 			// 토큰 인증
 			String token = jwtUtil.validateToken(request);
 			if(token != null) {
-				List<CartDTO> cartList = cartService.readCart(Integer.parseInt(token));
+				ResponseDTO cartList = cartService.readCart(Integer.parseInt(token));
 				return ResponseEntity.ok().body(cartList);
 			} else {
 				return ResponseEntity.badRequest().body("토큰 인증 오류");
