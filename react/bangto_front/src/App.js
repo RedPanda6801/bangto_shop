@@ -11,8 +11,12 @@ import StoreGroupItemRegisterComponent from './Components/StoreGroupItemRegister
 import StoreQNADetailComponent from './Components/StoreQNADetailComponent';
 import UserCartComponent from './Components/UserCartComponent';
 import UserPayComponent from './Components/UserPayComponent';
+import UserItemDetailComponent from './Components/UserItemDetailComponent';
 import UserComponent from './Components/UserComponent';
 import UserReviewComponent from './Components/UserReviewComponent';
+import UserGroupItemComponent from './Components/UserGroupItemComponent';
+import UserGroupItemDetailComponent from './Components/UserGroupItemDetailComponent';
+import UserQNAComponent from './Components/UserQNAComponent';
 import ManagerItemInfoComponent from './Components/ManagerItemInfoComponent';
 import './Components/LayoutComponent.css';
 import axios from 'axios';
@@ -30,7 +34,7 @@ function App() {
   useEffect(()=>{
     if(localStorage.getItem("token") == "")
     {
-      alert("로그인해주세요");
+      //alert("로그인해주세요");
       navigate("/");
     }
     else
@@ -42,9 +46,14 @@ function App() {
           }).then((res)=> {
           setUserEmail(res.data.email);
           setUserName(res.data.name);
+
+          if (res.data.email === rootEmail) 
+          {
+            navigate("/manager");
+          }
       }).catch((err)=>{
           //console.log(err);
-          alert("로그인해주세요");
+          //alert("로그인해주세요");
           navigate("/");
       })
     }
@@ -94,7 +103,16 @@ function App() {
   return (  
     <div className="layout_Main">
       <div className="layout_Header">
-        <button className="header_Logo" onClick={() => (navigate("/"))}>
+      <button className="header_Logo" onClick={() => {
+            if (userEmail === rootEmail) 
+            {
+              navigate("/manager");
+            } 
+            else 
+            {
+              navigate("/");
+            }
+          }}>
           <img src={`/images/01_logo/logo_01.jpg`} alt="로고 이미지" />
         </button>        
         {token !== "" ? (
@@ -104,32 +122,39 @@ function App() {
               </>
             ):(
             <>
-              <div className="header_Menu">카테고리1</div>
-              <div className="header_Menu">카테고리2</div>
-              <div className="header_Menu">카테고리3</div>
-              <div className="header_Menu">카테고리4</div>
-              <div className="header_Menu">카테고리5</div>
-              <div className="header_Menu">공동구매</div>
+              <div className="header_Menu">의류</div>
+              <div className="header_Menu">화장품</div>
+              <div className="header_Menu">전자기기</div>
+              <div className="header_Menu">가구</div>
+              <div className="header_Menu">식품</div>
+              <div className="header_Menu">스포츠용품</div>
+              <div className="header_Menu">도서</div>
+              <div 
+                className="header_Menu"
+                onClick={() => navigate("/user/groupitem")}>
+                공동구매
+              </div>
             </>)            
            ) : (
             <>
-              <div className="header_Menu">카테고리1</div>
-              <div className="header_Menu">카테고리2</div>
-              <div className="header_Menu">카테고리3</div>
-              <div className="header_Menu">카테고리4</div>
-              <div className="header_Menu">카테고리5</div>
-              <div className="header_Menu">공동구매</div>
+              <div className="header_Menu">의류</div>
+              <div className="header_Menu">화장품</div>
+              <div className="header_Menu">전자기기</div>
+              <div className="header_Menu">가구</div>
+              <div className="header_Menu">식품</div>
+              <div className="header_Menu">스포츠용품</div>
+              <div className="header_Menu">도서</div>
+              <div 
+                className="header_Menu"
+                onClick={() => navigate("/user/groupitem")}>
+                공동구매
+              </div>
             </>) 
             }
         {token !== "" ? (
            userEmail === rootEmail ? (
             <div>
               <div className="header_Manager_Text">관리자님 환영합니다.</div>
-              <div 
-                className="header_User header_Manager_Menu"
-                onClick={() => (navigate("/manager"))}>
-                관리자 페이지
-              </div>
               <div 
                 className="header_User header_Manager_Menu"
                 onClick={logout}>
@@ -151,7 +176,7 @@ function App() {
               </div>
               <div>              
                 <div 
-                  className="header_User header_User_Menu"
+                  className="header_User header_User_Menu_Top"
                   onClick={() => (navigate("/seller/apply"))}>
                   판매자 페이지
                 </div>
@@ -163,7 +188,7 @@ function App() {
               </div>
               <div>              
                 <div 
-                  className="header_User header_User_Menu"
+                  className="header_User header_User_Menu_Top"
                   onClick={() => (navigate("/user"))}>
                   사용자 페이지
                 </div>
@@ -200,6 +225,10 @@ function App() {
         <Route path="/qna/detail" element={<StoreQNADetailComponent setUserName={setUserName} />} />
         <Route path="/user" element={<UserComponent setUserName={setUserName} />} />
         <Route path="/user/review" element={<UserReviewComponent setUserName={setUserName} />} />
+        <Route path="/user/groupitem" element={<UserGroupItemComponent setUserName={setUserName} />} />
+        <Route path="/user/item" element={<UserItemDetailComponent setUserName={setUserName} />} />
+        <Route path="/user/gorupitem/detail" element={<UserGroupItemDetailComponent setUserName={setUserName} />} />
+        <Route path="/user/item/qna" element={<UserQNAComponent setUserName={setUserName} />} />
       </Routes>
       
         <div className="layout_Footer_Buttons">
