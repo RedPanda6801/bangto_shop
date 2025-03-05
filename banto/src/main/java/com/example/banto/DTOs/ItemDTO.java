@@ -9,6 +9,7 @@ import com.example.banto.Entitys.Items;
 import com.example.banto.Entitys.Options;
 import com.example.banto.Entitys.QNAs;
 import com.example.banto.Entitys.Stores;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,6 +40,8 @@ public class ItemDTO {
     
     private Integer star;
     
+    private Stores store;
+    
     private List<QNAs> qnas;
 
     private List<Comments> comments;
@@ -50,6 +53,18 @@ public class ItemDTO {
     private List<GroupBuyItems> events;
 
     private List<Carts> carts;
+    
+    @JsonIgnore
+    private String storeName;
+    
+    @JsonIgnore
+    private String priceSort;
+    
+    @JsonIgnore
+    private Integer page;
+    
+    @JsonIgnore
+    private Integer size;
     
     public ItemDTO(Integer id, String title, String category, Integer price, 
         String content, String img, Integer amount, Integer star) {
@@ -81,7 +96,7 @@ public class ItemDTO {
                 .qnas(entity.getQnas())
                 .comments(entity.getComments())
                 .options(entity.getOptions())
-                .storePk(entity.getStore().getId())
+                .store(entity.getStore())
                 .build();
     }
 

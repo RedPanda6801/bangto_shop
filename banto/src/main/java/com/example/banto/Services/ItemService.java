@@ -28,57 +28,65 @@ public class ItemService {
 		}
 	}
 	
-	public ResponseDTO getItemList(Integer userId, Integer storeId, Integer page) throws Exception {
+	public ResponseDTO getFilterdItemList(ItemDTO dto) throws Exception {
+		try {
+			return itemDAO.getFilterdItemList(dto);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+	
+	public ResponseDTO getItemList(Integer storeId, Integer page) throws Exception {
 		try {
 			if(page == null || page < 1) {
 				throw new Exception("페이지 입력 오류");
 		}else {
-				return itemDAO.getItemList(userId, storeId, page);
+				return itemDAO.getItemList(storeId, page);
 			}
 		}catch(Exception e) {
 			throw e;
 		}
 	}
 	
-	public ResponseDTO getItemListByTitle(Integer userId, String title, Integer page) throws Exception {
+	public ResponseDTO getItemListByTitle(String title, Integer page) throws Exception {
 		try {
 			if(page == null || page < 1) {
 				throw new Exception("페이지 입력 오류");
 		}else {
-				return itemDAO.getItemListByTitle(userId, title, page);
+				return itemDAO.getItemListByTitle(title, page);
 			}
 		}catch(Exception e) {
 			throw e;
 		}
 	}
 	
-	public ResponseDTO getItemListByStoreName(Integer userId, String storeName, Integer page) throws Exception {
+	public ResponseDTO getItemListByStoreName(String storeName, Integer page) throws Exception {
 		try {
 			if(page == null || page < 1) {
 				throw new Exception("페이지 입력 오류");
 		}else {
-				return itemDAO.getItemListByStoreName(userId, storeName, page);
+				return itemDAO.getItemListByStoreName(storeName, page);
 			}
 		}catch(Exception e) {
 			throw e;
 		}
 	}
 	
-	public ResponseDTO getItemListByCategory(Integer userId, String category, Integer page) throws Exception {
+	public ResponseDTO getItemListByCategory(String category, Integer page) throws Exception {
 		try {
 			if(page == null || page < 1) {
 				throw new Exception("페이지 입력 오류");
 		}else {
-				return itemDAO.getItemListByCategory(userId, category, page);
+				return itemDAO.getItemListByCategory(category, page);
 			}
 		}catch(Exception e) {
 			throw e;
 		}
 	}
 	
-	public ResponseDTO getItemDetail(Integer userId, Integer itemId) throws Exception {
+	public ResponseDTO getItemDetail(Integer itemId) throws Exception {
 		try {
-			return itemDAO.getItemDetail(userId, itemId);
+			return itemDAO.getItemDetail(itemId);
 		}catch(Exception e) {
 			throw e;
 		}

@@ -46,7 +46,7 @@ public class Items {
     @Column(name="IMG", nullable=true)
     private String img;
     
-    @JsonIgnore
+    //@JsonIgnore
     @ManyToOne
     @JoinColumn(name="STORE_PK")
     private Stores store;

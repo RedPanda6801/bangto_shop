@@ -63,7 +63,8 @@ public class JwtTokenFilter extends OncePerRequestFilter{
 				|| path.startsWith("/comment/get")
 				|| path.startsWith("/item/get-by-title")
 				|| path.startsWith("/item/get-by-store-name")
-				|| path.startsWith("/item/get-by-category"));
+				|| path.startsWith("/item/get-by-category")
+				|| path.startsWith("/item/get-filtered-list"));
 	}
 	
 	@Override

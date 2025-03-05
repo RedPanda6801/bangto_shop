@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -53,28 +54,33 @@ public class ItemController {
 		}
 	}
 	
-	// 물품 검색어 별 물건 조회(20개 씩)
-	@GetMapping("/item/get-by-title/{title}/{page}")
-	public ResponseEntity getItemListByTitle(HttpServletRequest request, @PathVariable("title") String title, @PathVariable("page") Integer page) throws Exception{
+	// 종합 검색 기능(물품 이름, 매장 이름, 카테고리 검색어별 물건 조회/가격순 정렬)
+	@GetMapping("/item/get-filtered-list")
+	public ResponseEntity getFilterdItemList(@ModelAttribute ItemDTO dto) throws Exception{
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer userId = Integer.parseInt(token);
-			ResponseDTO itemList = itemService.getItemListByTitle(userId, title, page);
+			ResponseDTO itemList = itemService.getFilterdItemList(dto);
 			return ResponseEntity.ok().body(itemList);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
 	
+	// 물품 검색어 별 물건 조회(20개 씩)
+	@GetMapping("/item/get-by-title/{title}/{page}")
+	public ResponseEntity getItemListByTitle(@PathVariable("title") String title, @PathVariable("page") Integer page) throws Exception{
+		try {
+			ResponseDTO itemList = itemService.getItemListByTitle(title, page);
+			return ResponseEntity.ok().body(itemList);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+
 	// 매장 검색어 별 물건 조회(20개 씩)
 	@GetMapping("/item/get-by-store-name/{storeName}/{page}")
-	public ResponseEntity getItemListByStoreName(HttpServletRequest request, @PathVariable("storeName") String storeName, @PathVariable("page") Integer page) throws Exception{
+	public ResponseEntity getItemListByStoreName(@PathVariable("storeName") String storeName, @PathVariable("page") Integer page) throws Exception{
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer userId = Integer.parseInt(token);
-			ResponseDTO itemList = itemService.getItemListByStoreName(userId, storeName, page);
+			ResponseDTO itemList = itemService.getItemListByStoreName(storeName, page);
 			return ResponseEntity.ok().body(itemList);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -83,12 +89,9 @@ public class ItemController {
 	
 	// 카테고리 별 물건 조회(20개 씩)
 	@GetMapping("/item/get-by-category/{category}/{page}")
-	public ResponseEntity getItemListByCategory(HttpServletRequest request, @PathVariable("category") String category, @PathVariable("page") Integer page) throws Exception{
+	public ResponseEntity getItemListByCategory(@PathVariable("category") String category, @PathVariable("page") Integer page) throws Exception{
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer userId = Integer.parseInt(token);
-			ResponseDTO itemList = itemService.getItemListByCategory(userId, category, page);
+			ResponseDTO itemList = itemService.getItemListByCategory(category, page);
 			return ResponseEntity.ok().body(itemList);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -97,12 +100,9 @@ public class ItemController {
 	
 	// 매장 별 물건 조회(20개 씩)
 	@GetMapping("/item/get-itemlist/{storeId}/{page}")
-	public ResponseEntity getItemList(HttpServletRequest request, @PathVariable("storeId") Integer storeId, @PathVariable("page") Integer page) throws Exception{
+	public ResponseEntity getItemList(@PathVariable("storeId") Integer storeId, @PathVariable("page") Integer page) throws Exception{
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer userId = Integer.parseInt(token);
-			ResponseDTO itemList = itemService.getItemList(userId, storeId, page);
+			ResponseDTO itemList = itemService.getItemList(storeId, page);
 			return ResponseEntity.ok().body(itemList);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -110,12 +110,9 @@ public class ItemController {
 	}
 	// 단일 물건 세부 조회
 	@GetMapping("/item/get-detail/{itemId}")
-	public ResponseEntity getItemDetail(HttpServletRequest request, @PathVariable("itemId") Integer itemId) throws Exception{
+	public ResponseEntity getItemDetail(@PathVariable("itemId") Integer itemId) throws Exception{
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer userId = Integer.parseInt(token);
-			ResponseDTO item = itemService.getItemDetail(userId, itemId);
+			ResponseDTO item = itemService.getItemDetail(itemId);
 			return ResponseEntity.ok().body(item);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -173,7 +170,7 @@ public class ItemController {
 				if(!authDAO.authRoot(rootId)) {
 					return ResponseEntity.badRequest().body("Forbidden Error");
 				}
-				ResponseDTO itemList = itemService.getItemList(-1, storeId, page);
+				ResponseDTO itemList = itemService.getItemList(storeId, page);
 				return ResponseEntity.ok().body(itemList);
 			}catch(Exception e) {
 				return ResponseEntity.badRequest().body(e.getMessage());
@@ -190,7 +187,7 @@ public class ItemController {
 				if(!authDAO.authRoot(rootId)) {
 					return ResponseEntity.badRequest().body("Forbidden Error");
 				}
-				ResponseDTO item = itemService.getItemDetail(-1, itemId);
+				ResponseDTO item = itemService.getItemDetail(itemId);
 				return ResponseEntity.ok().body(item);
 			}catch(Exception e) {
 				return ResponseEntity.badRequest().body(e.getMessage());
