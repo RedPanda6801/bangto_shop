@@ -19,6 +19,14 @@ public class SellerService {
 			throw e;
 		}
 	}
+
+	public ResponseDTO getSellerInfoForRoot(int userId) throws Exception{
+		try {
+			return sellerDAO.findSellerForRoot(userId);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
 	
 	public void deleteMyself() throws Exception{
 		try {
@@ -31,6 +39,14 @@ public class SellerService {
 	public void deleteSeller(Integer userId) throws Exception{
 		try {
 			sellerDAO.deleteSeller(userId);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+
+	public ResponseDTO getSellerList(int page) throws Exception{
+		try {
+			return sellerDAO.getSellerList(page);
 		}catch(Exception e) {
 			throw e;
 		}
