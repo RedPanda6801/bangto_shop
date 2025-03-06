@@ -15,39 +15,38 @@ public class QNAService {
 	@Autowired
 	QNADAO qnaDAO;
 	
-	public void addQNA(Integer userId, QNADTO qnaDTO) throws Exception {
+	public void addQNA(QNADTO qnaDTO) throws Exception {
 		try {
 			if(qnaDTO.getQContent() == null || qnaDTO.getQContent() == "" || qnaDTO.getItemPk() == null) {
 				throw new Exception("필수 정보 오류");
 			}
 			else {
-				qnaDAO.addQNA(userId, qnaDTO);
+				qnaDAO.addQNA(qnaDTO);
 			}
 		}catch(Exception e) {
 		 throw e;
 		}
 	}
 	
-	public void addSellerAnswer(Integer userId, QNADTO qnaDTO) throws Exception {
+	public void addSellerAnswer(QNADTO qnaDTO) throws Exception {
 		try {
 			if(qnaDTO.getAContent() == null || qnaDTO.getAContent() == "" || qnaDTO.getItemPk() == null) {
 				throw new Exception("필수 정보 오류");
 			}
 			else {
-				qnaDAO.addSellerAnswer(userId, qnaDTO);
+				qnaDAO.addSellerAnswer(qnaDTO);
 			}
 		}catch(Exception e) {
 		 throw e;
 		}
 	}
 	
-	public ResponseDTO getMyList(Integer userId, Integer page) throws Exception {
+	public ResponseDTO getMyList(Integer page) throws Exception {
 		try {
-			
 			if(page == null || page < 1) {
 				throw new Exception("페이지 입력 오류");
 			}else {
-				return qnaDAO.getMyList(userId, page);
+				return qnaDAO.getMyList(page);
 			}
 		}catch(Exception e) {
 		 throw e;
@@ -69,12 +68,12 @@ public class QNAService {
 		}
 	}
 	
-	public ResponseDTO getQnaDetail(Integer userId, QNADTO qnaDTO) throws Exception {
+	public ResponseDTO getQnaDetail(QNADTO qnaDTO) throws Exception {
 		try {
 			if(qnaDTO.getId() == null){
 				throw new Exception("필수 정보 오류");
 			}else {
-				return qnaDAO.getQnaDetail(userId, qnaDTO);
+				return qnaDAO.getQnaDetail(qnaDTO);
 			}
 		}catch(Exception e) {
 		 throw e;

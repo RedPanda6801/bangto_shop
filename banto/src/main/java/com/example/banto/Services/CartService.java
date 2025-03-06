@@ -14,55 +14,35 @@ public class CartService {
 	@Autowired
 	CartDAO cartDAO;
 
-	public void addCart(Integer userId, CartDTO dto) throws Exception{
-		if(userId == null) { 
-			throw new Exception("권한 없음");
-		}
-		else {
-			try {
-				cartDAO.addCart(userId, dto);
-			}catch(Exception e) {
-				throw e;
-			}
+	public void addCart(CartDTO dto) throws Exception{
+		try {
+			cartDAO.addCart(dto);
+		}catch(Exception e) {
+			throw e;
 		}
 	}
 	
-	public ResponseDTO readCart(Integer userId) throws Exception{
-		if(userId == null) { 
-			throw new Exception("권한 없음");
-		}
-		else {
-			try {
-				return cartDAO.readCart(userId);
-			}catch(Exception e) {
-				throw e;
-			}
+	public ResponseDTO readCart() throws Exception{
+		try {
+			return cartDAO.readCart();
+		}catch(Exception e) {
+			throw e;
 		}
 	}
 	
-	public void modifyCart(Integer userId, CartDTO dto) throws Exception{
-		if(userId == null) { 
-			throw new Exception("권한 없음");
-		}
-		else {
-			try {
-				cartDAO.modifyCart(userId, dto);
-			}catch(Exception e) {
-				throw e;
-			}
+	public void modifyCart(CartDTO dto) throws Exception{
+		try {
+			cartDAO.modifyCart(dto);
+		}catch(Exception e) {
+			throw e;
 		}
 	}
 	
-	public void deleteCart(Integer userId, CartDTO dto) throws Exception{
-		if(userId == null) { 
-			throw new Exception("권한 없음");
-		}
-		else {
-			try {
-				cartDAO.deleteCart(userId, dto);
-			}catch(Exception e) {
-				throw e;
-			}
+	public void deleteCart(CartDTO dto) throws Exception{
+		try {
+			cartDAO.deleteCart(dto);
+		}catch(Exception e) {
+			throw e;
 		}
 	}
 }

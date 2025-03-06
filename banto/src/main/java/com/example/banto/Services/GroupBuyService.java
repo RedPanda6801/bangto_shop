@@ -26,9 +26,9 @@ public class GroupBuyService {
 		}
 	}
 	
-	public ResponseDTO getEventList(Integer userId) throws Exception {
+	public ResponseDTO getEventList() throws Exception {
 		try {
-			return groupBuyDAO.getEventList(userId);
+			return groupBuyDAO.getEventList();
 		}catch(Exception e) {
 			throw e;
 		}
@@ -50,9 +50,9 @@ public class GroupBuyService {
 		}
 	}
 
-	public ResponseDTO getEventListToSeller(Integer userId) throws Exception {
+	public ResponseDTO getEventListToSeller() throws Exception {
 		try {
-			return groupBuyDAO.getEventListToSeller(userId);
+			return groupBuyDAO.getEventListToSeller();
 		}catch(Exception e) {
 			throw e;
 		}

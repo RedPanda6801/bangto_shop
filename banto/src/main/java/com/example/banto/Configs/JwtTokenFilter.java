@@ -52,13 +52,14 @@ public class JwtTokenFilter extends OncePerRequestFilter{
 		// 토큰이 필요없는 모든 URL들 등록
 		return !(path.startsWith("/group-buy/current-event")
 				|| path.startsWith("/group-buy/item/current-list")
+				|| path.startsWith("/group-item/event/get-list")
 				|| path.startsWith("/item/get-all-list")
 				|| path.startsWith("/item/get-itemlist")
 				|| path.startsWith("/item/get-detail")
 				|| path.startsWith("/sign")
 				|| path.startsWith("/login")
 				|| path.startsWith("/user/get-sns-signed")
-				|| path.startsWith("/user/get-info")
+				//|| path.startsWith("/user/get-info")
 				|| path.startsWith("/comment/item")
 				|| path.startsWith("/comment/get")
 				|| path.startsWith("/item/get-by-title")
@@ -101,7 +102,7 @@ public class JwtTokenFilter extends OncePerRequestFilter{
 			}
 			Optional<Sellers> sellerOpt = sellerRepositoy.findByUser_Id(userId);
 			String userRole = null;
-			if(userOpt.isPresent() && userOpt.get().getEmail().equals(envConfig.get("ROOT_EMAIL"))) {
+			if(userOpt.get().getEmail().equals(envConfig.get("ROOT_EMAIL"))) {
 				userRole = UserRole.ADMIN.name();
 				//System.out.println("ADMIN 역할");
 			}
@@ -109,7 +110,7 @@ public class JwtTokenFilter extends OncePerRequestFilter{
 				userRole = UserRole.SELLER.name();
 				//System.out.println("SELLER 역할");
 			}
-			else if(userOpt.isPresent()) {
+			else {
 				userRole = UserRole.BUYER.name();
 				//System.out.println("BUYER 역할");
 			}

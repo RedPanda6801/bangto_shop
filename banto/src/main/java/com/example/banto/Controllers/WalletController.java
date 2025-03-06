@@ -23,24 +23,12 @@ public class WalletController {
 	@Autowired
 	WalletService walletService;
 	
-	@Autowired
-	JwtUtil jwtUtil;
-	
-	@Autowired
-	AuthDAO authDAO;
-	
 	// 내 지갑 조회
 	@GetMapping("/wallet/my/get-info")
 	public ResponseEntity getWallet(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			// 토큰 인증
-			String token = jwtUtil.validateToken(request);
-			if(token != null) {
-				ResponseDTO wallet = walletService.getMyWallet(Integer.parseInt(token));
-				return ResponseEntity.ok().body(wallet);
-			} else {
-				return ResponseEntity.badRequest().body("토큰 인증 오류");
-			}
+			ResponseDTO wallet = walletService.getMyWallet();
+			return ResponseEntity.ok().body(wallet);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
@@ -48,15 +36,9 @@ public class WalletController {
 	
 	// 사용자 지갑 조회(관리자)
 	@GetMapping("/wallet/manager/get-info/{userId}")
-	public ResponseEntity getWalletByManager(HttpServletRequest request, @PathVariable("userId") Integer userId) {
+	public ResponseEntity getWalletByManager(@PathVariable("userId") Integer userId) {
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer rootId = Integer.parseInt(token);
-			if(!authDAO.authRoot(rootId)) {
-				return ResponseEntity.badRequest().body("Forbidden Error");
-			}
-			ResponseDTO wallet = walletService.getMyWallet(userId);
+			ResponseDTO wallet = walletService.getMyWalletForRoot(userId);
 			return ResponseEntity.ok().body(wallet);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -66,16 +48,10 @@ public class WalletController {
 	// 캐시 충전(본인)
 	// cash 필요
 	@PostMapping("/wallet/my/charge")
-	public ResponseEntity chargeCash(HttpServletRequest request, @RequestBody WalletDTO dto) {
+	public ResponseEntity chargeCash(@RequestBody WalletDTO dto) {
 		try {
-			// 토큰 인증
-			String token = jwtUtil.validateToken(request);
-			if(token != null) {
-				walletService.modifyWallet(Integer.parseInt(token), dto);
-				return ResponseEntity.ok().body("캐시 충전 완료");
-			} else {
-				return ResponseEntity.badRequest().body("토큰 인증 오류");
-			}
+			walletService.chargeMyWallet(dto);
+			return ResponseEntity.ok().body("캐시 충전 완료");
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
@@ -85,15 +61,9 @@ public class WalletController {
 	// 캐시, 캐시백을 추가하는 게 아니라 수치를 수정하는 기능
 	// walletPk와, cash 혹은 cashBack 필요
 	@PostMapping("/wallet/manager/modify")
-	public ResponseEntity modifyWallet(HttpServletRequest request, @RequestBody WalletDTO dto) {
+	public ResponseEntity modifyWallet(@RequestBody WalletDTO dto) {
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer rootId = Integer.parseInt(token);
-			if(!authDAO.authRoot(rootId)) {
-				return ResponseEntity.badRequest().body("Forbidden Error");
-			}
-			walletService.modifyWallet(-1, dto);
+			walletService.modifyWallet(dto);
 			return ResponseEntity.ok().body("지갑 조정 완료");
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());

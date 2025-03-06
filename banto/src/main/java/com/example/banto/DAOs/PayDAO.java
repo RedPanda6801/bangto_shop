@@ -2,6 +2,7 @@ package com.example.banto.DAOs;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.example.banto.DTOs.PageDTO;
@@ -49,10 +51,10 @@ public class PayDAO {
 	AuthDAO authDAO;
 	
 	@Transactional
-	public void payCart(Integer userId, PayDTO dto) throws Exception{
+	public void payCart(PayDTO dto) throws Exception{
 		try {
 			// 인증 유효 확인
-			Users user = authDAO.auth(userId);
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
 			List<Integer> cartPks = dto.getCartPks();
 			if(cartPks.isEmpty()) {
 				throw new Exception("결제할 장바구니가 입력돼야 합니다.");
@@ -65,7 +67,7 @@ public class PayDAO {
 					if(cartOpt.isEmpty()) {
 						throw new Exception("유효하지 않은 장바구니가 있습니다.");
 					}
-					if(cartOpt.get().getUser().getId() != userId) {
+					if(!Objects.equals(cartOpt.get().getUser().getId(), user.getId())) {
 						throw new Exception("접근할 수 없는 장바구니가 있습니다.");
 					}
 					if(cartOpt.get().getAmount() > cartOpt.get().getOption().getAmount()) {
@@ -88,7 +90,7 @@ public class PayDAO {
 				if(dto.getUsingCashBack() < 0) {
 					throw new Exception("사용할 캐시백은 음수가 될 수 없습니다.");
 				}
-				Optional<Wallets> walletOpt = walletRepository.findByUser_Id(userId);
+				Optional<Wallets> walletOpt = walletRepository.findByUser_Id(user.getId());
 				if(walletOpt.isEmpty()) {
 					throw new Exception("지갑이 없는 사용자입니다.");
 				}
@@ -131,12 +133,34 @@ public class PayDAO {
 		}
 	}
 	
-	public ResponseDTO getPayList(Integer userId, Integer year, Integer page) throws Exception{
+	public ResponseDTO getPayList(Integer year, Integer page) throws Exception{
 		try {
-			if(userId == -1) {				
-				// 인증 유효 확인
-				authDAO.auth(userId);
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
+
+			Pageable pageable = PageRequest.of(page-1, 20, Sort.by("id").ascending());
+			Page<SoldItems> soldItems = payRepository.findAllByUserId(user.getId(), year, pageable);
+			List<SoldItemDTO> soldItemList = new ArrayList<SoldItemDTO>();
+			if(soldItems.isEmpty()) {
+				throw new Exception("결제 내역이 없습니다.");
 			}
+			else {
+				for(SoldItems soldItem : soldItems) {
+					SoldItemDTO dto = SoldItemDTO.toDTO(soldItem);
+					soldItemList.add(dto);
+				}
+				return new ResponseDTO(soldItemList, new PageDTO(soldItems.getSize(), soldItems.getTotalElements(), soldItems.getTotalPages()));
+			}
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+
+	public ResponseDTO getPayListForRoot(Integer userId, Integer year, Integer page) throws Exception{
+		try {
+			if(!authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())){
+				throw new Exception("관리자 권한 오류");
+			}
+
 			Pageable pageable = PageRequest.of(page-1, 20, Sort.by("id").ascending());
 			Page<SoldItems> soldItems = payRepository.findAllByUserId(userId, year, pageable);
 			List<SoldItemDTO> soldItemList = new ArrayList<SoldItemDTO>();
@@ -156,10 +180,11 @@ public class PayDAO {
 	}
 	
 	@Transactional
-	public void modifySoldItem(Integer userId, SoldItemDTO dto) throws Exception{
+	public void modifySoldItem(SoldItemDTO dto) throws Exception{
 		try {				
 			// 인증 유효 확인
-			authDAO.auth(userId);
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
+
 			Integer soldItemPk = dto.getId();
 			Optional<SoldItems> soldItemOpt = payRepository.findById(soldItemPk);
 			if(soldItemOpt.isEmpty()) {
@@ -173,7 +198,7 @@ public class PayDAO {
 					throw new Exception ("존재하지 않는 매장입니다.");
 				}
 				Integer sellerId = storeOpt.get().getSeller().getUser().getId();
-				if(userId != sellerId) {
+				if(!Objects.equals(user.getId(), sellerId)) {
 					throw new Exception ("해당 물품의 판매자가 아닙니다.");
 				}
 				soldItem.setDeliverInfo(deliverInfo);
@@ -187,11 +212,32 @@ public class PayDAO {
 		}
 	}
 	
-	public ResponseDTO getSoldList(Integer userId, Integer storeId, Integer page) throws Exception{
+	public ResponseDTO getSoldList(Integer storeId, Integer page) throws Exception{
 		try {
-			if(userId == -1) {				
-				// 인증 유효 확인
-				authDAO.auth(userId);
+			authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
+
+			Pageable pageable = PageRequest.of(page-1, 20, Sort.by("id").ascending());
+			Page<SoldItems> soldItems = payRepository.findAllByStoreId(storeId, pageable);
+			List<SoldItemDTO> soldItemList = new ArrayList<SoldItemDTO>();
+			if(soldItems.isEmpty()) {
+				throw new Exception("판매 내역이 없습니다.");
+			}
+			else {
+				for(SoldItems soldItem : soldItems) {
+					SoldItemDTO dto = SoldItemDTO.toDTO(soldItem);
+					soldItemList.add(dto);
+				}
+				return new ResponseDTO(soldItemList, new PageDTO(soldItems.getSize(), soldItems.getTotalElements(), soldItems.getTotalPages()));
+			}
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+
+	public ResponseDTO getSoldListForRoot(Integer storeId, Integer page) throws Exception{
+		try {
+			if(!authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())){
+				throw new Exception("관리자 권한 오류");
 			}
 			Pageable pageable = PageRequest.of(page-1, 20, Sort.by("id").ascending());
 			Page<SoldItems> soldItems = payRepository.findAllByStoreId(storeId, pageable);

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import com.example.banto.Entitys.Users;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 @Data
@@ -21,11 +22,10 @@ public class UserDTO {
     private Boolean snsAuth;
 
     public static UserDTO toDTO(Users entity) {
-    	entity.setEmail(entity.getEmail().replace("@kakao", ""));
         return UserDTO.builder()
                 .id(entity.getId())
                 .email(entity.getEmail())
-                .pw(entity.getPw())
+                .pw(null)
                 .name(entity.getName())
                 .addr(entity.getAddr())
                 .phone(entity.getPhone())

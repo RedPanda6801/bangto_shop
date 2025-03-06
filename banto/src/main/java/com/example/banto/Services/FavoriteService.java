@@ -15,31 +15,31 @@ public class FavoriteService {
 	@Autowired
 	FavoriteDAO favoriteDAO;
 	
-	public void addFavorite(Integer userId, ItemDTO itemDTO) throws Exception {
+	public void addFavorite(ItemDTO itemDTO) throws Exception {
 		try {
 			if(itemDTO.getId() == null) {
 				throw new Exception("필수 정보 오류");
 			}
-			favoriteDAO.addFavorite(userId, itemDTO);
+			favoriteDAO.addFavorite(itemDTO);
 		}catch(Exception e) {
 			throw e;
 		}
 	}
 	
-	public void deleteFavotie(Integer userId, ItemDTO itemDTO) throws Exception {
+	public void deleteFavotie(ItemDTO itemDTO) throws Exception {
 		try {
 			if(itemDTO.getId() == null) {
 				throw new Exception("필수 정보 오류");
 			}
-			favoriteDAO.deleteFavotie(userId, itemDTO);
+			favoriteDAO.deleteFavotie(itemDTO);
 		}catch(Exception e) {
 			throw e;
 		}
 	}
 	
-	public ResponseDTO getAllFavorites(Integer userId, Integer page) throws Exception {
+	public ResponseDTO getAllFavorites(Integer page) throws Exception {
 		try {
-			return favoriteDAO.getAllFavorites(userId, page);
+			return favoriteDAO.getAllFavorites(page);
 		}catch(Exception e) {
 			throw e;
 		}

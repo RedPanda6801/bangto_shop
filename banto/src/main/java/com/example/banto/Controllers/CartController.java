@@ -21,21 +21,13 @@ import jakarta.servlet.http.HttpServletRequest;
 public class CartController {
 	@Autowired
 	CartService cartService;
-	@Autowired
-	JwtUtil jwtUtil;
 	
 	// 장바구니 추가
 	@PostMapping("/cart/add")
-	public ResponseEntity addCart(HttpServletRequest request, @RequestBody CartDTO dto) {
+	public ResponseEntity addCart(@RequestBody CartDTO dto) {
 		try {
-			// 토큰 인증
-			String token = jwtUtil.validateToken(request);
-			if(token != null) {
-				cartService.addCart(Integer.parseInt(token), dto);
-				return ResponseEntity.ok().body("장바구니 추가 완료");
-			} else {
-				return ResponseEntity.badRequest().body("토큰 인증 오류");
-			}
+			cartService.addCart(dto);
+			return ResponseEntity.ok().body("장바구니 추가 완료");
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
@@ -43,16 +35,10 @@ public class CartController {
 	
 	// 장바구니 조회
 	@GetMapping("/cart/get-info")
-	public ResponseEntity readCart(HttpServletRequest request) {
+	public ResponseEntity readCart() {
 		try {
-			// 토큰 인증
-			String token = jwtUtil.validateToken(request);
-			if(token != null) {
-				ResponseDTO cartList = cartService.readCart(Integer.parseInt(token));
-				return ResponseEntity.ok().body(cartList);
-			} else {
-				return ResponseEntity.badRequest().body("토큰 인증 오류");
-			}
+			ResponseDTO cartList = cartService.readCart();
+			return ResponseEntity.ok().body(cartList);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
@@ -60,16 +46,10 @@ public class CartController {
 	
 	// 장바구니 수정
 	@PostMapping("/cart/modify")
-	public ResponseEntity modifyCart(HttpServletRequest request, @RequestBody CartDTO dto) {
+	public ResponseEntity modifyCart(@RequestBody CartDTO dto) {
 		try {
-			// 토큰 인증
-			String token = jwtUtil.validateToken(request);
-			if(token != null) {
-				cartService.modifyCart(Integer.parseInt(token), dto);
-				return ResponseEntity.ok().body("장바구니 수정 완료");
-			} else {
-				return ResponseEntity.badRequest().body("토큰 인증 오류");
-			}
+			cartService.modifyCart(dto);
+			return ResponseEntity.ok().body("장바구니 수정 완료");
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
@@ -77,16 +57,10 @@ public class CartController {
 	
 	// 장바구니 삭제
 	@PostMapping("/cart/delete")
-	public ResponseEntity deleteCart(HttpServletRequest request, @RequestBody CartDTO dto) {
+	public ResponseEntity deleteCart(@RequestBody CartDTO dto) {
 		try {
-			// 토큰 인증
-			String token = jwtUtil.validateToken(request);
-			if(token != null) {
-				cartService.deleteCart(Integer.parseInt(token), dto);
-				return ResponseEntity.ok().body("장바구니 삭제 완료");
-			} else {
-				return ResponseEntity.badRequest().body("토큰 인증 오류");
-			}
+			cartService.deleteCart(dto);
+			return ResponseEntity.ok().body("장바구니 삭제 완료");
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}

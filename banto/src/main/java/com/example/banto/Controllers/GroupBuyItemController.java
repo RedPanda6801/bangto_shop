@@ -22,10 +22,6 @@ import com.example.banto.Services.GroupBuyItemService;
 public class GroupBuyItemController {
 	@Autowired
 	GroupBuyItemService groupBuyItemService;
-	@Autowired
-	JwtUtil jwtUtil;
-	@Autowired
-	AuthDAO authDAO;
 
 	// 이벤트의 공동 구매 물건 조회
 	@GetMapping("/group-item/event/get-list")
@@ -40,15 +36,9 @@ public class GroupBuyItemController {
 
 	// 공동 구매 이벤트에 물건 추가(판매자만) - 옵션 별로 추가해야 함
 	@PostMapping("/group-item/add")
-	public ResponseEntity addGroupItem(HttpServletRequest request, @RequestBody GroupBuyItemDTO groupBuyItemDTO) throws Exception{
+	public ResponseEntity addGroupItem(@RequestBody GroupBuyItemDTO groupBuyItemDTO) throws Exception{
 		try{
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer userId = Integer.parseInt(token);
-			if(authDAO.authSeller(userId) == -1){
-				return ResponseEntity.badRequest().body("권한 오류");
-			}
-			groupBuyItemService.addItem(userId, groupBuyItemDTO);
+			groupBuyItemService.addItem(groupBuyItemDTO);
 			return ResponseEntity.ok().body(null);
 		}catch(Exception e){
 			return  ResponseEntity.badRequest().body(e.getMessage());
@@ -56,19 +46,13 @@ public class GroupBuyItemController {
 	}
 
 	// 공동 구매 이벤트에 올린 물건 수정(판매자만)
-		@PostMapping("/group-item/modify")
-		public ResponseEntity modifyGroupItem(HttpServletRequest request, @RequestBody GroupBuyItemDTO groupBuyItemDTO) throws Exception{
-			try{
-				String token = jwtUtil.validateToken(request);
-				if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-				Integer userId = Integer.parseInt(token);
-				if(authDAO.authSeller(userId) == -1){
-					return ResponseEntity.badRequest().body("권한 오류");
-				}
-				groupBuyItemService.modifyItem(userId, groupBuyItemDTO);
-				return ResponseEntity.ok().body(null);
-			}catch(Exception e){
-				return  ResponseEntity.badRequest().body(e.getMessage());
-			}
+	@PostMapping("/group-item/modify")
+	public ResponseEntity modifyGroupItem(@RequestBody GroupBuyItemDTO groupBuyItemDTO) throws Exception{
+		try{
+			groupBuyItemService.modifyItem(groupBuyItemDTO);
+			return ResponseEntity.ok().body(null);
+		}catch(Exception e){
+			return  ResponseEntity.badRequest().body(e.getMessage());
 		}
+	}
 }

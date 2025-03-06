@@ -15,55 +15,35 @@ public class CommentService {
 	@Autowired
 	CommentDAO commentDAO;
 	
-	public void writeComment(Integer userId, CommentDTO dto, List<MultipartFile> files) throws Exception{
-		if(userId == null) { 
-			throw new Exception("권한 없음");
-		}
-		else {
-			try {
-				commentDAO.writeComment(userId, dto, files);
-			}catch(Exception e) {
-				throw e;
-			}
+	public void writeComment(CommentDTO dto, List<MultipartFile> files) throws Exception{
+		try {
+			commentDAO.writeComment(dto, files);
+		}catch(Exception e) {
+			throw e;
 		}
 	}
 	
-	public ResponseDTO getItemComment(Integer userId, Integer itemId, Integer page) throws Exception{
-		if(userId == null) { 
-			throw new Exception("권한 없음");
-		}
-		else {
-			try {
-				return commentDAO.getItemComment(userId, itemId, page);
-			}catch(Exception e) {
-				throw e;
-			}
+	public ResponseDTO getItemComment(Integer itemId, Integer page) throws Exception{
+		try {
+			return commentDAO.getItemComment(itemId, page);
+		}catch(Exception e) {
+			throw e;
 		}
 	}
 	
-	public ResponseDTO getComment(Integer userId, Integer commentId) throws Exception{
-		if(userId == null) { 
-			throw new Exception("권한 없음");
-		}
-		else {
-			try {
-				return commentDAO.getComment(userId, commentId);
-			}catch(Exception e) {
-				throw e;
-			}
+	public ResponseDTO getComment(Integer commentId) throws Exception{
+		try {
+			return commentDAO.getComment(commentId);
+		}catch(Exception e) {
+			throw e;
 		}
 	}
 	
-	public ResponseDTO getMyComment(Integer userId, Integer page) throws Exception{
-		if(userId == null) { 
-			throw new Exception("권한 없음");
-		}
-		else {
-			try {
-				return commentDAO.getMyComment(userId, page);
-			}catch(Exception e) {
-				throw e;
-			}
+	public ResponseDTO getMyComment(Integer page) throws Exception{
+		try {
+			return commentDAO.getMyComment(page);
+		}catch(Exception e) {
+			throw e;
 		}
 	}
 }

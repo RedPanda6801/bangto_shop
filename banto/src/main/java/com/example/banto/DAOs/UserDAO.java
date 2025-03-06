@@ -9,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -116,34 +118,38 @@ public class UserDAO {
 	
 	public ResponseDTO getUserListForRoot(Integer page) throws Exception{
 		try {
-				// 10명씩 끊기
-				Pageable pageable = PageRequest.of(page-1, 10, Sort.by("id").ascending());
-				Page<Users>users = userRepository.findAll(pageable);
-				List<UserDTO>userList = new ArrayList<UserDTO>();
-				for(Users user : users) {
-					UserDTO dto = UserDTO.toDTO(user);
-					userList.add(dto);
-				}				
-				return new ResponseDTO(userList, new PageDTO(users.getSize(), users.getTotalElements(), users.getTotalPages()));
+			if(!authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())){
+				throw new Exception("관리자 권한 오류");
+			}
+			// 10명씩 끊기
+			Pageable pageable = PageRequest.of(page-1, 10, Sort.by("id").ascending());
+			Page<Users>users = userRepository.findAll(pageable);
+			List<UserDTO>userList = new ArrayList<UserDTO>();
+			for(Users user : users) {
+				UserDTO dto = UserDTO.toDTO(user);
+				userList.add(dto);
+			}
+			return new ResponseDTO(userList, new PageDTO(users.getSize(), users.getTotalElements(), users.getTotalPages()));
 		}catch(Exception e) {
 			throw e;
 		}
 	}
 	
-	public ResponseDTO getUser(Integer userId) throws Exception{
+	public ResponseDTO getUser() throws Exception{
 		try {
-			return new ResponseDTO(UserDTO.toDTO(authDAO.auth(userId)), null);
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
+			return new ResponseDTO(UserDTO.toDTO(user), null);
 		}catch(Exception e) {
 			throw e;
 		}
 	}
 	
 	@Transactional
-	public void modifyUser(Integer userId, UserDTO dto) throws Exception{
+	public void modifyUser(UserDTO dto) throws Exception{
 		try {
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
+
 			BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-			
-			Users user = authDAO.auth(userId);
 			// 수정 로직
 			user.setEmail((dto.getEmail() != null && !dto.getEmail().equals("")) ?
 					dto.getEmail() : user.getEmail());
@@ -163,6 +169,9 @@ public class UserDAO {
 
 	public ResponseDTO getUserForRoot(Integer userId) throws Exception{
 		try {
+			if(!authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())){
+				throw new Exception("관리자 권한 오류");
+			}
 			Optional<Users>user = userRepository.findById(userId);
 			if(user.isEmpty()) {
 				throw new Exception("조회할 유저가 없음");
@@ -176,6 +185,9 @@ public class UserDAO {
 	@Transactional
 	public void modifyUserForRoot(Integer userId, UserDTO dto) throws Exception{
 		try {
+			if(!authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())){
+				throw new Exception("관리자 권한 오류");
+			}
 			Optional<Users>userOpt = userRepository.findById(userId);
 			if(userOpt.isEmpty()) {
 				throw new Exception("조회할 유저가 없음");
@@ -199,8 +211,9 @@ public class UserDAO {
 	}
 	
 	@Transactional
-	public void deleteMyself(Integer userId) throws Exception{
+	public void deleteMyself() throws Exception{
 		try {
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
 			/*// 지갑이 1:1관계로 바로 생성되므로 지갑을 삭제해야 됨.
 			Optional<Wallets> walletOpt = walletRepository.findByUser_Id(userId);
 			walletRepository.delete(walletOpt.get());
@@ -213,8 +226,6 @@ public class UserDAO {
 			Optional<Sellers> sellerOpt = sellerRepository.findByUser_Id(userId);
 			sellerRepository.delete(sellerOpt.get());
 			// 추후에 다른 항목들도 삭제해야 될 수도 있음.*/
-			
-			Users user = authDAO.auth(userId);
 			userRepository.delete(user);
 			
 			//Optional<Wallets> walletOpt = walletRepository.findByUser_Id(userId);
@@ -227,6 +238,9 @@ public class UserDAO {
 	@Transactional
 	public void deleteUser(Integer userId) throws Exception{
 		try {
+			if(!authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())){
+				throw new Exception("관리자 권한 오류");
+			}
 			/*
 			// 지갑이 1:1관계로 바로 생성되므로 지갑을 삭제해야 됨.
 			Optional<Wallets> walletOpt = walletRepository.findByUser_Id(userId);
@@ -243,8 +257,11 @@ public class UserDAO {
 			}
 			// 추후에 다른 항목들도 삭제해야 될 수도 있음.
 			*/
-			Users user = authDAO.auth(userId);
-			userRepository.delete(user);
+			Optional<Users> user = userRepository.findById(userId);
+			if(user.isEmpty()){
+				throw new Exception("유저 정보 오류");
+			}
+			userRepository.delete(user.get());
 		}catch(Exception e) {
 			throw e;
 		}

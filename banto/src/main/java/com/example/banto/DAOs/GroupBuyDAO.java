@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.example.banto.DTOs.GroupBuyDTO;
@@ -28,6 +29,9 @@ public class GroupBuyDAO {
 	@Transactional
 	public void addEvent(GroupBuyDTO dto) throws Exception{
 		try {
+			if(!authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())){
+				throw new Exception("관리자 권한 오류");
+			}
 			// 시작 날짜 조회 후 날짜 중복 확인
 			Optional<GroupBuys> event = groupBuyRepository.findLatest();
 			// 시작 날짜가 가장 최근에 추가 했던 이벤트 마감일보다 빠르면 예외 처리
@@ -42,11 +46,11 @@ public class GroupBuyDAO {
 		}
 	}
 	
-	public ResponseDTO getEventList(Integer userId) throws Exception{
+	public ResponseDTO getEventList() throws Exception{
 		try {
-			// 인증 유효 확인
-			if(!authDAO.authRoot(userId) && authDAO.authSeller(userId) == -1) {
-				throw new Exception("권한 없음");
+			if(!authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())
+			|| authDAO.authSeller(SecurityContextHolder.getContext().getAuthentication()) == -1){
+				throw new Exception("권한 오류");
 			}
 			List<GroupBuys> eventList = groupBuyRepository.findAll();
 			// 시작 날짜가 가장 최근에 했던 이벤트 마감일보다 빠르면 예외 처리
@@ -60,8 +64,11 @@ public class GroupBuyDAO {
 		}
 	}
 
-	public ResponseDTO getChooseList() throws Exception{
+	public ResponseDTO getChooseList() throws Exception {
 		try {
+			if(authDAO.authSeller(SecurityContextHolder.getContext().getAuthentication()) == -1){
+				throw new Exception("권한 오류");
+			}
 			LocalDateTime currentDate = LocalDateTime.now();
 			List<GroupBuys> eventList = groupBuyRepository.findAbleEvent(currentDate);
 			// 시작 날짜가 가장 최근에 했던 이벤트 마감일보다 빠르면 예외 처리
@@ -91,9 +98,13 @@ public class GroupBuyDAO {
 		}
 	}
 
-	public ResponseDTO getEventListToSeller(Integer userId) throws Exception{
+	public ResponseDTO getEventListToSeller() throws Exception{
 		try {
-			List<GroupBuys> eventList = groupBuyRepository.findAllBySellerPk(userId);
+			int sellerId = authDAO.authSeller(SecurityContextHolder.getContext().getAuthentication());
+			if(sellerId == -1){
+				throw new Exception("권한 오류");
+			}
+			List<GroupBuys> eventList = groupBuyRepository.findAllBySellerPk(sellerId);
 			// 시작 날짜가 가장 최근에 했던 이벤트 마감일보다 빠르면 예외 처리
 			List<GroupBuyDTO> dtos = new ArrayList<>();
 			for(GroupBuys event : eventList) {

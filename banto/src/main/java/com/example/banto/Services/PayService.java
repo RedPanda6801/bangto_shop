@@ -15,55 +15,56 @@ public class PayService {
 	@Autowired
 	PayDAO payDAO;
 
-	public void payCart(Integer userId, PayDTO dto) throws Exception{
-		if(userId == null) { 
-			throw new Exception("권한 없음");
-		}
-		else {
-			try {
-				payDAO.payCart(userId, dto);
-			}catch(Exception e) {
-				throw e;
-			}
+	public void payCart(PayDTO dto) throws Exception{
+		try {
+			payDAO.payCart(dto);
+		}catch(Exception e) {
+			throw e;
 		}
 	}
 	
-	public ResponseDTO getPayList(Integer userId, Integer year, Integer page) throws Exception{
-		if(userId == null) { 
-			throw new Exception("권한 없음");
+	public ResponseDTO getPayList(Integer year, Integer page) throws Exception{
+		try {
+			return payDAO.getPayList(year, page);
+		}catch(Exception e) {
+			throw e;
 		}
-		else {
-			try {
-				return payDAO.getPayList(userId, year, page);
-			}catch(Exception e) {
-				throw e;
+	}
+
+	public ResponseDTO getPayListForRoot(Integer userId, Integer year, Integer page) throws Exception{
+		try {
+			if(userId == null) {
+				throw new Exception("권한 없음");
 			}
+			else {
+				return payDAO.getPayListForRoot(userId, year, page);
+			}
+		}catch(Exception e) {
+			throw e;
 		}
 	}
 	
-	public void modifySoldItem(Integer userId, SoldItemDTO dto) throws Exception{
-		if(userId == null) { 
-			throw new Exception("권한 없음");
-		}
-		else {
-			try {
-				payDAO.modifySoldItem(userId, dto);
-			}catch(Exception e) {
-				throw e;
-			}
+	public void modifySoldItem(SoldItemDTO dto) throws Exception{
+		try {
+			payDAO.modifySoldItem(dto);
+		}catch(Exception e) {
+			throw e;
 		}
 	}
 	
-	public ResponseDTO getSoldList(Integer userId, Integer storeId, Integer page) throws Exception{
-		if(userId == null) { 
-			throw new Exception("권한 없음");
+	public ResponseDTO getSoldList(Integer storeId, Integer page) throws Exception{
+		try {
+			return payDAO.getSoldList(storeId, page);
+		}catch(Exception e) {
+			throw e;
 		}
-		else {
-			try {
-				return payDAO.getSoldList(userId, storeId, page);
-			}catch(Exception e) {
-				throw e;
-			}
+	}
+
+	public ResponseDTO getSoldListForRoot(Integer storeId, Integer page) throws Exception{
+		try {
+			return payDAO.getSoldListForRoot(storeId, page);
+		}catch(Exception e) {
+			throw e;
 		}
 	}
 }

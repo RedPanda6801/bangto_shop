@@ -22,19 +22,12 @@ import jakarta.servlet.http.HttpServletRequest;
 @Controller
 public class FavoriteController {
 	@Autowired
-	FavoriteRepository favoriteRepository;
-	@Autowired
 	FavoriteService favoriteService;
-	@Autowired
-	JwtUtil jwtUtil;
 	
 	@GetMapping("/favorite/get-list/{page}")
-	public ResponseEntity getItemList(HttpServletRequest request, @PathVariable("page") Integer page) throws Exception{
+	public ResponseEntity getItemList(@PathVariable("page") Integer page) throws Exception{
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer userId = Integer.parseInt(token);
-			ResponseDTO itemList = favoriteService.getAllFavorites(userId, page);
+			ResponseDTO itemList = favoriteService.getAllFavorites(page);
 			return ResponseEntity.ok().body(itemList);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -42,12 +35,9 @@ public class FavoriteController {
 	}
 	
 	@PostMapping("/favorite/add")
-	public ResponseEntity addFavorites(HttpServletRequest request, @RequestBody ItemDTO itemDTO) throws Exception{
+	public ResponseEntity addFavorites(@RequestBody ItemDTO itemDTO) throws Exception{
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer userId = Integer.parseInt(token);
-			favoriteService.addFavorite(userId, itemDTO);
+			favoriteService.addFavorite(itemDTO);
 			return ResponseEntity.ok().body(null);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -55,12 +45,10 @@ public class FavoriteController {
 	}
 	
 	@GetMapping("/favorite/delete")
-	public ResponseEntity deleteFavorites(HttpServletRequest request, @RequestBody ItemDTO itemDTO) throws Exception{
+	public ResponseEntity deleteFavorites(@RequestBody ItemDTO itemDTO) throws Exception{
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer userId = Integer.parseInt(token);
-			favoriteService.deleteFavotie(userId, itemDTO);
+
+			favoriteService.deleteFavotie(itemDTO);
 			return ResponseEntity.ok().body(null);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());

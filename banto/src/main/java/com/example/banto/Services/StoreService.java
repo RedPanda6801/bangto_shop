@@ -14,40 +14,40 @@ public class StoreService {
 	@Autowired
 	StoreDAO storeDAO;
 	
-	public void create(Integer userId, StoreDTO dto) throws Exception {
-		if(dto.getName() == null) {
-			throw new Exception("입력 오류");
-		}
-		else {
-			try {
-				storeDAO.create(userId, dto);
-			}catch(Exception e) {
-				throw e;
-			}
-		}
-	}
-	
-	public ResponseDTO getMyStores(Integer userId) throws Exception {
+	public void create(StoreDTO dto) throws Exception {
 		try {
-			return storeDAO.getMyStores(userId);
+			storeDAO.create(dto);
 		}catch(Exception e) {
 			throw e;
 		}
 	}
 	
-	public ResponseDTO getStoreDetail(Integer userId, Integer storeId) throws Exception {
+	public ResponseDTO getMyStores() throws Exception {
 		try {
-			return storeDAO.getStore(userId, storeId);
+			return storeDAO.getMyStores();
 		}catch(Exception e) {
 			throw e;
 		}
 	}
-	public void modify(Integer userId, StoreDTO dto) throws Exception {
+	
+	public ResponseDTO getStoreDetail(Integer storeId) throws Exception {
 		try {
-			// validation 필요시 추가
+			return storeDAO.getStore(storeId);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+	public void modify(StoreDTO dto) throws Exception {
+		try {
+			storeDAO.modify(dto);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
 
-			// 수정 기능 호출
-			storeDAO.modify(userId, dto);
+	public void modifyForRoot(Integer userId, StoreDTO dto) throws Exception {
+		try {
+			storeDAO.modifyForRoot(userId, dto);
 		}catch(Exception e) {
 			throw e;
 		}
