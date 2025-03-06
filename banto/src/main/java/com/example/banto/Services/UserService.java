@@ -15,8 +15,6 @@ public class UserService {
 	UserDAO userDAO;
 	
 	public void sign(UserDTO dto) throws Exception {
-		System.out.printf("%s %s %b %s", dto.getEmail(), dto.getName(), dto.getSnsAuth(), dto.getPw());
-
 		// validation
 		if(dto.getEmail() == null || dto.getName() == null || (!dto.getSnsAuth() && dto.getPw() == null)) {
 			throw new Exception("입력 오류");

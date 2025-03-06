@@ -45,9 +45,25 @@ public class SellerController {
 	}
 	
 	// 판매자 전체 정보 조회(관리자)
-	
+	@GetMapping("/manager/seller/get-list/{page}")
+	public ResponseEntity getSellersForRoot(@PathVariable("page") Integer page) {
+		try {
+			ResponseDTO sellerList = sellerService.getSellerList(page);
+			return ResponseEntity.ok().body(sellerList);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
 	// 판매자 단일 조회(관리자)
-	
+	@GetMapping("/seller/get-info/{userId}")
+	public ResponseEntity getSellerForRoot(@PathVariable("userId") Integer userId) {
+		try {
+			ResponseDTO seller = sellerService.getSellerInfoForRoot(userId);
+			return ResponseEntity.ok().body(seller);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
 	// 판매자 단일 수정(관리자)
 	
 	// 판매자 권한 박탈(관리자)
