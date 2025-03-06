@@ -31,13 +31,13 @@ public class QNAs {
     @Column(name="Q_CONTENT", nullable=false)
     private String qContent;
     
-    @Column(name="A_CONTENT", nullable=true)
+    @Column(name="A_CONTENT")
     private String aContent;
     
     @Column(name = "Q_WRITE_DATE", nullable=false, insertable = false, columnDefinition = "date default sysdate")
     private LocalDateTime qWriteDate;
     
-    @Column(name="A_WRITE_DATE", nullable=true)
+    @Column(name="A_WRITE_DATE")
     private LocalDateTime aWriteDate;
     
     @JsonIgnore

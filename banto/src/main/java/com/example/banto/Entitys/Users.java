@@ -38,16 +38,16 @@ public class Users {
     private String email;
 
     @JsonIgnore
-    @Column(name="PW", nullable=true)
+    @Column(name="PW")
     private String pw;
 
     @Column(name="NAME", nullable=false)
     private String name;
 
-    @Column(name="ADDR", nullable=true)
+    @Column(name="ADDR")
     private String addr;
 
-    @Column(name="PHONE", nullable=true)
+    @Column(name="PHONE")
     private String phone;
 
     @Column(name = "REG_DATE", nullable=false, insertable = false, columnDefinition = "date default sysdate")
@@ -56,38 +56,44 @@ public class Users {
     @Column(name="SNS_AUTH", nullable=false)
     private Boolean snsAuth;
 
-    // 참조 객체
+    // 1 : 1 Relation
+    @JsonIgnore
+    @OneToOne(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Wallets wallets;
+
+    @JsonIgnore
+    @OneToOne(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Sellers sellers;
+
+    // 1 : N Relation(Cascade = REMOVE)
     @JsonIgnore
     @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<SellerAuths> sellerAuths;
-
-    @JsonIgnore
-    @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Comments> comments;
     
     @JsonIgnore
     @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Favorites> favorites;
-
-    @JsonIgnore
-    @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<GroupItemPays> groupItemPays;
     
     @JsonIgnore
     @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Carts> carts;
-    
+
+    // 1 : N Relation(Cascade = null)
     @JsonIgnore
-    @OneToOne(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Wallets wallets;
-    
-    @JsonIgnore
-    @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy="user", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     private List<SoldItems> soldItems;
-    
+
     @JsonIgnore
-    @OneToOne(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Sellers sellers;
+    @OneToMany(mappedBy="user", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    private List<GroupItemPays> groupItemPays;
+
+    @JsonIgnore
+    @OneToMany(mappedBy="user", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    private List<Comments> comments;
+
+    @JsonIgnore
+    @OneToMany(mappedBy="user", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    private List<QNAs> qnas;
 
     public static Users toEntity(UserDTO dto) {
         return Users.builder()
@@ -101,14 +107,14 @@ public class Users {
                 .snsAuth(dto.getSnsAuth())
                 .build();
     }
-    
-    public Users setSeller(int id, String email, String name, String addr, String phone) {
-    	return Users.builder()
-    			.id(id)
-    			.email(email)
-    			.name(name)
-    			.addr(addr)
-    			.phone(phone)
-    			.build();
-    }
+//
+//    public Users setSeller(int id, String email, String name, String addr, String phone) {
+//    	return Users.builder()
+//    			.id(id)
+//    			.email(email)
+//    			.name(name)
+//    			.addr(addr)
+//    			.phone(phone)
+//    			.build();
+//    }
 }

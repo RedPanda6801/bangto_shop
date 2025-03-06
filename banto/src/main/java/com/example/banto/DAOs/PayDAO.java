@@ -138,7 +138,7 @@ public class PayDAO {
 			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
 
 			Pageable pageable = PageRequest.of(page-1, 20, Sort.by("id").ascending());
-			Page<SoldItems> soldItems = payRepository.findAllByUserId(user.getId(), year, pageable);
+			Page<SoldItems> soldItems = payRepository.findAllByUserIdAndYear(user.getId(), year, pageable);
 			List<SoldItemDTO> soldItemList = new ArrayList<SoldItemDTO>();
 			if(soldItems.isEmpty()) {
 				throw new Exception("결제 내역이 없습니다.");
@@ -162,7 +162,7 @@ public class PayDAO {
 			}
 
 			Pageable pageable = PageRequest.of(page-1, 20, Sort.by("id").ascending());
-			Page<SoldItems> soldItems = payRepository.findAllByUserId(userId, year, pageable);
+			Page<SoldItems> soldItems = payRepository.findAllByUserIdAndYear(userId, year, pageable);
 			List<SoldItemDTO> soldItemList = new ArrayList<SoldItemDTO>();
 			if(soldItems.isEmpty()) {
 				throw new Exception("결제 내역이 없습니다.");

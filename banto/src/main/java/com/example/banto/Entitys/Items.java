@@ -43,34 +43,39 @@ public class Items {
     @Column(name="CONTENT", nullable=false)
     private String content;
     
-    @Column(name="IMG", nullable=true)
+    @Column(name="IMG")
     private String img;
-    
-    //@JsonIgnore
+
     @ManyToOne
     @JoinColumn(name="STORE_PK")
     private Stores store;
-    
+
+    // 1:N Relation (cascade = remove)
     @OneToMany(mappedBy="item", cascade = CascadeType.ALL)  // 추가: cascade 설정
     private List<QNAs> qnas;
     
+    @OneToMany(mappedBy="item", cascade = CascadeType.ALL)  // 추가: cascade 설정
+    private List<Options> options;
+
+    @OneToMany(mappedBy="item", cascade = CascadeType.ALL)  // 추가: cascade 설정
+    private List<GroupBuyItems> events;
+
     @JsonIgnore
     @OneToMany(mappedBy="item", cascade = CascadeType.ALL)  // 추가: cascade 설정
     private List<Comments> comments;
-    
-    @OneToMany(mappedBy="item", cascade = CascadeType.ALL)  // 추가: cascade 설정
-    private List<Options> options;
-    
+
     @JsonIgnore
     @OneToMany(mappedBy="item", cascade = CascadeType.ALL)  // 추가: cascade 설정
     private List<Favorites> favorites;
     
-    @OneToMany(mappedBy="item")  // 추가: cascade 설정
-    private List<GroupBuyItems> events;
-    
     @JsonIgnore
     @OneToMany(mappedBy="item", cascade = CascadeType.ALL)  // 추가: cascade 설정
     private List<Carts> carts;
+
+    // 1 : N Relation (cascade = null)
+    @JsonIgnore
+    @OneToMany(mappedBy="item", cascade = CascadeType.PERSIST)  // 추가: cascade 설정
+    private List<GroupItemPays> pays;
     
     public static Items toEntity(ItemDTO dto) {
     	return Items.builder()

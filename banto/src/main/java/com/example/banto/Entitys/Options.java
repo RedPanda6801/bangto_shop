@@ -38,14 +38,18 @@ public class Options {
     
     @Column(name="AMOUNT", nullable=false)
     private Integer amount;
-    
+
     @JsonIgnore
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name="ITEM_PK")
     private Items item;
  
     // 'option' 필드가 Carts 엔티티에 존재해야 함
     @JsonIgnore
-    @OneToMany(mappedBy="option")
+    @OneToMany(mappedBy="option", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Carts> carts;
+
+    @JsonIgnore
+    @OneToMany(mappedBy="option", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    private List<GroupBuyItems> eventItems;
 }

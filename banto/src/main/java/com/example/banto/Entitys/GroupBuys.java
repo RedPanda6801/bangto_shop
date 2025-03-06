@@ -7,12 +7,7 @@ import java.util.List;
 import com.example.banto.DTOs.GroupBuyDTO;
 import com.example.banto.DTOs.StoreDTO;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -35,7 +30,7 @@ public class GroupBuys {
 	@Column(name="END_DATE", nullable=false)
 	private LocalDateTime endDate;
 	
-	@OneToMany(mappedBy="event")
+	@OneToMany(mappedBy="event", cascade = CascadeType.PERSIST)
 	private List<GroupBuyItems> items;
 	
 	public static GroupBuys toEntity(GroupBuyDTO dto) {
