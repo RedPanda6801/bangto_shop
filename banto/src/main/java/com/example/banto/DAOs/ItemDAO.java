@@ -59,12 +59,46 @@ public class ItemDAO {
 		}
 	}
 	
-	public ResponseDTO getItemList(Integer userId, Integer storeId, Integer page) throws Exception{
+	public ResponseDTO getFilterdItemList(ItemDTO dto) throws Exception{
 		try {
-			// 인증 유효 확인
-			if(userId != -1) {
-				authDAO.auth(userId);
+			if(dto.getPage() == null || dto.getPage() < 1) {
+				throw new Exception("page 입력 오류");
 			}
+			if(dto.getSize() == null || dto.getSize() < 1) {
+				throw new Exception("size 입력 오류");
+			}
+			List<Sort.Order> sortOrder = new ArrayList<>();
+			if(dto.getPriceSort() != null) {				
+				if(dto.getPriceSort().equalsIgnoreCase("asc")) {
+					sortOrder.add(Sort.Order.asc("price"));
+				}
+				else if(dto.getPriceSort().equalsIgnoreCase("desc")) {
+					sortOrder.add(Sort.Order.desc("price"));
+				}
+				else {
+					throw new Exception("priceSort 입력 오류");
+				}
+			}
+			sortOrder.add(Sort.Order.asc("id"));
+			CategoryType category = null;
+			if(dto.getCategory() != null) {				
+				category = CategoryType.valueOf(dto.getCategory());
+			}
+			Pageable pageable = PageRequest.of(dto.getPage() - 1, dto.getSize(), Sort.by(sortOrder));
+			Page<Items> items = itemRepository.getFilterdItemList(dto.getTitle(), dto.getStoreName(), category, pageable);
+			List<ItemDTO> itemList = new ArrayList<ItemDTO>();
+			for(Items item : items) {
+				ItemDTO itemDTO = ItemDTO.toDTO(item);
+				itemList.add(itemDTO);
+			}
+			return new ResponseDTO(itemList, new PageDTO(items.getSize(), items.getTotalElements(), items.getTotalPages()));
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+	
+	public ResponseDTO getItemList(Integer storeId, Integer page) throws Exception{
+		try {
 			// storeId로 가져오기
 			Pageable pageable = PageRequest.of(page-1, 20, Sort.by("id").ascending());
 			Page<Items>items = itemRepository.getItemsByStoreId(storeId, pageable);
@@ -79,10 +113,8 @@ public class ItemDAO {
 		}
 	}
 	
-	public ResponseDTO getItemListByTitle(Integer userId, String title, Integer page) throws Exception{
+	public ResponseDTO getItemListByTitle(String title, Integer page) throws Exception{
 		try {
-			// 인증 유효 확인
-			authDAO.auth(userId);
 			// storeId로 가져오기
 			Pageable pageable = PageRequest.of(page-1, 20, Sort.by("id").ascending());
 			Page<Items> items = itemRepository.getItemsByTitle(title, pageable);
@@ -100,10 +132,8 @@ public class ItemDAO {
 		}
 	}
 	
-	public ResponseDTO getItemListByStoreName(Integer userId, String storeName, Integer page) throws Exception{
+	public ResponseDTO getItemListByStoreName(String storeName, Integer page) throws Exception{
 		try {
-			// 인증 유효 확인
-			authDAO.auth(userId);
 			// storeId로 가져오기
 			Pageable pageable = PageRequest.of(page-1, 20, Sort.by("id").ascending());
 			Page<Items> items = itemRepository.getItemsByStoreName(storeName, pageable);
@@ -121,13 +151,11 @@ public class ItemDAO {
 		}
 	}
 	
-	public ResponseDTO getItemListByCategory(Integer userId, String category, Integer page) throws Exception{
+	public ResponseDTO getItemListByCategory(String category, Integer page) throws Exception{
 		try {
-			// 인증 유효 확인
-			authDAO.auth(userId);
 			// storeId로 가져오기
 			Pageable pageable = PageRequest.of(page-1, 20, Sort.by("id").ascending());
-			Page<Items> items = itemRepository.getItemsByCategory(category, pageable);
+			Page<Items> items = itemRepository.getItemsByCategory(CategoryType.valueOf(category), pageable);
 			if(items.isEmpty() || items == null) {
 				throw new Exception("검색 결과가 없습니다.");
 			}
@@ -142,12 +170,8 @@ public class ItemDAO {
 		}
 	}
 	
-	public ResponseDTO getItemDetail(Integer userId, Integer itemId) throws Exception{
+	public ResponseDTO getItemDetail(Integer itemId) throws Exception{
 		try {
-			// 인증 유효 확인
-			if(userId != -1) {
-				authDAO.auth(userId);
-			}
 			Optional<Items> item = itemRepository.findById(itemId);
 			if(item.isEmpty()) {
 				throw new Exception("물건 조회 오류");

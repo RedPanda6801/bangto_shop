@@ -54,37 +54,42 @@ public class UserDAO {
 	
 	@Transactional
 	public void sign(UserDTO dto) throws Exception{
-		
-		Optional<Users> userOpt = userRepository.findByEmail(dto.getEmail());
-		if(userOpt.isPresent()) {
-			throw new Exception("존재하는 회원 이메일입니다.");
-		}
-		else {
-			try {
-				if(dto.getSnsAuth() == false) {					
-					BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-					dto.setPw(passwordEncoder.encode(dto.getPw()));
+		try {
+			Optional<Users> userOpt = userRepository.findByEmail(dto.getEmail());
+			Users user = null;
+			if(dto.getSnsAuth() == false) {					
+				if(userOpt.isPresent()) {
+					throw new Exception("존재하는 회원 이메일입니다.");
 				}
-				else {
-					dto.setEmail(dto.getEmail() + "@kakao");
-				}
-				Users user = Users.toEntity(dto);
-				userRepository.save(user);
+				BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+				dto.setPw(passwordEncoder.encode(dto.getPw()));
+				user = Users.toEntity(dto);
 				// 개인 지갑은 1:1이기 때문에 만들어주기
 				WalletDTO walletDTO = new WalletDTO();
 				walletDTO.setUser(user);
 				walletRepository.save(Wallets.toEntity(walletDTO));
-			}catch(Exception e) {
-				throw e;
 			}
+			else {
+				if(userOpt.isPresent()) {
+					user = userOpt.get();
+					user.setSnsAuth(true);
+				}
+				else {
+					user = Users.toEntity(dto);
+					// 개인 지갑은 1:1이기 때문에 만들어주기
+					WalletDTO walletDTO = new WalletDTO();
+					walletDTO.setUser(user);
+					walletRepository.save(Wallets.toEntity(walletDTO));
+				}
+			}
+			userRepository.save(user);
+		}catch(Exception e) {
+			throw e;
 		}
 	}
 	
 	public ResponseDTO login(String email, String pw, Boolean snsAuth) throws Exception{
 		try {
-			if(snsAuth != null && snsAuth == true) {
-				email += "@kakao";
-			}
 			Optional<Users> userOpt = userRepository.findByEmail(email);
 			if(userOpt.isEmpty()) {
 				throw new Exception("존재하지 않는 회원입니다.");
@@ -100,9 +105,6 @@ public class UserDAO {
 					if(!passwordEncoder.matches(pw, user.getPw())) {
 						throw new Exception("비밀번호 불일치");
 					}
-				}
-				else {
-					
 				}
 				LoginDTO loginDTO = new LoginDTO(jwtUtil.generateToken(user.getId()));
 				return new ResponseDTO(loginDTO, null);
@@ -250,11 +252,11 @@ public class UserDAO {
 	
 	public ResponseDTO isSnsSigned(String email) throws Exception{
 		try {
-			Optional<Users> userOpt = userRepository.findByEmail(email + "@kakao");
+			Optional<Users> userOpt = userRepository.findByEmail(email);
 			if(userOpt.isEmpty()) {
-				return new ResponseDTO(false, null);
+				throw new Exception("해당 유저는 없습니다.");
 			}
-			return new ResponseDTO(true, null);
+			return new ResponseDTO(userOpt.get().getSnsAuth(), null);
 		}catch(Exception e) {
 			throw e;
 		}
