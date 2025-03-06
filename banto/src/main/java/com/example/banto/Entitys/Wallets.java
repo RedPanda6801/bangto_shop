@@ -30,13 +30,13 @@ public class Wallets {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @Column(name="CASH", nullable=true)
+    @Column(name="CASH")
     private Integer cash;
 
-    @Column(name="CASH_BACK", nullable=true)
+    @Column(name="CASH_BACK")
     private Integer cashBack;
 
-    @OneToOne//(cascade = CascadeType.ALL)  // 모든 cascade 동작을 원한다면 CascadeType.ALL을 사용하는 것이 좋습니다.
+    @OneToOne
     @JoinColumn(name = "OWNER_PK")
     private Users user;
     

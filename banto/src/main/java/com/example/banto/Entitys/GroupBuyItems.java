@@ -37,8 +37,9 @@ public class GroupBuyItems {
 	@Column(name="NOW_AMOUNT",  nullable=false)
 	private Integer nowAmount;
 
-	@Column(name="SELLER_PK", nullable = false)
+	@Column(name="SELLER_PK")
 	private Integer sellerPk;
+
 	// 참조 객체
 	@JsonIgnore
 	@ManyToOne

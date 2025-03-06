@@ -110,6 +110,7 @@ public class UserController {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
+	
 	// 유저 단일 삭제(관리자)
 	@PostMapping("/manager/user/delete/{userId}")
 	public ResponseEntity deleteUser(@PathVariable("userId") Integer userId) {

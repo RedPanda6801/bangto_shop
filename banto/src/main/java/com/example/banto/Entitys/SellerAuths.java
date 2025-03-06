@@ -39,10 +39,10 @@ public class SellerAuths {
     @Column(name="APPLY_DATE", nullable=false, insertable = false, columnDefinition = "date default sysdate")
     private LocalDateTime applyDate;
     
-    @Column(name="SIGN_DATE", nullable=true)
+    @Column(name="SIGN_DATE")
     private LocalDateTime signDate;
     
-    @ManyToOne//(cascade = CascadeType.ALL)  // 필요에 따라 CascadeType.REMOVE 사용 가능
+    @ManyToOne
     @JoinColumn(name="USER_PK")
     private Users user;
     

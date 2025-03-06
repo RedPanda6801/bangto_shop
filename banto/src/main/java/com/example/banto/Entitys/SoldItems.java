@@ -54,13 +54,13 @@ public class SoldItems {
     @Enumerated(EnumType.STRING)  // Enum 값을 문자열로 저장
     private DeliverType deliverInfo;
 	
-	@Column(name="ITEM_PK", nullable=false)
+	@Column(name="ITEM_PK")
     private Integer itemPk;
 	
-	@Column(name="OPTION_PK", nullable=false)
+	@Column(name="OPTION_PK")
     private Integer optionPk;
 	
-	@Column(name="STORE_PK", nullable=false)
+	@Column(name="STORE_PK")
 	private Integer storePk;
 	
 	@JsonIgnore

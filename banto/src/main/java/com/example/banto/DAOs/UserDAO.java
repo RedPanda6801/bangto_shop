@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.banto.Entitys.*;
+import com.example.banto.Repositorys.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,14 +23,6 @@ import com.example.banto.DTOs.PageDTO;
 import com.example.banto.DTOs.ResponseDTO;
 import com.example.banto.DTOs.UserDTO;
 import com.example.banto.DTOs.WalletDTO;
-import com.example.banto.Entitys.SellerAuths;
-import com.example.banto.Entitys.Sellers;
-import com.example.banto.Entitys.Users;
-import com.example.banto.Entitys.Wallets;
-import com.example.banto.Repositorys.ApplyRepository;
-import com.example.banto.Repositorys.SellerRepository;
-import com.example.banto.Repositorys.UserRepository;
-import com.example.banto.Repositorys.WalletRepository;
 import com.example.banto.JWTs.JwtUtil;
 import jakarta.transaction.Transactional;
 
@@ -39,15 +33,17 @@ public class UserDAO {
 	@Autowired
 	WalletRepository walletRepository;
 	@Autowired
-	ApplyRepository applyRepository;
+	GroupBuyPayRepository groupBuyPayRepository;
 	@Autowired
-	SellerRepository sellerRepository;
+	CommentRepository commentRepository;
+	@Autowired
+	QNARepository qnaRepository;
 	@Autowired
 	AuthDAO authDAO;
 	@Autowired
 	JwtUtil jwtUtil;
 	@Autowired
-	EnvConfig envConfig;
+	PayRepository payRepository;
 	
 
 	public BCryptPasswordEncoder passwordEncoder(){
@@ -214,22 +210,34 @@ public class UserDAO {
 	public void deleteMyself() throws Exception{
 		try {
 			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
-			/*// 지갑이 1:1관계로 바로 생성되므로 지갑을 삭제해야 됨.
-			Optional<Wallets> walletOpt = walletRepository.findByUser_Id(userId);
-			walletRepository.delete(walletOpt.get());
-			// 판매자 인증 신청서가 있을 경우 삭제해야 함.
-			List<SellerAuths> sellerAuths = applyRepository.findAllByUserId(userId);
-			for(SellerAuths auth : sellerAuths) {
-				applyRepository.delete(auth);
+			// 결제 내역 전부 null 처리
+			List<SoldItems> soldItems = payRepository.findAllByUserId(user.getId());
+			for(SoldItems payment : soldItems){
+				payment.setUser(null);
+				payRepository.save(payment);
 			}
-			// 판매자일 경우 권한을 반납해야 함.
-			Optional<Sellers> sellerOpt = sellerRepository.findByUser_Id(userId);
-			sellerRepository.delete(sellerOpt.get());
-			// 추후에 다른 항목들도 삭제해야 될 수도 있음.*/
+			// 그룹 결제 내역 전부 null 처리
+			List<GroupItemPays> groupPays = groupBuyPayRepository.findByUserId(user.getId());
+			for(GroupItemPays groupPayment : groupPays){
+				groupPayment.setUser(null);
+				groupBuyPayRepository.save(groupPayment);
+			}
+			Pageable pageable = Pageable.unpaged();
+			// 후기 전부 null 처리
+			Page<Comments> comments = commentRepository.findCommentsByUserId(user.getId(), pageable);
+			for(Comments comment : comments){
+				comment.setUser(null);
+				commentRepository.save(comment);
+			}
+			// QNA 전부 null 처리
+			Page<QNAs> qnas = qnaRepository.findAllByUserId(user.getId(), pageable);
+			for(QNAs qna : qnas){
+				qna.setUser(null);
+				qnaRepository.save(qna);
+			}
+
+			// 추후에 다른 항목들도 삭제해야 될 수도 있음.
 			userRepository.delete(user);
-			
-			//Optional<Wallets> walletOpt = walletRepository.findByUser_Id(userId);
-			//walletRepository.delete(walletOpt.get());
 		}catch(Exception e) {
 			throw e;
 		}
@@ -241,27 +249,38 @@ public class UserDAO {
 			if(!authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())){
 				throw new Exception("관리자 권한 오류");
 			}
-			/*
-			// 지갑이 1:1관계로 바로 생성되므로 지갑을 삭제해야 됨.
-			Optional<Wallets> walletOpt = walletRepository.findByUser_Id(userId);
-			walletRepository.delete(walletOpt.get());
-			// 판매자 인증 신청서가 있을 경우 삭제해야 함.
-			List<SellerAuths> sellerAuths = applyRepository.findAllByUserId(userId);
-			for(SellerAuths auth : sellerAuths) {
-				applyRepository.delete(auth);
-			}
-			// 판매자일 경우 권한을 박탈해야 함.
-			Optional<Sellers> sellerOpt = sellerRepository.findByUser_Id(userId);
-			if(sellerOpt.isPresent()) {
-				sellerRepository.delete(sellerOpt.get());
-			}
-			// 추후에 다른 항목들도 삭제해야 될 수도 있음.
-			*/
-			Optional<Users> user = userRepository.findById(userId);
-			if(user.isEmpty()){
+
+			Optional<Users> userOpt = userRepository.findById(userId);
+			if(userOpt.isEmpty()){
 				throw new Exception("유저 정보 오류");
 			}
-			userRepository.delete(user.get());
+			Users user = userOpt.get();
+			// 결제 내역 전부 null 처리
+			List<SoldItems> soldItems = payRepository.findAllByUserId(user.getId());
+			for(SoldItems payment : soldItems){
+				payment.setUser(null);
+				payRepository.save(payment);
+			}
+			// 그룹 결제 내역 전부 null 처리
+			List<GroupItemPays> groupPays = groupBuyPayRepository.findByUserId(user.getId());
+			for(GroupItemPays groupPayment : groupPays){
+				groupPayment.setUser(null);
+				groupBuyPayRepository.save(groupPayment);
+			}
+			Pageable pageable = Pageable.unpaged();
+			// 후기 전부 null 처리
+			Page<Comments> comments = commentRepository.findCommentsByUserId(user.getId(), pageable);
+			for(Comments comment : comments){
+				comment.setUser(null);
+				commentRepository.save(comment);
+			}
+			// QNA 전부 null 처리
+			Page<QNAs> qnas = qnaRepository.findAllByUserId(user.getId(), pageable);
+			for(QNAs qna : qnas){
+				qna.setUser(null);
+				qnaRepository.save(qna);
+			}
+			userRepository.delete(user);
 		}catch(Exception e) {
 			throw e;
 		}
