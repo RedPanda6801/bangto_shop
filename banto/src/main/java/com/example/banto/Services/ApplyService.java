@@ -15,29 +15,19 @@ public class ApplyService {
 	@Autowired
 	ApplyDAO applyDAO;
 	
-	public ResponseDTO getAuthInfo(Integer userId) throws Exception{
-		if(userId == null) { 
-			throw new Exception("권한 없음");
-		}
-		else {
-			try {
-				return applyDAO.getSellerAuth(userId);
-			}catch(Exception e) {
-				throw e;
-			}
+	public ResponseDTO getAuthInfo() throws Exception{
+		try {
+			return applyDAO.getAuthInfo();
+		}catch(Exception e) {
+			throw e;
 		}
 	}
 	
-	public void applySellerAuth(Integer userId) throws Exception {
-		if(userId == null) { 
-			throw new Exception("권한 없음");
-		}
-		else {
-			try {
-				applyDAO.applySellerAuth(userId);
-			}catch(Exception e) {
-				throw e;
-			}
+	public void applySellerAuth() throws Exception {
+		try {
+			applyDAO.applySellerAuth();
+		}catch(Exception e) {
+			throw e;
 		}
 	}
 	

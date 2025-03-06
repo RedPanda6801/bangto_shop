@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,12 +25,6 @@ import jakarta.servlet.http.HttpServletRequest;
 public class UserController {
 	@Autowired
 	UserService userService;
-
-	@Autowired
-	JwtUtil jwtUtil;
-	
-	@Autowired
-	AuthDAO authDAO;
 	
 	// 회원가입 기능
 	@PostMapping("/sign")
@@ -54,12 +50,9 @@ public class UserController {
 	
 	// 내정보 조회
 	@GetMapping("/user/get-info")
-	public ResponseEntity getUser(HttpServletRequest request) {
+	public ResponseEntity getUser() {
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer userId = Integer.parseInt(token);
-			ResponseDTO user = userService.getUser(userId);
+			ResponseDTO user = userService.getUser();
 			return ResponseEntity.ok().body(user);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -67,12 +60,9 @@ public class UserController {
 	}
 	// 내정보 수정
 	@PostMapping("/user/modify")
-	public ResponseEntity modifyUser(HttpServletRequest request, @RequestBody UserDTO dto) {
+	public ResponseEntity modifyUser(@RequestBody UserDTO dto) {
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer userId = Integer.parseInt(token);
-			userService.modifyUser(userId, dto);
+			userService.modifyUser(dto);
 			return ResponseEntity.ok().body(null);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -81,12 +71,9 @@ public class UserController {
 	
 	// 회원탈퇴
 	@PostMapping("/user/delete-me")
-	public ResponseEntity deleteMyself(HttpServletRequest request) {
+	public ResponseEntity deleteMyself() {
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer userId = Integer.parseInt(token);
-			userService.deleteMyself(userId);
+			userService.deleteMyself();
 			return ResponseEntity.ok().body("회원탈퇴 완료");
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -95,14 +82,8 @@ public class UserController {
 	
 	// 유저 전체 정보 조회(관리자)
 	@GetMapping("/manager/user/get-list/{page}")
-	public ResponseEntity getUserListManager(HttpServletRequest request, @PathVariable("page") Integer page) {
+	public ResponseEntity getUserListManager(@PathVariable("page") Integer page) {
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer rootId = Integer.parseInt(token);
-			if(!authDAO.authRoot(rootId)) {
-				return ResponseEntity.badRequest().body("Forbidden Error");
-			}
 			ResponseDTO user = userService.getUserListForRoot(page);
 			return ResponseEntity.ok().body(user);
 		}catch(Exception e) {
@@ -111,14 +92,8 @@ public class UserController {
 	}
 	// 유저 단일 조회(관리자)
 	@GetMapping("/manager/user/get-info/{userId}")
-	public ResponseEntity getUserManager(HttpServletRequest request, @PathVariable("userId") Integer userId) {
+	public ResponseEntity getUserManager(@PathVariable("userId") Integer userId) {
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer rootId = Integer.parseInt(token);
-			if(!authDAO.authRoot(rootId)) {
-				return ResponseEntity.badRequest().body("Forbidden Error");
-			}
 			ResponseDTO user = userService.getUserForRoot(userId);
 			return ResponseEntity.ok().body(user);
 		}catch(Exception e) {
@@ -127,14 +102,8 @@ public class UserController {
 	}
 	// 유저 단일 수정(관리자)
 	@PostMapping("/manager/user/modify/{userId}")
-	public ResponseEntity modifyUserManager(HttpServletRequest request, @PathVariable("userId") Integer userId, @RequestBody UserDTO dto) {
+	public ResponseEntity modifyUserManager(@PathVariable("userId") Integer userId, @RequestBody UserDTO dto) {
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer rootId = Integer.parseInt(token);
-			if(!authDAO.authRoot(rootId)) {
-				return ResponseEntity.badRequest().body("Forbidden Error");
-			}
 			userService.modifyUserForRoot(userId, dto);
 			return ResponseEntity.ok().body(null);
 		}catch(Exception e) {
@@ -143,14 +112,8 @@ public class UserController {
 	}
 	// 유저 단일 삭제(관리자)
 	@PostMapping("/manager/user/delete/{userId}")
-	public ResponseEntity deleteUser(HttpServletRequest request, @PathVariable("userId") Integer userId) {
+	public ResponseEntity deleteUser(@PathVariable("userId") Integer userId) {
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer rootId = Integer.parseInt(token);
-			if(!authDAO.authRoot(rootId)) {
-				return ResponseEntity.badRequest().body("Forbidden Error");
-			}
 			userService.deleteUser(userId);
 			return ResponseEntity.ok().body("회원 추방 완료");
 		}catch(Exception e) {

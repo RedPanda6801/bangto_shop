@@ -2,9 +2,11 @@ package com.example.banto.DAOs;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.example.banto.DTOs.CartDTO;
@@ -31,10 +33,10 @@ public class CartDAO {
 	AuthDAO authDAO;
 	
 	@Transactional
-	public void addCart(Integer userId, CartDTO dto) throws Exception{
+	public void addCart(CartDTO dto) throws Exception{
 		try {
 			// 인증 유효 확인
-			Users user = authDAO.auth(userId);
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
 			Integer optionPk = dto.getOptionPk();
 			Optional<Options> optionOpt = optionRepository.findById(optionPk);
 			if(optionOpt.isEmpty()) {
@@ -49,12 +51,12 @@ public class CartDAO {
 				throw new Exception("물품 수량은 자연수이어야 합니다.");
 			}
 			// 물품과 옵션이 같은 항목이 이미 장바구니에 있을 경우 수량만 추가
-			List<Carts> carts = cartRepository.findAllByUserId(userId);
+			List<Carts> carts = cartRepository.findAllByUserId(user.getId());
 			for(Carts cart : carts) {
 				if(dto.getAmount() > cart.getOption().getAmount()){
 					throw new Exception("물품 재고가 부족합니다.");
 				}
-				if(cart.getItem().getId() == itemPk && cart.getOption().getId() == optionPk) {
+				if(Objects.equals(cart.getItem().getId(), itemPk) && Objects.equals(cart.getOption().getId(), optionPk)) {
 					int sum = cart.getAmount() + dto.getAmount();
 					if(sum > cart.getOption().getAmount()) {
 						throw new Exception("물품 재고가 부족합니다.");
@@ -75,11 +77,11 @@ public class CartDAO {
 		}
 	}
 	
-	public ResponseDTO readCart(Integer userId) throws Exception{
+	public ResponseDTO readCart() throws Exception{
 		try {
 			// 인증 유효 확인
-			authDAO.auth(userId);
-			List<Carts> carts = cartRepository.findAllByUserId(userId);
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
+			List<Carts> carts = cartRepository.findAllByUserId(user.getId());
 			if(carts.isEmpty()) {
 				throw new Exception("장바구니가 비었습니다.");
 			}
@@ -103,15 +105,15 @@ public class CartDAO {
 	}
 	
 	@Transactional
-	public void modifyCart(Integer userId, CartDTO dto) throws Exception{
+	public void modifyCart(CartDTO dto) throws Exception{
 		try {
 			// 인증 유효 확인
-			authDAO.auth(userId);
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
 			Optional<Carts> cartOpt = cartRepository.findById(dto.getCartPk());
 			if(cartOpt.isEmpty()) {
 				throw new Exception("존재하지 않는 장바구니 항목입니다.");
 			}
-			else if(cartOpt.get().getUser().getId() != userId) {
+			else if(!Objects.equals(cartOpt.get().getUser().getId(), user.getId())) {
 				throw new Exception("다른 사용자의 장바구니입니다.");
 			}
 			Integer optionPk = dto.getOptionPk();
@@ -148,15 +150,15 @@ public class CartDAO {
 	}
 	
 	@Transactional
-	public void deleteCart(Integer userId, CartDTO dto) throws Exception{
+	public void deleteCart(CartDTO dto) throws Exception{
 		try {
 			// 인증 유효 확인
-			authDAO.auth(userId);
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
 			Optional<Carts> cartOpt = cartRepository.findById(dto.getCartPk());
 			if(cartOpt.isEmpty()) {
 				throw new Exception("존재하지 않는 장바구니 항목입니다.");
 			}
-			else if(cartOpt.get().getUser().getId() != userId) {
+			else if(!Objects.equals(cartOpt.get().getUser().getId(), user.getId())) {
 				throw new Exception("다른 사용자의 장바구니입니다.");
 			}
 			else {

@@ -10,6 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.example.banto.Entitys.ApplyType;
@@ -38,16 +40,14 @@ public class ApplyDAO {
 	SellerRepository sellerRepository;
 	@Autowired
 	AuthDAO authDAO;
-	@Autowired
-	EnvConfig envConfig;
-	
-	public ResponseDTO getSellerAuth(Integer userId) throws Exception{
+
+	public ResponseDTO getAuthInfo() throws Exception{
 		try {
 			// 인증 유효 확인
-			authDAO.auth(userId);
-			List<SellerAuths> sellerAuths = applyRepository.findAllByUserId(userId);
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
+			List<SellerAuths> sellerAuths = applyRepository.findAllByUserId(user.getId());
 			if(sellerAuths.isEmpty()) {
-				throw new Exception("등록된 판매자가 아닙니다.");
+				return new ResponseDTO(new ArrayList<SellerAuths>(), null);
 			}
 			else {
 				List<ApplyDTO> applyList = new ArrayList<ApplyDTO>();
@@ -63,13 +63,12 @@ public class ApplyDAO {
 	}
 	
 	@Transactional
-	public void applySellerAuth(Integer userId) throws Exception {
+	public void applySellerAuth() throws Exception {
 		try {
-			// 인증 유효 확인
-			Users user = authDAO.auth(userId);
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
 			// 판매자 가져오기
-			Optional<Sellers> seller = sellerRepository.findByUser_Id(userId);
-			Optional<SellerAuths> processing = applyRepository.findProcessingAuthByUserId(userId);
+			Optional<Sellers> seller = sellerRepository.findByUser_Id(user.getId());
+			Optional<SellerAuths> processing = applyRepository.findProcessingAuthByUserId(user.getId());
 			if(processing.isEmpty() && seller.isEmpty()) {
 				SellerAuths apply = new SellerAuths();
 				apply.setUser(user);
@@ -90,6 +89,9 @@ public class ApplyDAO {
 	@Transactional
 	public void modify(ProcessDTO dto) throws Exception {
 		try {
+			if(!authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())){
+				throw new Exception("관리자 권한 오류");
+			}
 			// 판매자 인증 신청서 가져오기
 			Optional<SellerAuths> sellerAuthOpt = applyRepository.findById(dto.getSellerAuthPk());
 			String process = dto.getProcess();
@@ -124,6 +126,9 @@ public class ApplyDAO {
 	
 	public ResponseDTO getApplyList(Integer page) throws Exception{
 		try {
+			if(!authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())){
+				throw new Exception("관리자 권한 오류");
+			}
 			Pageable pageable = PageRequest.of(page-1, 20, Sort.by("id").ascending());
 			Page<SellerAuths> applies = applyRepository.findAll(pageable);
 			if(applies.isEmpty()) {
@@ -141,7 +146,10 @@ public class ApplyDAO {
 	}
 	
 	public ResponseDTO getApply(Integer sellerAuthId) throws Exception{
-		try {			
+		try {
+			if(!authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())){
+				throw new Exception("관리자 권한 오류");
+			}
 			Optional<SellerAuths> sellerAuthOpt = applyRepository.findById(sellerAuthId);
 			if(sellerAuthOpt.isEmpty()) {
 				throw new Exception("존재하지 않는 판매자 인증 신청서입니다.");

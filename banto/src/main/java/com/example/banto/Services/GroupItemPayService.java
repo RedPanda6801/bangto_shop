@@ -24,46 +24,46 @@ public class GroupItemPayService {
 		}
 	}
 
-	public void payGroupItem(Integer userId, GroupItemPayDTO dto) throws Exception {
+	public void payGroupItem(GroupItemPayDTO dto) throws Exception {
 		try {
 			// Validation
 			if(dto.getAmount() == null || dto.getItemPk() == null || dto.getAddress() == null
 					|| dto.getOptionPk() == null || dto.getGroupItemPk() == null){
 				throw new Exception("필수 정보 오류");
 			}
-			groupItemPayDAO.payGroupItem(userId, dto);
+			groupItemPayDAO.payGroupItem(dto);
 		}catch(Exception e) {
 			throw e;
 		}
 	}
 
-	public ResponseDTO getMyGroupPayList(Integer userId, Integer year) throws Exception {
+	public ResponseDTO getMyGroupPayList(Integer year) throws Exception {
 		try {
-			return groupItemPayDAO.getMyGroupPayList(userId, year);
+			return groupItemPayDAO.getMyGroupPayList(year);
 		}catch(Exception e) {
 			throw e;
 		}
 	}
 
-	public void deliveringCheck(Integer sellerId, GroupItemPayDTO dto) throws Exception {
-		try {
-			// Validation
-			if(dto.getId() == null){
-				throw new Exception("필수 정보 오류");
-			}
-			groupItemPayDAO.deliveringCheck(sellerId, dto);
-		}catch(Exception e) {
-			throw e;
-		}
-	}
-
-	public void deliveredCheck(Integer sellerId, GroupItemPayDTO dto) throws Exception {
+	public void deliveringCheck(GroupItemPayDTO dto) throws Exception {
 		try {
 			// Validation
 			if(dto.getId() == null){
 				throw new Exception("필수 정보 오류");
 			}
-			groupItemPayDAO.deliveredCheck(sellerId, dto);
+			groupItemPayDAO.deliveringCheck(dto);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+
+	public void deliveredCheck(GroupItemPayDTO dto) throws Exception {
+		try {
+			// Validation
+			if(dto.getId() == null){
+				throw new Exception("필수 정보 오류");
+			}
+			groupItemPayDAO.deliveredCheck(dto);
 		}catch(Exception e) {
 			throw e;
 		}

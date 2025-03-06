@@ -1,16 +1,15 @@
 package com.example.banto.DAOs;
 
+import com.example.banto.Entitys.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,10 +18,6 @@ import com.example.banto.DTOs.ItemDTO;
 import com.example.banto.DTOs.OptionDTO;
 import com.example.banto.DTOs.PageDTO;
 import com.example.banto.DTOs.ResponseDTO;
-import com.example.banto.Entitys.CategoryType;
-import com.example.banto.Entitys.Items;
-import com.example.banto.Entitys.Options;
-import com.example.banto.Entitys.Stores;
 import com.example.banto.Repositorys.ItemRepository;
 import com.example.banto.Repositorys.OptionRepository;
 import com.example.banto.Repositorys.StoreRepository;
@@ -185,13 +180,18 @@ public class ItemDAO {
 	}
 	
 	@Transactional
-	public void addItem(Integer userId, ItemDTO itemDTO, List<MultipartFile> files) throws Exception{
+	public void addItem(ItemDTO itemDTO, List<MultipartFile> files) throws Exception{
 		try {
 			// 인증 유효 확인
-			authDAO.auth(userId);
+			int sellerId = authDAO.authSeller(SecurityContextHolder.getContext().getAuthentication());
+			if(sellerId == -1){
+				throw new Exception("판매자 권한 오류");
+			}
 			Optional<Stores> store = storeRepository.findById(itemDTO.getStorePk());
 			if(store.isEmpty()) {
 				throw new Exception("매장 조회 오류");
+			}else if(!store.get().getSeller().getUser().getId().equals(sellerId)){
+				throw new Exception("본인 매장이 아님");
 			}else {
 				String savePath = envConfig.get("FRONTEND_UPLOAD_ADDRESS");
 				String img = "";
@@ -224,19 +224,22 @@ public class ItemDAO {
 	}
 	
 	@Transactional
-	public void modifyItem(Integer userId, ItemDTO dto) throws Exception{
+	public void modifyItem(ItemDTO dto) throws Exception{
 		try {
-			// 인증 유효 확인
-			if(userId != -1) {
-				authDAO.auth(userId);
+			int sellerId = authDAO.authSeller(SecurityContextHolder.getContext().getAuthentication());
+			if(sellerId == -1 && !authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())){
+				throw new Exception("판매자 권한 오류");
 			}
 			Optional<Stores> store = storeRepository.findById(dto.getStorePk());
 			if(store.isEmpty()) {
 				throw new Exception("매장 조회 오류");
-			}else {
+			}else if(sellerId != -1 && !store.get().getSeller().getUser().getId().equals(sellerId)){
+				throw new Exception("판매자 정보 불일치");
+			}
+			else {
 				List<Items> itemList = store.get().getItems();
 				for(Items item : itemList) {
-					if(item.getId() == dto.getId()) {
+					if(Objects.equals(item.getId(), dto.getId())) {
 						// 수정 로직
 						item.setTitle((dto.getTitle() != null && !dto.getTitle().equals("")) ?
 								dto.getTitle() : item.getTitle());
@@ -256,19 +259,21 @@ public class ItemDAO {
 	}
 	
 	@Transactional
-	public void modifyItemOption(Integer userId, OptionDTO dto) throws Exception{
+	public void modifyItemOption(OptionDTO dto) throws Exception{
 		try {
-			// 인증 유효 확인
-			if(userId != -1) {
-				authDAO.auth(userId);
+			int sellerId = authDAO.authSeller(SecurityContextHolder.getContext().getAuthentication());
+			if(sellerId == -1 && !authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())){
+				throw new Exception("판매자 권한 오류");
 			}
 			Optional<Items> item = itemRepository.findById(dto.getItemPk());
 			if(item.isEmpty()) {
 				throw new Exception("매장 조회 오류");
+			}else if(sellerId != -1 && !item.get().getStore().getSeller().getUser().getId().equals(sellerId)){
+				throw new Exception("판매자 정보 불일치");
 			}else {
 				List<Options> optionList = item.get().getOptions();
 				for(Options option : optionList) {
-					if(option.getId() == dto.getId()) {
+					if(Objects.equals(option.getId(), dto.getId())) {
 						// 수정 로직
 						option.setAddPrice((dto.getAddPrice() != null && !dto.getAddPrice().equals("")) ?
 								dto.getAddPrice() : option.getAddPrice());

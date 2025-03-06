@@ -22,24 +22,12 @@ public class SellerController {
 	@Autowired
 	SellerService sellerService;
 	
-	@Autowired
-	AuthDAO authDAO;
-	
-	@Autowired
-	JwtUtil jwtUtil;
-	
 	// 판매자 본인 조회
 	@GetMapping("/seller/get-info")
-	public ResponseEntity getSeller(HttpServletRequest request) {
+	public ResponseEntity getSeller() {
 		try {
-			// 토큰 인증
-			String token = jwtUtil.validateToken(request);
-			if(token != null) {		
-				ResponseDTO seller = sellerService.getSellerInfo(Integer.parseInt(token));
-				return ResponseEntity.ok().body(seller);
-			} else {
-				return ResponseEntity.badRequest().body("토큰 인증 오류");
-			}
+			ResponseDTO seller = sellerService.getSellerInfo();
+			return ResponseEntity.ok().body(seller);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
@@ -47,16 +35,10 @@ public class SellerController {
 	
 	// 판매자 권한 반납
 	@PostMapping("/seller/delete-me")
-	public ResponseEntity deleteMyself(HttpServletRequest request) {
+	public ResponseEntity deleteMyself() {
 		try {
-			// 토큰 인증
-			String token = jwtUtil.validateToken(request);
-			if(token != null) {		
-				sellerService.deleteMyself(Integer.parseInt(token));
-				return ResponseEntity.ok().body("판매자 권한 반납 완료");
-			} else {
-				return ResponseEntity.badRequest().body("토큰 인증 오류");
-			}
+			sellerService.deleteMyself();
+			return ResponseEntity.ok().body("판매자 권한 반납 완료");
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
@@ -70,15 +52,8 @@ public class SellerController {
 	
 	// 판매자 권한 박탈(관리자)
 	@PostMapping("/seller/delete/{userId}")
-	public ResponseEntity deleteSeller(HttpServletRequest request, @PathVariable("userId") Integer userId) {
+	public ResponseEntity deleteSeller(@PathVariable("userId") Integer userId) {
 		try {
-			// 토큰 인증
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer rootId = Integer.parseInt(token);
-			if(!authDAO.authRoot(rootId)) {
-				return ResponseEntity.badRequest().body("Forbidden Error");
-			}
 			sellerService.deleteSeller(userId);
 			return ResponseEntity.ok().body("판매자 권한 박탈 완료");
 		}catch(Exception e) {

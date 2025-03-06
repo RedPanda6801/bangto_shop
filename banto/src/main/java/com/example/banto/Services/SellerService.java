@@ -12,29 +12,19 @@ public class SellerService {
 	@Autowired
 	SellerDAO sellerDAO;
 	
-	public ResponseDTO getSellerInfo(Integer userId) throws Exception{
-		if(userId == null) { 
-			throw new Exception("권한 없음");
-		}
-		else {
-			try {
-				return sellerDAO.findSeller(userId);
-			}catch(Exception e) {
-				throw e;
-			}
+	public ResponseDTO getSellerInfo() throws Exception{
+		try {
+			return sellerDAO.findSeller();
+		}catch(Exception e) {
+			throw e;
 		}
 	}
 	
-	public void deleteMyself(Integer userId) throws Exception{
-		if(userId == null) {
-			throw new Exception("권한 없음");
-		}
-		else {
-			try {
-				sellerDAO.deleteMyself(userId);
-			}catch(Exception e) {
-				throw e;
-			}
+	public void deleteMyself() throws Exception{
+		try {
+			sellerDAO.deleteMyself();
+		}catch(Exception e) {
+			throw e;
 		}
 	}
 	

@@ -92,25 +92,25 @@ public class ItemService {
 		}
 	}
 	
-	public void addItem(Integer userId, ItemDTO itemDTO, List<MultipartFile> files) throws Exception {
+	public void addItem(ItemDTO itemDTO, List<MultipartFile> files) throws Exception {
 		try {
-			itemDAO.addItem(userId, itemDTO, files);
+			itemDAO.addItem(itemDTO, files);
 		}catch(Exception e) {
 			throw e;
 		}
 	}
 	
-	public void modifyItem(Integer userId, ItemDTO itemDTO) throws Exception {
+	public void modifyItem(ItemDTO itemDTO) throws Exception {
 		try {
-			itemDAO.modifyItem(userId, itemDTO);
+			itemDAO.modifyItem(itemDTO);
 		}catch(Exception e) {
 			throw e;
 		}
 	}
 	
-	public void modifyItemOption(Integer userId, OptionDTO optionDTO) throws Exception {
+	public void modifyItemOption(OptionDTO optionDTO) throws Exception {
 		try {
-			itemDAO.modifyItemOption(userId, optionDTO);
+			itemDAO.modifyItemOption(optionDTO);
 		}catch(Exception e) {
 			throw e;
 		}

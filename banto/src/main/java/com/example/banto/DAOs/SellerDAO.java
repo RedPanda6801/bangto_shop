@@ -3,6 +3,7 @@ package com.example.banto.DAOs;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.example.banto.DTOs.ResponseDTO;
@@ -21,11 +22,11 @@ public class SellerDAO {
 	@Autowired
 	AuthDAO authDAO;
 	
-	public ResponseDTO findSeller(Integer userId) throws Exception{
+	public ResponseDTO findSeller() throws Exception{
 		try {
 			// 인증 유효 확인
-			authDAO.auth(userId);
-			Optional<Sellers>sellerOpt =  sellerRepository.findByUser_Id(userId);
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
+			Optional<Sellers>sellerOpt =  sellerRepository.findByUser_Id(user.getId());
 			if(sellerOpt.isEmpty()) {
 				throw new Exception("데이터 조회 오류");
 			}
@@ -39,11 +40,11 @@ public class SellerDAO {
 	}
 	
 	@Transactional
-	public void deleteMyself(Integer userId) throws Exception{
+	public void deleteMyself() throws Exception{
 		try {
 			// 인증 유효 확인
-			authDAO.auth(userId);
-			Optional<Sellers>sellerOpt = sellerRepository.findByUser_Id(userId);
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
+			Optional<Sellers>sellerOpt = sellerRepository.findByUser_Id(user.getId());
 			if(sellerOpt.isEmpty()) {
 				throw new Exception("판매자가 아닙니다.");
 			}
@@ -59,6 +60,9 @@ public class SellerDAO {
 	@Transactional
 	public void deleteSeller(Integer userId) throws Exception{
 		try {
+			if(!authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())){
+				throw new Exception("관리자 권한 오류");
+			}
 			Optional<Sellers>sellerOpt = sellerRepository.findByUser_Id(userId);
 			if(sellerOpt.isEmpty()) {
 				throw new Exception("판매자가 아닙니다.");
