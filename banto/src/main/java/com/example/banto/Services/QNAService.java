@@ -79,4 +79,17 @@ public class QNAService {
 		 throw e;
 		}
 	}
+
+	// 관리자 + 구매자
+	public void deleteQNA(QNADTO qnaDTO) throws Exception {
+		try {
+			if(qnaDTO.getId() == null) {
+				throw new Exception("필수 정보 오류");
+			} else {
+				qnaDAO.deleteQNA(qnaDTO);
+			}
+		}catch(Exception e) {
+			throw e;
+		}
+	}
 }

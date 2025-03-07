@@ -45,6 +45,14 @@ public class StoreService {
 		}
 	}
 
+	public void delete(StoreDTO dto) throws Exception {
+		try {
+			storeDAO.delete(dto);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+
 	public void modifyForRoot(Integer userId, StoreDTO dto) throws Exception {
 		try {
 			storeDAO.modifyForRoot(userId, dto);

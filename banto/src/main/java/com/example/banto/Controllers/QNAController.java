@@ -81,17 +81,14 @@ public class QNAController {
 		}
 	}
 
-//	// QNA 삭제
-//	@GetMapping("/item/get-itemlist/{storeId}/{page}")
-//	public ResponseEntity getItemList(HttpServletRequest request, @PathVariable("storeId") Integer storeId, @PathVariable("page") Integer page) throws Exception{
-//		try {
-//			String token = jwtUtil.validateToken(request);
-//			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-//			Integer userId = Integer.parseInt(token);
-//			List<ItemDTO> itemList = itemService.getItemList(userId, storeId, page);
-//			return ResponseEntity.ok().body(itemList);
-//		}catch(Exception e) {
-//			return ResponseEntity.badRequest().body(e.getMessage());
-//		}
-//	}
+	// QNA 삭제
+	@PostMapping("/qna/delete")
+	public ResponseEntity deleteQNA(@RequestBody QNADTO qnadto) throws Exception{
+		try {
+			qnaService.deleteQNA(qnadto);
+			return ResponseEntity.ok().body(null);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
 }

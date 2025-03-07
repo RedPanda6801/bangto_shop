@@ -47,7 +47,6 @@ public class FavoriteController {
 	@GetMapping("/favorite/delete")
 	public ResponseEntity deleteFavorites(@RequestBody ItemDTO itemDTO) throws Exception{
 		try {
-
 			favoriteService.deleteFavotie(itemDTO);
 			return ResponseEntity.ok().body(null);
 		}catch(Exception e) {

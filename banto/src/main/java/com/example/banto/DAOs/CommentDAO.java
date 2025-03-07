@@ -151,4 +151,22 @@ public class CommentDAO {
 			throw e;
 		}
 	}
+
+	public void deleteComment(CommentDTO dto) throws Exception{
+		try {
+			// 인증 유효 확인
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
+			Optional<Comments> commentOpt = commentRepository.findById(dto.getId());
+			if(commentOpt.isEmpty()){
+				throw new Exception("후기 조회 오류");
+			}else if(!authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())
+					&& !commentOpt.get().getUser().getId().equals(user.getId())){
+				throw new Exception("권한 오류");
+			}
+			Comments comment = commentOpt.get();
+			commentRepository.delete(comment);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
 }

@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.example.banto.Entitys.*;
+import com.example.banto.Repositorys.GroupBuyPayRepository;
 import com.example.banto.Repositorys.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,9 +21,6 @@ import com.example.banto.DTOs.PageDTO;
 import com.example.banto.DTOs.ResponseDTO;
 import com.example.banto.DTOs.SellerDTO;
 import com.example.banto.DTOs.StoreDTO;
-import com.example.banto.Entitys.Sellers;
-import com.example.banto.Entitys.Stores;
-import com.example.banto.Entitys.Users;
 import com.example.banto.Repositorys.SellerRepository;
 import com.example.banto.Repositorys.StoreRepository;
 
@@ -35,6 +34,8 @@ public class StoreDAO {
 	SellerRepository sellerRepository;
 	@Autowired
 	UserRepository userRepository;
+	@Autowired
+	GroupBuyPayRepository groupBuyPayRepository;
 	@Autowired
 	AuthDAO authDAO;
 
@@ -125,6 +126,36 @@ public class StoreDAO {
 				store.setName((dto.getName() != null && !dto.getName().equals("")) ?
 						dto.getName() : store.getName());
 				storeRepository.save(store);
+			}
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+
+	@Transactional
+	public void delete(StoreDTO dto) throws Exception {
+		try {
+			// 인증 유효 확인
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
+			// 매장 가져오기
+			Optional<Stores> storeOpt = storeRepository.findStoreByUserId(user.getId(), dto.getId());
+			if(storeOpt.isEmpty()) {
+				throw new Exception("매장 없음");
+			}else if(!storeOpt.get().getSeller().getUser().getId().equals(user.getId())){
+				throw new Exception("권한 없음");
+			}
+			else {
+				Stores store = storeOpt.get();
+				if(!store.getItems().isEmpty()){
+					for(Items item : store.getItems()){
+						List<GroupItemPays> payments = groupBuyPayRepository.findByItemId(item.getId());
+						for(GroupItemPays payment : payments){
+							payment.setItem(null);
+							groupBuyPayRepository.save(payment);
+						}
+					}
+				}
+				storeRepository.delete(store);
 			}
 		}catch(Exception e) {
 			throw e;

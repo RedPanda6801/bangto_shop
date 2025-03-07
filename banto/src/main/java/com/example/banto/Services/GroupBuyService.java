@@ -57,4 +57,15 @@ public class GroupBuyService {
 			throw e;
 		}
 	}
+
+	public void deleteEvent(GroupBuyDTO dto) throws Exception {
+		try {
+			if(dto.getId() == null) {
+				throw new Exception("필수 정보 오류");
+			}
+			groupBuyDAO.deleteEvent(dto);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
 }

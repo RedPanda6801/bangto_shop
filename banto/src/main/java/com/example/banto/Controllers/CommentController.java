@@ -67,4 +67,15 @@ public class CommentController {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
+
+	// 후기 삭제
+	@PostMapping("/comment/delete")
+	public ResponseEntity deleteComment(@RequestPart("dto") CommentDTO dto) {
+		try {
+			commentService.deleteComment(dto);
+			return ResponseEntity.ok().body("후기 작성 완료");
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
 }
