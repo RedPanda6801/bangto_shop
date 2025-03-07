@@ -152,4 +152,24 @@ public class QNADAO {
 			throw e;
 		}
 	}
+
+	@Transactional
+	public void deleteQNA(QNADTO qnaDTO) throws Exception{
+		try {
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
+
+			Optional<QNAs> qnaOpt = qnaRepository.findById(qnaDTO.getId());
+			if(qnaOpt.isEmpty()) {
+				throw new Exception("물품 정보 오류");
+			} else if(!authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())
+					&& !qnaOpt.get().getUser().getId().equals(user.getId())){
+				throw new Exception("권한 오류");
+			} else {
+				QNAs qna = qnaOpt.get();
+				qnaRepository.delete(qna);
+			}
+		}catch(Exception e) {
+			throw e;
+		}
+	}
 }

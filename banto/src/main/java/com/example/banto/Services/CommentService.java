@@ -46,4 +46,16 @@ public class CommentService {
 			throw e;
 		}
 	}
+
+	// 관리자 + 본인 삭제 가능
+	public void deleteComment(CommentDTO dto) throws Exception{
+		try {
+			if(dto.getId() == null){
+				throw new Exception("필수 정보 오류");
+			}
+			commentDAO.deleteComment(dto);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
 }

@@ -123,25 +123,44 @@ public class ItemController {
 		}
 	}
 	// 물건 수정
-		@PostMapping("/item/modify")
-		public ResponseEntity modifyItem(@RequestBody ItemDTO itemDTO) throws Exception {
-			try {
-				itemService.modifyItem(itemDTO);
-				return ResponseEntity.ok().body(null);
-			}catch(Exception e) {
-				return ResponseEntity.badRequest().body(e.getMessage());
-			}
+	@PostMapping(path = "/item/modify", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity modifyItem(@RequestPart("dto") ItemDTO itemDTO, @RequestPart(name = "files", required = false) List<MultipartFile> files) throws Exception {
+		try {
+			itemService.modifyItem(itemDTO, files);
+			return ResponseEntity.ok().body(null);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
 		}
+	}
+	// 아이템 삭제
+	@PostMapping("/item/delete")
+	public ResponseEntity deleteItem(@RequestBody ItemDTO itemDTO) throws Exception {
+		try {
+			itemService.deleteItem(itemDTO);
+			return ResponseEntity.ok().body(null);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
 	
 	// 옵션 수정
-		@PostMapping("/item/option/modify")
-		public ResponseEntity modifyItemOption(@RequestBody OptionDTO optionDTO) throws Exception {
-			try {
-				itemService.modifyItemOption(optionDTO);
-				return ResponseEntity.ok().body(null);
-			}catch(Exception e) {
-				return ResponseEntity.badRequest().body(e.getMessage());
-			}
+	@PostMapping("/item/option/modify")
+	public ResponseEntity modifyItemOption(@RequestBody OptionDTO optionDTO) throws Exception {
+		try {
+			itemService.modifyItemOption(optionDTO);
+			return ResponseEntity.ok().body(null);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
 		}
-	// 물건 삭제
+	}
+	// 옵션 삭제
+	@PostMapping("/item/option/delete")
+	public ResponseEntity deleteOption(@RequestBody OptionDTO optionDTO) throws Exception {
+		try {
+			itemService.deleteOption(optionDTO);
+			return ResponseEntity.ok().body(null);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
 }

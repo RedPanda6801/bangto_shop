@@ -78,4 +78,15 @@ public class GroupBuyController {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
+
+	// 기간 추가 (관리자)
+	@PostMapping("/manager/group-buy/delete")
+	public ResponseEntity deleteEvent(@RequestBody GroupBuyDTO groupBuyDTO) throws Exception {
+		try {
+			groupBuyService.deleteEvent(groupBuyDTO);
+			return ResponseEntity.ok().body(null);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
 }

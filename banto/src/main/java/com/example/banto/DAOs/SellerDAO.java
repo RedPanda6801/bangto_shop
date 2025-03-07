@@ -36,7 +36,7 @@ public class SellerDAO {
 	@Autowired
 	private UserRepository userRepository;
 
-	public ResponseDTO findSeller() throws Exception{
+	public ResponseDTO findSeller() throws Exception {
 		try {
 			// 인증 유효 확인
 			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
@@ -106,11 +106,41 @@ public class SellerDAO {
 				throw new Exception("관리자 권한 오류");
 			}
 			Optional<Sellers>sellerOpt = sellerRepository.findByUser_Id(userId);
-			if(sellerOpt.isEmpty()) {
+			Optional<Users> userOpt = userRepository.findById(userId);
+			if(sellerOpt.isEmpty() || userOpt.isEmpty()) {
 				throw new Exception("판매자가 아닙니다.");
 			}
 			else {
 				Sellers seller = sellerOpt.get();
+				Users user = userOpt.get();
+				// 신청된 신청서에 대한 Ban 처리
+				List<SellerAuths> applys = applyRepository.findAllByUserId(seller.getUser().getId());
+				if(!applys.isEmpty()){
+					for(SellerAuths apply : applys){
+						if(apply.getAuth().equals(ApplyType.Accepted)){
+							apply.setAuth(ApplyType.Banned);
+							applyRepository.save(apply);
+						}
+					}
+				}
+				// 연관관계 삭제 로직
+				List<Stores> stores = storeRepository.findAllBySellerIdToEntity(seller.getId());
+				if(!stores.isEmpty()){
+					for(Stores store : stores){
+						if(!store.getItems().isEmpty()){
+							for(Items item : store.getItems()){
+								List<GroupItemPays> payments = groupBuyPayRepository.findByItemId(item.getId());
+								for(GroupItemPays payment : payments){
+									payment.setItem(null);
+									groupBuyPayRepository.save(payment);
+								}
+							}
+						}
+					}
+				}
+				seller.setUser(null);
+				user.setSellers(null);
+				userRepository.save(user);
 				sellerRepository.delete(seller);
 			}
 		}catch(Exception e) {

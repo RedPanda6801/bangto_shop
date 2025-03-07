@@ -1,9 +1,11 @@
 package com.example.banto.DAOs;
 
 import com.example.banto.Entitys.*;
+import com.example.banto.Repositorys.GroupBuyPayRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.io.File;
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,7 @@ import com.example.banto.Repositorys.StoreRepository;
 
 import jakarta.transaction.Transactional;
 
+import javax.swing.text.html.Option;
 
 
 @Component
@@ -38,7 +41,9 @@ public class ItemDAO {
 	OptionRepository optionRepository;
 	@Autowired
 	EnvConfig envConfig;
-	
+	@Autowired
+	GroupBuyPayRepository groupBuyPayRepository;
+
 	public ResponseDTO getAllItemList(Integer page) throws Exception{
 		try {
 			Pageable pageable = PageRequest.of(page-1, 20, Sort.by("id").ascending());
@@ -184,8 +189,8 @@ public class ItemDAO {
 		try {
 			// 인증 유효 확인
 			int sellerId = authDAO.authSeller(SecurityContextHolder.getContext().getAuthentication());
-			if(sellerId == -1){
-				throw new Exception("판매자 권한 오류");
+			if(authDAO.authSeller(SecurityContextHolder.getContext().getAuthentication()) == -1){
+				throw new Exception("권한 오류");
 			}
 			Optional<Stores> store = storeRepository.findById(itemDTO.getStorePk());
 			if(store.isEmpty()) {
@@ -224,7 +229,70 @@ public class ItemDAO {
 	}
 	
 	@Transactional
-	public void modifyItem(ItemDTO dto) throws Exception{
+	public void modifyItem(ItemDTO dto, List<MultipartFile> files) throws Exception{
+		try {
+			Integer sellerId = authDAO.authSeller(SecurityContextHolder.getContext().getAuthentication());
+			if(sellerId == -1 && !authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())){
+				throw new Exception("판매자 권한 오류");
+			}
+			Optional<Items> itemOpt = itemRepository.findById(dto.getId());
+			if(itemOpt.isEmpty()) {
+				throw new Exception("물건 조회 오류");
+			}else if(!itemOpt.get().getStore().getSeller().getUser().getId().equals(sellerId)){
+				throw new Exception("판매자 정보 불일치");
+			}
+			else {
+				String savePath = envConfig.get("FRONTEND_UPLOAD_ADDRESS");
+				StringBuilder img = new StringBuilder();
+				Items item = itemOpt.get();
+
+				if(files != null) {
+					File saveDir = new File(savePath);
+					if (!saveDir.exists()) {
+						throw new Exception("파일 저장 디렉토리 오류");
+					}
+					File[] existingFiles = saveDir.listFiles();  // 기존 파일 목록 가져오기
+					for(MultipartFile file : files) {
+						String originalfilename = file.getOriginalFilename();
+						if(originalfilename == null) break;
+						// 파일이 이미 존재하는지 확인
+						boolean exists = false;
+						if (existingFiles != null) {
+							for (File existingFile : existingFiles) {
+								if (existingFile.getName().equals(originalfilename)) {
+									img.append(originalfilename).append("/");
+									exists = true;
+									break;
+								}
+							}
+						}
+						if(exists) continue;
+						String before = originalfilename.substring(0, originalfilename.indexOf("."));
+						String ext = originalfilename.substring(originalfilename.indexOf("."));
+						String newfilename = before + "(" + UUID.randomUUID() + ")" + ext;
+						file.transferTo(new File(savePath + newfilename));
+						img.append(newfilename).append("/");
+					}
+					img = new StringBuilder(img.substring(0, img.length() - 1));
+				}
+				// 수정 로직
+				item.setTitle((dto.getTitle() != null && !dto.getTitle().equals("")) ?
+						dto.getTitle() : item.getTitle());
+				item.setCategory((dto.getCategory() != null && !dto.getCategory().equals("")) ?
+						CategoryType.valueOf(dto.getCategory()) : item.getCategory());
+				System.out.println("hello");
+				item.setImg((!img.isEmpty()) ? img.toString() : item.getImg());
+				item.setContent((dto.getContent() != null && !dto.getContent().equals("")) ?
+						dto.getContent() : item.getContent());
+				itemRepository.save(item);
+			}
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+
+	@Transactional
+	public void deleteItem(ItemDTO dto) throws Exception{
 		try {
 			int sellerId = authDAO.authSeller(SecurityContextHolder.getContext().getAuthentication());
 			if(sellerId == -1 && !authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())){
@@ -233,25 +301,19 @@ public class ItemDAO {
 			Optional<Stores> store = storeRepository.findById(dto.getStorePk());
 			if(store.isEmpty()) {
 				throw new Exception("매장 조회 오류");
-			}else if(sellerId != -1 && !store.get().getSeller().getUser().getId().equals(sellerId)){
+			}else if(!store.get().getSeller().getUser().getId().equals(sellerId)){
 				throw new Exception("판매자 정보 불일치");
-			}
-			else {
-				List<Items> itemList = store.get().getItems();
-				for(Items item : itemList) {
-					if(Objects.equals(item.getId(), dto.getId())) {
-						// 수정 로직
-						item.setTitle((dto.getTitle() != null && !dto.getTitle().equals("")) ?
-								dto.getTitle() : item.getTitle());
-						item.setCategory((dto.getCategory() != null && !dto.getCategory().equals("")) ?
-								CategoryType.valueOf(dto.getCategory()) : item.getCategory());
-						item.setImg((dto.getImg() != null && !dto.getImg().equals("")) ?
-								dto.getImg() : item.getImg());
-						item.setContent((dto.getContent() != null && !dto.getContent().equals("")) ?
-								dto.getContent() : item.getContent());
-						itemRepository.save(item);
-					}
+			}else {
+				Optional<Items> itemOpt = itemRepository.findById(dto.getId());
+				if(itemOpt.isEmpty()){
+					throw new Exception("아이템 조회 오류");
 				}
+				List<GroupItemPays> payments = groupBuyPayRepository.findByItemId(dto.getId());
+				for(GroupItemPays payment : payments){
+					payment.setItem(null);
+					groupBuyPayRepository.save(payment);
+				}
+				itemRepository.delete(itemOpt.get());
 			}
 		}catch(Exception e) {
 			throw e;
@@ -262,28 +324,47 @@ public class ItemDAO {
 	public void modifyItemOption(OptionDTO dto) throws Exception{
 		try {
 			int sellerId = authDAO.authSeller(SecurityContextHolder.getContext().getAuthentication());
-			if(sellerId == -1 && !authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())){
+			if(sellerId == -1 || !authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())){
 				throw new Exception("판매자 권한 오류");
 			}
-			Optional<Items> item = itemRepository.findById(dto.getItemPk());
-			if(item.isEmpty()) {
+			Optional<Options> optionOpt = optionRepository.findById(dto.getId());
+			if(optionOpt.isEmpty()) {
 				throw new Exception("매장 조회 오류");
-			}else if(sellerId != -1 && !item.get().getStore().getSeller().getUser().getId().equals(sellerId)){
+			}else if(!optionOpt.get().getItem().getStore().getSeller().getUser().getId().equals(sellerId)){
 				throw new Exception("판매자 정보 불일치");
 			}else {
-				List<Options> optionList = item.get().getOptions();
-				for(Options option : optionList) {
-					if(Objects.equals(option.getId(), dto.getId())) {
-						// 수정 로직
-						option.setAddPrice((dto.getAddPrice() != null && !dto.getAddPrice().equals("")) ?
-								dto.getAddPrice() : option.getAddPrice());
-						option.setOptionInfo((dto.getOptionInfo() != null && !dto.getOptionInfo().equals("")) ?
-								dto.getOptionInfo() : option.getOptionInfo());
-						option.setAmount((dto.getAmount() != null && !dto.getAmount().equals("")) ?
-								dto.getAmount() : option.getAmount());
-						optionRepository.save(option);
-					}
-				}
+				Options option = optionOpt.get();
+				// 수정 로직
+				option.setAddPrice((dto.getAddPrice() != null && !dto.getAddPrice().equals("")) ?
+						dto.getAddPrice() : option.getAddPrice());
+				option.setOptionInfo((dto.getOptionInfo() != null && !dto.getOptionInfo().equals("")) ?
+						dto.getOptionInfo() : option.getOptionInfo());
+				option.setAmount((dto.getAmount() != null && !dto.getAmount().equals("")) ?
+						dto.getAmount() : option.getAmount());
+				optionRepository.save(option);
+			}
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+
+	@Transactional
+	public void deleteOption(OptionDTO dto) throws Exception{
+		try {
+			int sellerId = authDAO.authSeller(SecurityContextHolder.getContext().getAuthentication());
+			if(sellerId == -1 || !authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())){
+				throw new Exception("판매자 권한 오류");
+			}
+			Optional<Options> optionOpt = optionRepository.findById(dto.getId());
+			if(optionOpt.isEmpty()) {
+				throw new Exception("매장 조회 오류");
+			}else if(!optionOpt.get().getItem().getStore().getSeller().getUser().getId().equals(sellerId)){
+				throw new Exception("판매자 정보 불일치");
+			}else if(optionOpt.get().getItem().getOptions().size() == 1) {
+				throw new Exception("필수 옵션 제거 불가");
+			} else {
+				Options option = optionOpt.get();
+				optionRepository.save(option);
 			}
 		}catch(Exception e) {
 			throw e;

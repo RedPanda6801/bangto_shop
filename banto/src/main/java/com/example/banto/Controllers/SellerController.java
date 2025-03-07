@@ -16,6 +16,7 @@ import com.example.banto.JWTs.JwtUtil;
 import com.example.banto.Services.SellerService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 public class SellerController {
@@ -55,7 +56,7 @@ public class SellerController {
 		}
 	}
 	// 판매자 단일 조회(관리자)
-	@GetMapping("/seller/get-info/{userId}")
+	@GetMapping("/manager/seller/get-info/{userId}")
 	public ResponseEntity getSellerForRoot(@PathVariable("userId") Integer userId) {
 		try {
 			ResponseDTO seller = sellerService.getSellerInfoForRoot(userId);
@@ -64,10 +65,9 @@ public class SellerController {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
-	// 판매자 단일 수정(관리자)
-	
+
 	// 판매자 권한 박탈(관리자)
-	@PostMapping("/seller/delete/{userId}")
+	@PostMapping("/manager/seller/delete/{userId}")
 	public ResponseEntity deleteSeller(@PathVariable("userId") Integer userId) {
 		try {
 			sellerService.deleteSeller(userId);

@@ -68,8 +68,17 @@ public class StoreController {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
+
 	// 매장 삭제
-	
+	@PostMapping("/store/delete")
+	public ResponseEntity deleteStore(@RequestBody StoreDTO dto) throws Exception {
+		try {
+			storeService.delete(dto);
+			return ResponseEntity.ok().body(null);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
 	
 	// 매장 전체 조회(관리자)
 	@GetMapping("/manager/store/get-list/{page}")

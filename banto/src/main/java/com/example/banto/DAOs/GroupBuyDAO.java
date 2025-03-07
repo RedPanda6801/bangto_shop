@@ -48,8 +48,8 @@ public class GroupBuyDAO {
 	
 	public ResponseDTO getEventList() throws Exception{
 		try {
-			if(!authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())
-			|| authDAO.authSeller(SecurityContextHolder.getContext().getAuthentication()) == -1){
+			if(authDAO.authSeller(SecurityContextHolder.getContext().getAuthentication()) == -1 &&
+					!authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())){
 				throw new Exception("권한 오류");
 			}
 			List<GroupBuys> eventList = groupBuyRepository.findAll();
@@ -101,7 +101,7 @@ public class GroupBuyDAO {
 	public ResponseDTO getEventListToSeller() throws Exception{
 		try {
 			int sellerId = authDAO.authSeller(SecurityContextHolder.getContext().getAuthentication());
-			if(sellerId == -1){
+			if(sellerId == -1 && !authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())){
 				throw new Exception("권한 오류");
 			}
 			List<GroupBuys> eventList = groupBuyRepository.findAllBySellerPk(sellerId);
@@ -111,6 +111,25 @@ public class GroupBuyDAO {
 				dtos.add(GroupBuyDTO.toDTO(event));
 			}
 			return new ResponseDTO(dtos, null);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+
+	// 날짜 추가 (관리자)
+	@Transactional
+	public void deleteEvent(GroupBuyDTO dto) throws Exception{
+		try {
+			if(!authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())){
+				throw new Exception("관리자 권한 오류");
+			}
+			// 시작 날짜 조회 후 날짜 중복 확인
+			Optional<GroupBuys> event = groupBuyRepository.findById(dto.getId());
+			if(event.isEmpty()){
+				throw new Exception("이벤트 조회 오류");
+			}
+			// 시작 날짜가 가장 최근에 추가 했던 이벤트 마감일보다 빠르면 예외 처리
+			groupBuyRepository.delete(event.get());
 		}catch(Exception e) {
 			throw e;
 		}

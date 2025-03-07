@@ -49,7 +49,18 @@ public class GroupBuyItemController {
 	@PostMapping("/group-item/modify")
 	public ResponseEntity modifyGroupItem(@RequestBody GroupBuyItemDTO groupBuyItemDTO) throws Exception{
 		try{
-			groupBuyItemService.modifyItem(groupBuyItemDTO);
+			groupBuyItemService.modifyGroupItem(groupBuyItemDTO);
+			return ResponseEntity.ok().body(null);
+		}catch(Exception e){
+			return  ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+
+	// 공동 구매 이벤트에 올린 물건 수정(판매자만)
+	@PostMapping("/group-item/delete")
+	public ResponseEntity deleteGroupItem(@RequestBody GroupBuyItemDTO groupBuyItemDTO) throws Exception{
+		try{
+			groupBuyItemService.deleteGroupItem(groupBuyItemDTO);
 			return ResponseEntity.ok().body(null);
 		}catch(Exception e){
 			return  ResponseEntity.badRequest().body(e.getMessage());

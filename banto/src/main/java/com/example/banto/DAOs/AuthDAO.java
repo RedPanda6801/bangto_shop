@@ -35,9 +35,6 @@ public class AuthDAO {
 	
 	public boolean authRoot(Authentication authentication) throws Exception {
 		try {
-//			int rootId = Integer.parseInt(authentication.getName());
-//			String rootEmail = envConfig.get("ROOT_EMAIL");
-//			Optional<Users> root = userRepository.findById(rootId);
 			for(GrantedAuthority auth : authentication.getAuthorities()){
 				if(auth.getAuthority().equals("ROLE_ADMIN") ||
 						auth.getAuthority().equals("ADMIN")){

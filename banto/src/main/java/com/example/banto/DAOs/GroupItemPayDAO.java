@@ -39,7 +39,7 @@ public class GroupItemPayDAO {
 	public ResponseDTO getPayListByItem(GroupBuyItemDTO dto) throws Exception {
 		try {
 			if(authDAO.authSeller(SecurityContextHolder.getContext().getAuthentication()) == -1){
-				throw new Exception("판매자 권한 오류");
+				throw new Exception("권한 오류");
 			}
 			// 현재 이벤트 찾기
 			List<GroupItemPays> pays = groupItemPayRepository.findByItemId(dto.getItemPk());
@@ -153,10 +153,9 @@ public class GroupItemPayDAO {
 	public void deliveringCheck(GroupItemPayDTO dto) throws Exception {
 		try {
 			int sellerId = authDAO.authSeller(SecurityContextHolder.getContext().getAuthentication());
-			if(sellerId == -1){
-				throw new Exception("판매자 권한 오류");
+			if(authDAO.authSeller(SecurityContextHolder.getContext().getAuthentication()) == -1){
+				throw new Exception("권한 오류");
 			}
-
 			Optional<GroupItemPays> payOpt = groupItemPayRepository.findById(dto.getId());
 			if(payOpt.isEmpty()){
 				throw new Exception("정보 조회 오류");
@@ -213,10 +212,9 @@ public class GroupItemPayDAO {
 	public void deliveredCheck(GroupItemPayDTO dto) throws Exception {
 		try {
 			int sellerId = authDAO.authSeller(SecurityContextHolder.getContext().getAuthentication());
-			if(sellerId == -1){
-				throw new Exception("판매자 권한 오류");
+			if(authDAO.authSeller(SecurityContextHolder.getContext().getAuthentication()) == -1){
+				throw new Exception("권한 오류");
 			}
-
 			Optional<GroupItemPays> payOpt = groupItemPayRepository.findById(dto.getId());
 			if(payOpt.isEmpty()){
 				throw new Exception("정보 조회 오류");

@@ -37,12 +37,23 @@ public class GroupBuyItemService {
 		}
 	}
 	
-	public void modifyItem(GroupBuyItemDTO dto) throws Exception {
+	public void modifyGroupItem(GroupBuyItemDTO dto) throws Exception {
 		try {
 			if(dto.getItemPk() == null){
 				throw new Exception("필수 정보 오류");
 			}
-			groupBuyItemDAO.modifyItem(dto);
+			groupBuyItemDAO.modifyGroupItem(dto);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+
+	public void deleteGroupItem(GroupBuyItemDTO dto) throws Exception {
+		try {
+			if(dto.getId() == null){
+				throw new Exception("필수 정보 오류");
+			}
+			groupBuyItemDAO.deleteGroupItem(dto);
 		}catch(Exception e) {
 			throw e;
 		}

@@ -38,6 +38,9 @@ public class SellerService {
 	
 	public void deleteSeller(Integer userId) throws Exception{
 		try {
+			if(userId == null){
+				throw new Exception("필수 정보 오류");
+			}
 			sellerDAO.deleteSeller(userId);
 		}catch(Exception e) {
 			throw e;
