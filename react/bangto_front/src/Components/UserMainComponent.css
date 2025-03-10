@@ -1,15 +1,38 @@
+/* .fullScreen
+{
+  display: flex;
+  justify-content: center;
+  width: 100%;
+} */
+
 .layout_Main_Contents
 {  
-  display: grid;
-  grid-template-columns: repeat(38, 50px);
-  grid-auto-rows: minmax(15px, auto);
+  /* display: grid; */
+  /* display: flex; */
+  width: 100%;
+  display:flex;
+  flex-direction: column;
+  /* justify-content: center; */
+  align-items: center;
+  /* 앞에 9개 뒤에 6개 자르기 */
+  /* grid-template-columns: repeat(38, 50px); */
+  /* grid-template-columns: repeat(23, 50px); */
+  /* grid-auto-rows: minmax(15px, auto); */
   padding-top: 40px;
+}
+
+.box
+{
+  display: flex;
 }
 
 .box_Category
 {  
-  grid-column: 10 / 11;
-  grid-row: 3 / 7;
+  /* grid-column: 10 / 11; */
+  /* grid-column: 1 / 2; */
+  width: 50px;
+  /* grid-row: 3 / 7; */
+  height: 60px;
 
   display: flex;
   flex-direction: column;
@@ -25,8 +48,11 @@
 
 .box_Search
 {
-  grid-column: 11 / 28;
-  grid-row: 3 / 7;
+  /* grid-column: 11 / 28; */
+  /* grid-column: 2 / 19; */
+  width: 850px;
+  /* grid-row: 3 / 7; */
+  height: 60px;
 
   display: flex;
   flex-direction: column;
@@ -37,8 +63,11 @@
 
 .box_Slide
 {
-  grid-column: 10 / 28;
-  grid-row: 9 / 28;
+  /* grid-column: 10 / 28; */
+  /* grid-column: 1 / 19; */
+  width: 900px;
+  /* grid-row: 9 / 28; */
+  height: 285px;
 
   display: flex;
   flex-direction: column;
@@ -48,16 +77,22 @@
 
 .box_Wishlist
 {
-  grid-column: 10 / 28;
-  grid-row: 31 / 43;
+  /* grid-column: 10 / 28; */
+  /* grid-column: 1 / 19; */
+  width: 900px;
+  /* grid-row: 31 / 43; */
+  /* height: 244px; */
 
   padding: 0px 20px;
 }
 
 .box_Itemlist
 {
-  grid-column: 10 / 28;
-  grid-row: 45 / 59;
+  /* grid-column: 10 / 28; */
+  /* grid-column: 1 / 19; */
+  width: 900px;
+  /* grid-row: 45 / 59; */
+  /* height: 210px; */
   
   margin-bottom: 30px;
   display: flex;
@@ -67,8 +102,11 @@
 
 .box_Cartlist
 {
-  grid-column: 30 / 33;
-  grid-row: 9 / 29;
+  /* grid-column: 30 / 33; */
+  /* grid-column: 21 / 24; */
+  width: 150px;
+  /* grid-row: 9 / 29; */
+  height: 300px;
 
   display: flex;
   flex-direction: column;
@@ -78,7 +116,8 @@
 
   position: sticky;
   top: 200px;
-  left: calc(50px * 29);
+  /* left: calc(50px * 29); */
+  right: 300px;
 }
 
 .main_Search_Input 
@@ -116,8 +155,10 @@
 
 .box_slider
 {
-	grid-column: 1 / 4;
-	grid-row: 4/ 16;
+	/* grid-column: 1 / 4; */
+  width: 150px;
+  /* grid-row: 4/ 16; */
+  height: 285px;
 	
 	width: 100%;
 	overflow: hidden;
@@ -307,6 +348,7 @@
   padding-top: 25px;
   padding-bottom: 25px;
   margin: 0px 10px;
+  height: 150px;
 }
 
 .box_Category:hover .list_Category

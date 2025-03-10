@@ -32,27 +32,29 @@ function App() {
   const rootEmail = process.env.REACT_APP_ROOT_EMAIL;
 
   useEffect(()=>{
-    if(localStorage.getItem("token") == "")
+    if(localStorage.getItem("token") === undefined || localStorage.getItem("token") === null || localStorage.getItem("token") === "")
     {
+      //console.log("로컬스토리지 감지");
       //alert("로그인해주세요");
-      navigate("/");
+      //navigate("/");
     }
     else
     {
+      console.log(localStorage.getItem("token"));
       axios.get("http://localhost:9000/user/get-info", {
             headers: {
               "Authorization": `Bearer ${localStorage.getItem("token")}`,
             }
           }).then((res)=> {
-          setUserEmail(res.data.email);
-          setUserName(res.data.name);
+          setUserEmail(res.data.content.email);
+          setUserName(res.data.content.name);
 
-          if (res.data.email === rootEmail) 
+          if (res.data.content.email === rootEmail) 
           {
             navigate("/manager");
           }
       }).catch((err)=>{
-          //console.log(err);
+          console.log(err);
           //alert("로그인해주세요");
           navigate("/");
       })
