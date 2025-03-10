@@ -12,29 +12,38 @@ public class WalletService {
 	@Autowired
 	WalletDAO walletDAO;
 	
-	public ResponseDTO getMyWallet(Integer userId) throws Exception{
-		if(userId == null) { 
-			throw new Exception("권한 없음");
-		}
-		else {
-			try {
-				return walletDAO.findWallet(userId);
-			}catch(Exception e) {
-				throw e;
-			}
+	public ResponseDTO getMyWallet() throws Exception{
+		try {
+			return walletDAO.findWallet();
+		}catch(Exception e) {
+			throw e;
 		}
 	}
-	
-	public void modifyWallet(Integer userId, WalletDTO dto) throws Exception{
-		if(userId == null) { 
-			throw new Exception("권한 없음");
+
+	public ResponseDTO getMyWalletForRoot(Integer userId) throws Exception{
+		try {
+			return walletDAO.findWalletForRoot(userId);
+		}catch(Exception e) {
+			throw e;
 		}
-		else {
-			try {
-				walletDAO.modifyWallet(userId, dto);
-			}catch(Exception e) {
-				throw e;
+	}
+
+	public void chargeMyWallet(WalletDTO dto) throws Exception{
+		try {
+			walletDAO.chargeMyWallet(dto);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+
+	public void modifyWallet(WalletDTO dto) throws Exception{
+		try {
+			if(dto.getUserPk() == null){
+				throw new Exception("수정할 유저 없음");
 			}
+			walletDAO.modifyWallet(dto);
+		}catch(Exception e) {
+			throw e;
 		}
 	}
 }

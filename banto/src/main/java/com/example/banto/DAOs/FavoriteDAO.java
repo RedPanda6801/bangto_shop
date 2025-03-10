@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.example.banto.DTOs.FavoriteDTO;
@@ -35,15 +36,15 @@ public class FavoriteDAO {
 	ItemRepository itemRepository;
 	
 	@Transactional
-	public void addFavorite(Integer userId, ItemDTO dto) throws Exception{
+	public void addFavorite(ItemDTO dto) throws Exception{
 		try {
 			// 인증 유효 확인
-			Users user = authDAO.auth(userId);
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
 			Optional<Items> itemOpt = itemRepository.findById(dto.getId());
 			if(itemOpt.isEmpty()) {
 				throw new Exception("아이템 정보 오류");
 			}
-			Optional<Favorites> favoriteOpt = favoriteRepository.findByUserAndItem(userId, dto.getId());
+			Optional<Favorites> favoriteOpt = favoriteRepository.findByUserAndItem(user.getId(), dto.getId());
 			if(favoriteOpt.isEmpty()) {
 				Favorites favorite = new Favorites(user, itemOpt.get());
 				favoriteRepository.save(favorite);
@@ -55,15 +56,15 @@ public class FavoriteDAO {
 	}
 	
 	@Transactional
-	public void deleteFavotie(Integer userId, ItemDTO dto) throws Exception{
+	public void deleteFavotie(ItemDTO dto) throws Exception{
 		try {
 			// 인증 유효 확인
-			Users user = authDAO.auth(userId);
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
 			Optional<Items> itemOpt = itemRepository.findById(dto.getId());
 			if(itemOpt.isEmpty()) {
 				throw new Exception("아이템 정보 오류");
 			}
-			Optional<Favorites> favoriteOpt = favoriteRepository.findByUserAndItem(userId, dto.getId());
+			Optional<Favorites> favoriteOpt = favoriteRepository.findByUserAndItem(user.getId(), dto.getId());
 			if(favoriteOpt.isEmpty()) {
 				throw new Exception("찜 없음");
 			}
@@ -76,12 +77,12 @@ public class FavoriteDAO {
 		}
 	}
 	
-	public ResponseDTO getAllFavorites(Integer userId, Integer page) throws Exception{
+	public ResponseDTO getAllFavorites(Integer page) throws Exception{
 		try {
 			// 인증 유효 확인
-			authDAO.auth(userId);
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
 			Pageable pageable = PageRequest.of(page-1, 20, Sort.by("id").ascending());
-			Page<Favorites> favoriteList = favoriteRepository.findAllByUserId(userId, pageable);
+			Page<Favorites> favoriteList = favoriteRepository.findAllByUserId(user.getId(), pageable);
 			if(favoriteList.getSize() == 0) {
 				throw new Exception("찜 없음");
 			}

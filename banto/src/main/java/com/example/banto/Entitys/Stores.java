@@ -6,15 +6,7 @@ import com.example.banto.DTOs.SellerDTO;
 import com.example.banto.DTOs.StoreDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -38,12 +30,12 @@ public class Stores {
     private String busiNum;
     
     @JsonIgnore
-    @ManyToOne//(cascade = CascadeType.ALL)  // 'Users' 삭제 시 관련 'Stores'도 삭제되도록 설정
+    @ManyToOne
     @JoinColumn(name="SELLER_PK")
     private Sellers seller;
 
     @JsonIgnore
-    @OneToMany(mappedBy="store", cascade = CascadeType.ALL)  // 'Items' 엔티티에서 'store' 필드를 기준으로 관계를 매핑
+    @OneToMany(mappedBy="store", cascade = CascadeType.ALL, fetch = FetchType.LAZY)  // 'Items' 엔티티에서 'store' 필드를 기준으로 관계를 매핑
     private List<Items> items;
     
     public static Stores toEntity(StoreDTO dto) {

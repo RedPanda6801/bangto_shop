@@ -5,17 +5,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import com.example.banto.Entitys.Items;
-import com.example.banto.Entitys.Options;
+import com.example.banto.Entitys.*;
 import com.example.banto.Repositorys.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.example.banto.DTOs.GroupBuyDTO;
 import com.example.banto.DTOs.GroupBuyItemDTO;
 import com.example.banto.DTOs.ResponseDTO;
-import com.example.banto.Entitys.GroupBuyItems;
-import com.example.banto.Entitys.GroupBuys;
 import com.example.banto.Repositorys.GroupBuyItemRepository;
 import com.example.banto.Repositorys.GroupBuyRepository;
 
@@ -27,6 +25,8 @@ public class GroupBuyItemDAO {
 	GroupBuyRepository groupBuyRepository;
 	@Autowired
 	private ItemRepository itemRepository;
+	@Autowired
+	AuthDAO authDAO;
 
 	public ResponseDTO getCurrentItemList(GroupBuyDTO dto) throws Exception {
 		try {
@@ -49,8 +49,12 @@ public class GroupBuyItemDAO {
 		}
 	}
 
-	public void addItem(Integer userId, GroupBuyItemDTO dto) throws Exception {
+	public void addItem(GroupBuyItemDTO dto) throws Exception {
 		try {
+			int sellerId = authDAO.authSeller(SecurityContextHolder.getContext().getAuthentication());
+			if(authDAO.authSeller(SecurityContextHolder.getContext().getAuthentication()) == -1){
+				throw new Exception("권한 오류");
+			}
 			// 추가할 이벤트 찾기
 			Optional<GroupBuys> eventOpt = groupBuyRepository.findById(dto.getEventPk());
 			if(eventOpt.isEmpty()) {
@@ -58,7 +62,7 @@ public class GroupBuyItemDAO {
 			}else {
 				Optional<Items> itemOpt = itemRepository.findById(dto.getItemPk());
 				if(itemOpt.isEmpty() ||
-					!Objects.equals(itemOpt.get().getStore().getSeller().getUser().getId(), userId)){
+					!Objects.equals(itemOpt.get().getStore().getSeller().getUser().getId(), sellerId)){
 					throw new Exception("아이템 정보 오류");
 				}
 				else {
@@ -80,23 +84,27 @@ public class GroupBuyItemDAO {
 						dto.setItem(item);
 						dto.setEvent(eventOpt.get());
 
-						dto.setSellerPk(userId);
+						dto.setSellerPk(authDAO.auth(SecurityContextHolder.getContext().getAuthentication()).getId());
 						GroupBuyItems itemObj = GroupBuyItems.toEntity(dto);
 						itemObj.setNowAmount(dto.getMaxAmount());
 						groupBuyItemRepository.save(itemObj);
 					}
-					}
+				}
 			}
 		}catch(Exception e) {
 			throw e;
 		}
 	}
 	
-	public void modifyItem(Integer userId, GroupBuyItemDTO dto) throws Exception {
+	public void modifyGroupItem(GroupBuyItemDTO dto) throws Exception {
 		try {
+			int sellerId = authDAO.authSeller(SecurityContextHolder.getContext().getAuthentication());
+			if(authDAO.authSeller(SecurityContextHolder.getContext().getAuthentication()) == -1){
+				throw new Exception("권한 오류");
+			}
 			Optional<GroupBuyItems> groupItemOpt = groupBuyItemRepository.findById(dto.getId());
 			if(groupItemOpt.isEmpty() ||
-				!Objects.equals(groupItemOpt.get().getItem().getStore().getSeller().getUser().getId(), userId)){
+				!Objects.equals(groupItemOpt.get().getItem().getStore().getSeller().getUser().getId(), sellerId)){
 				throw new Exception("아이템 정보 오류");
 			}
 			else {
@@ -120,6 +128,26 @@ public class GroupBuyItemDAO {
 				GroupBuyItems itemObj = GroupBuyItems.toEntity(dto);
 				itemObj.setNowAmount(dto.getMaxAmount());
 				groupBuyItemRepository.save(itemObj);
+			}
+
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+
+	public void deleteGroupItem(GroupBuyItemDTO dto) throws Exception {
+		try {
+			int sellerId = authDAO.authSeller(SecurityContextHolder.getContext().getAuthentication());
+			if(authDAO.authSeller(SecurityContextHolder.getContext().getAuthentication()) == -1){
+				throw new Exception("권한 오류");
+			}
+			Optional<GroupBuyItems> groupItemOpt = groupBuyItemRepository.findById(dto.getId());
+			if(groupItemOpt.isEmpty() ||
+					!Objects.equals(groupItemOpt.get().getItem().getStore().getSeller().getUser().getId(), sellerId)){
+				throw new Exception("아이템 정보 오류");
+			}
+			else {
+				groupBuyItemRepository.delete(groupItemOpt.get());
 			}
 
 		}catch(Exception e) {

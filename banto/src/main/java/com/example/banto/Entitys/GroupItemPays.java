@@ -44,7 +44,7 @@ public class GroupItemPays {
     @Column(name="DELIVER_INFO", nullable=false)
     private DeliverType deliverInfo;
 
-    @Column(name="GROUP_ITEM_PK", nullable=false)
+    @Column(name="GROUP_ITEM_PK")
     private Integer groupItemPk;
 
     @Column(name="SOLD_DATE", nullable=false, insertable = false, columnDefinition = "date default sysdate")

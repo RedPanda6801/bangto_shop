@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.example.banto.DTOs.PageDTO;
@@ -40,11 +42,35 @@ public class QNADAO {
 	SellerRepository sellerRepository;
 	@Autowired
 	StoreRepository storeRepository;
-	
-	@Transactional
-	public void addQNA(Integer userId, QNADTO qnaDTO) throws Exception{
+
+	public ResponseDTO getListByStore(QNADTO qnaDTO, Integer page) throws Exception{
 		try {
-			Users user = authDAO.auth(userId);
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
+
+			Optional<Stores> storeOpt = storeRepository.findById(qnaDTO.getStorePk());
+			if(storeOpt.isEmpty()) {
+				throw new Exception("매장 정보 오류");
+			}else if(!Objects.equals(storeOpt.get().getSeller().getUser().getId(), user.getId())) {
+				throw new Exception("본인 매장 불일치");
+			}else {
+				Pageable pageable = PageRequest.of(page-1, 20, Sort.by("id").ascending());
+				Page<QNAs> qnaList = qnaRepository.findAllByStore(qnaDTO.getStorePk(), pageable);
+				List<QNADTO> dtos = new ArrayList<>();
+				for(QNAs qna : qnaList) {
+					QNADTO dto = QNADTO.toDTO(qna);
+					dtos.add(dto);
+				}
+				return new ResponseDTO(dtos, new PageDTO(qnaList.getSize(), qnaList.getTotalElements(), qnaList.getTotalPages()));
+			}
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+
+	@Transactional
+	public void addQNA(QNADTO qnaDTO) throws Exception{
+		try {
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
 			
 			Optional<Items> itemOpt = itemRepository.findById(qnaDTO.getItemPk()); 
 			if(itemOpt.isEmpty()) {
@@ -52,7 +78,7 @@ public class QNADAO {
 			}
 			else {
 				Items item = itemOpt.get();
-				if(item.getStore().getSeller().getUser().getId() == userId) {
+				if(Objects.equals(item.getStore().getSeller().getUser().getId(), user.getId())) {
 					throw new Exception("판매자 본인 등록 불가");
 				}
 				else {
@@ -69,11 +95,11 @@ public class QNADAO {
 	}
 	
 	@Transactional
-	public void addSellerAnswer(Integer userId, QNADTO qnaDTO) throws Exception{
+	public void addSellerAnswer(QNADTO qnaDTO) throws Exception{
 		try {
-			authDAO.auth(userId);	
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
 			Optional<QNAs> qnaOpt = qnaRepository.findById(qnaDTO.getId());
-			Optional<Sellers> sellerOpt = sellerRepository.findByUser_Id(userId);
+			Optional<Sellers> sellerOpt = sellerRepository.findByUser_Id(user.getId());
 			if(qnaOpt.isEmpty()) {
 				throw new Exception("QNA 정보 오류");
 			}else if(sellerOpt.isEmpty()) {
@@ -98,10 +124,11 @@ public class QNADAO {
 		}
 	}
 	
-	public ResponseDTO getMyList(Integer userId, Integer page) throws Exception{
+	public ResponseDTO getMyList(Integer page) throws Exception{
 		try {
-			authDAO.auth(userId);
-			List<QNAs> qnaList = qnaRepository.findAllByUserId(userId);
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
+			Pageable pageable = PageRequest.of(page-1, 10, Sort.by("id").ascending());
+			Page<QNAs> qnaList = qnaRepository.findAllByUserId(user.getId(),pageable);
 			List<QNADTO> dtos = new ArrayList<>();
 			for(QNAs qna : qnaList) {
 				QNADTO dto = QNADTO.toDTO(qna);
@@ -113,38 +140,34 @@ public class QNADAO {
 		}
 	}
 	
-	public ResponseDTO getListByStore(QNADTO qnaDTO, Integer page) throws Exception{
+	public ResponseDTO getQnaDetail(QNADTO qnaDTO) throws Exception{
 		try {
-			authDAO.auth(qnaDTO.getUserPk());
-			
-			Optional<Stores> storeOpt = storeRepository.findById(qnaDTO.getStorePk());
-			if(storeOpt.isEmpty()) {
-				throw new Exception("매장 정보 오류");
-			}else if(storeOpt.get().getSeller().getUser().getId() != qnaDTO.getUserPk()) {
-				throw new Exception("본인 매장 불일치");
-			}else {
-				Pageable pageable = PageRequest.of(page-1, 20, Sort.by("id").ascending());
-				Page<QNAs> qnaList = qnaRepository.findAllByStore(qnaDTO.getStorePk(), pageable);
-				List<QNADTO> dtos = new ArrayList<>();
-				for(QNAs qna : qnaList) {
-					QNADTO dto = QNADTO.toDTO(qna);
-					dtos.add(dto);
-				}
-				return new ResponseDTO(dtos, new PageDTO(qnaList.getSize(), qnaList.getTotalElements(), qnaList.getTotalPages()));
-			}
-		}catch(Exception e) {
-			throw e;
-		}
-	}
-	
-	public ResponseDTO getQnaDetail(Integer userId, QNADTO qnaDTO) throws Exception{
-		try {
-			authDAO.auth(userId);
+			authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
 			Optional<QNAs> qnaOpt = qnaRepository.findById(qnaDTO.getId());
 			if(qnaOpt.isEmpty()) {
 				return null;
 			}
 			return new ResponseDTO(QNADTO.toDTO(qnaOpt.get()), null);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+
+	@Transactional
+	public void deleteQNA(QNADTO qnaDTO) throws Exception{
+		try {
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
+
+			Optional<QNAs> qnaOpt = qnaRepository.findById(qnaDTO.getId());
+			if(qnaOpt.isEmpty()) {
+				throw new Exception("물품 정보 오류");
+			} else if(!authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())
+					&& !qnaOpt.get().getUser().getId().equals(user.getId())){
+				throw new Exception("권한 오류");
+			} else {
+				QNAs qna = qnaOpt.get();
+				qnaRepository.delete(qna);
+			}
 		}catch(Exception e) {
 			throw e;
 		}

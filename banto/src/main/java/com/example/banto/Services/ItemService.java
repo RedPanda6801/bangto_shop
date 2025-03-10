@@ -92,25 +92,54 @@ public class ItemService {
 		}
 	}
 	
-	public void addItem(Integer userId, ItemDTO itemDTO, List<MultipartFile> files) throws Exception {
+	public void addItem(ItemDTO itemDTO, List<MultipartFile> files) throws Exception {
 		try {
-			itemDAO.addItem(userId, itemDTO, files);
+			itemDAO.addItem(itemDTO, files);
 		}catch(Exception e) {
 			throw e;
 		}
 	}
 	
-	public void modifyItem(Integer userId, ItemDTO itemDTO) throws Exception {
+	public void modifyItem(ItemDTO itemDTO, List<MultipartFile> files) throws Exception {
 		try {
-			itemDAO.modifyItem(userId, itemDTO);
+			if(itemDTO.getId() == null){
+				throw new Exception("필수 정보 오류");
+			}
+			itemDAO.modifyItem(itemDTO, files);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+
+	// dto.id
+	public void deleteItem(ItemDTO itemDTO) throws Exception {
+		try {
+			if(itemDTO.getId() == null){
+				throw new Exception("필수 정보 오류");
+			}
+			itemDAO.deleteItem(itemDTO);
 		}catch(Exception e) {
 			throw e;
 		}
 	}
 	
-	public void modifyItemOption(Integer userId, OptionDTO optionDTO) throws Exception {
+	public void modifyItemOption(OptionDTO optionDTO) throws Exception {
 		try {
-			itemDAO.modifyItemOption(userId, optionDTO);
+			if(optionDTO.getId() == null){
+				throw new Exception("필수 정보 오류");
+			}
+			itemDAO.modifyItemOption(optionDTO);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+
+	public void deleteOption(OptionDTO optionDTO) throws Exception {
+		try {
+			if(optionDTO.getId() == null){
+				throw new Exception("필수 정보 오류");
+			}
+			itemDAO.deleteOption(optionDTO);
 		}catch(Exception e) {
 			throw e;
 		}

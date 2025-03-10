@@ -21,8 +21,6 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 public class QNAController {
-	@Autowired
-	JwtUtil jwtUtil;
 	
 	@Autowired
 	QNAService qnaService;
@@ -30,12 +28,8 @@ public class QNAController {
 	// 매장 별 QNA 전체 조회(판매자)
 	// 답변 대기중인 QNA 우선 조회
 	@GetMapping("/qna/store/get-list/{page}")
-	public ResponseEntity getListByStore(HttpServletRequest request, @RequestBody QNADTO qnaDTO, @PathVariable("page") Integer page) throws Exception{
+	public ResponseEntity getListByStore(@RequestBody QNADTO qnaDTO, @PathVariable("page") Integer page) throws Exception{
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer userId = Integer.parseInt(token);
-			qnaDTO.setUserPk(userId);
 			ResponseDTO itemList = qnaService.getListByStore(qnaDTO, page);
 			return ResponseEntity.ok().body(itemList);
 		}catch(Exception e) {
@@ -45,12 +39,9 @@ public class QNAController {
 
 //	내 QNA 조회(고객)
 	@GetMapping("/qna/get-list/{page}")
-	public ResponseEntity getItemList(HttpServletRequest request, @PathVariable("page") Integer page) throws Exception{
+	public ResponseEntity getItemList(@PathVariable("page") Integer page) throws Exception{
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer userId = Integer.parseInt(token);
-			ResponseDTO favoriteList = qnaService.getMyList(userId, page);
+			ResponseDTO favoriteList = qnaService.getMyList(page);
 			return ResponseEntity.ok().body(favoriteList);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -59,12 +50,9 @@ public class QNAController {
 	
 	// QNA 세부 조회(판매자 or 고객)
 	@GetMapping("/qna/get-detail")
-	public ResponseEntity getQnaDetail(HttpServletRequest request, @RequestBody QNADTO qnaDTO) throws Exception{
+	public ResponseEntity getQnaDetail(@RequestBody QNADTO qnaDTO) throws Exception{
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer userId = Integer.parseInt(token);
-			ResponseDTO itemList = qnaService.getQnaDetail(userId, qnaDTO);
+			ResponseDTO itemList = qnaService.getQnaDetail(qnaDTO);
 			return ResponseEntity.ok().body(itemList);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -73,12 +61,9 @@ public class QNAController {
 
 	// QNA 추가(고객)
 	@PostMapping("/qna/add")
-	public ResponseEntity getItemList(HttpServletRequest request, @RequestBody QNADTO qnaDTO) throws Exception{
+	public ResponseEntity getItemList(@RequestBody QNADTO qnaDTO) throws Exception{
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer userId = Integer.parseInt(token);
-			qnaService.addQNA(userId, qnaDTO);
+			qnaService.addQNA(qnaDTO);
 			return ResponseEntity.ok().body(null);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -87,29 +72,23 @@ public class QNAController {
 
 	// QNA 답변 추가(판매자)
 	@PostMapping("/qna/add-answer")
-	public ResponseEntity addSellerAnswer(HttpServletRequest request, @RequestBody QNADTO qnaDTO) throws Exception{
+	public ResponseEntity addSellerAnswer(@RequestBody QNADTO qnaDTO) throws Exception{
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer userId = Integer.parseInt(token);
-			qnaService.addSellerAnswer(userId, qnaDTO);
+			qnaService.addSellerAnswer(qnaDTO);
 			return ResponseEntity.ok().body(null);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
 
-//	// QNA 삭제
-//	@GetMapping("/item/get-itemlist/{storeId}/{page}")
-//	public ResponseEntity getItemList(HttpServletRequest request, @PathVariable("storeId") Integer storeId, @PathVariable("page") Integer page) throws Exception{
-//		try {
-//			String token = jwtUtil.validateToken(request);
-//			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-//			Integer userId = Integer.parseInt(token);
-//			List<ItemDTO> itemList = itemService.getItemList(userId, storeId, page);
-//			return ResponseEntity.ok().body(itemList);
-//		}catch(Exception e) {
-//			return ResponseEntity.badRequest().body(e.getMessage());
-//		}
-//	}
+	// QNA 삭제
+	@PostMapping("/qna/delete")
+	public ResponseEntity deleteQNA(@RequestBody QNADTO qnadto) throws Exception{
+		try {
+			qnaService.deleteQNA(qnadto);
+			return ResponseEntity.ok().body(null);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
 }

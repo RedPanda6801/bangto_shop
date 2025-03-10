@@ -23,23 +23,13 @@ import jakarta.servlet.http.HttpServletRequest;
 public class StoreController {
 	@Autowired
 	StoreService storeService;
-	@Autowired
-	JwtUtil jwtUtil;
-	@Autowired
-	AuthDAO authDAO;
 	
 	// 매장 추가
 	@PostMapping("/store/add")
-	public ResponseEntity addStore(HttpServletRequest request, @RequestBody StoreDTO dto) throws Exception {
+	public ResponseEntity addStore(@RequestBody StoreDTO dto) throws Exception {
 		try {
-			// 토큰 인증
-			String token = jwtUtil.validateToken(request);
-			if(token != null) {
-				storeService.create(Integer.parseInt(token), dto);
-				return ResponseEntity.ok().body(null);
-			}else {
-				return ResponseEntity.badRequest().body("토큰 인증 오류");
-			}
+			storeService.create(dto);
+			return ResponseEntity.ok().body(null);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
@@ -47,12 +37,10 @@ public class StoreController {
 	
 	// 내 매장 전체 조회
 	@GetMapping("/store/get-list")
-	public ResponseEntity getStoreList(HttpServletRequest request) throws Exception {
+	public ResponseEntity getStoreList() throws Exception {
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer userId = Integer.parseInt(token);
-			ResponseDTO stores = storeService.getMyStores(userId);
+
+			ResponseDTO stores = storeService.getMyStores();
 			return ResponseEntity.ok().body(stores);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -61,44 +49,41 @@ public class StoreController {
 	
 	// 내 매장 세부 조회
 	@GetMapping("/store/get-detail/{storeId}")
-	public ResponseEntity getStoreDetail(HttpServletRequest request, @PathVariable("storeId") Integer storeId) throws Exception {
+	public ResponseEntity getStoreDetail(@PathVariable("storeId") Integer storeId) throws Exception {
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer userId = Integer.parseInt(token);
-			ResponseDTO store = storeService.getStoreDetail(userId, storeId);
+			ResponseDTO store = storeService.getStoreDetail(storeId);
 			return ResponseEntity.ok().body(store);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
+
 	// 매장 수정
 	@PostMapping("/store/modify")
-	public ResponseEntity modifyStore(HttpServletRequest request, @RequestBody StoreDTO dto) throws Exception {
+	public ResponseEntity modifyStore(@RequestBody StoreDTO dto) throws Exception {
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer userId = Integer.parseInt(token);
-			storeService.modify(userId, dto);
+			storeService.modify(dto);
 			return ResponseEntity.ok().body(null);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
+
 	// 매장 삭제
-	
+	@PostMapping("/store/delete")
+	public ResponseEntity deleteStore(@RequestBody StoreDTO dto) throws Exception {
+		try {
+			storeService.delete(dto);
+			return ResponseEntity.ok().body(null);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
 	
 	// 매장 전체 조회(관리자)
 	@GetMapping("/manager/store/get-list/{page}")
-	public ResponseEntity getStoreListByRoot(HttpServletRequest request, @PathVariable("page") Integer page) throws Exception {
+	public ResponseEntity getStoreListByRoot(@PathVariable("page") Integer page) throws Exception {
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer rootId = Integer.parseInt(token);
-			// 관리자 인증 코드
-			if(!authDAO.authRoot(rootId)) {
-				return ResponseEntity.badRequest().body("Forbidden Error");
-			}
 			ResponseDTO stores = storeService.getMyStoresByRoot(page);
 			return ResponseEntity.ok().body(stores);
 		}catch(Exception e) {
@@ -108,15 +93,9 @@ public class StoreController {
 	
 	// 관리자 매장 수정
 	@PostMapping("/manager/store/modify/{userId}")
-	public ResponseEntity modifyStoreByRoot(HttpServletRequest request, @RequestBody StoreDTO dto, @PathVariable("userId") Integer userId) throws Exception {
+	public ResponseEntity modifyStoreByRoot(@RequestBody StoreDTO dto, @PathVariable("userId") Integer userId) throws Exception {
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer rootId = Integer.parseInt(token);
-			if(!authDAO.authRoot(rootId)) {
-				return ResponseEntity.badRequest().body("Forbidden Error");
-			}
-			storeService.modify(userId, dto);
+			storeService.modifyForRoot(userId, dto);
 			return ResponseEntity.ok().body(null);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());

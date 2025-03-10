@@ -10,6 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -45,10 +47,10 @@ public class CommentDAO {
 	EnvConfig envConfig;
 	
 	@Transactional
-	public void writeComment(Integer userId, CommentDTO dto, List<MultipartFile> files) throws Exception{
+	public void writeComment(CommentDTO dto, List<MultipartFile> files) throws Exception{
 		try {
 			// 인증 유효 확인
-			Users user = authDAO.auth(userId);
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
 			Integer soldItemPk = dto.getSoldItemPk();
 			Optional<SoldItems> soldItemOpt = payRepository.findById(soldItemPk);
 			if(soldItemOpt.isEmpty()) {
@@ -98,10 +100,10 @@ public class CommentDAO {
 		}
 	}
 	
-	public ResponseDTO getItemComment(Integer userId, Integer itemId, Integer page) throws Exception{
+	public ResponseDTO getItemComment(Integer itemId, Integer page) throws Exception{
 		try {
 			// 인증 유효 확인
-			authDAO.auth(userId);
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
 			Pageable pageable = PageRequest.of(page-1, 20, Sort.by("id").ascending());
 			Page<Comments> comments = commentRepository.findCommentsByItemId(itemId, pageable);
 			List<CommentDTO> commentList = new ArrayList<CommentDTO>();
@@ -115,10 +117,10 @@ public class CommentDAO {
 		}
 	}
 	
-	public ResponseDTO getComment(Integer userId, Integer commentId) throws Exception{
+	public ResponseDTO getComment(Integer commentId) throws Exception{
 		try {
 			// 인증 유효 확인
-			authDAO.auth(userId);
+			authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
 			Optional<Comments> commentOpt = commentRepository.findById(commentId);
 			if(commentOpt.isEmpty()) {
 				throw new Exception("존재하지 않는 후기입니다.");
@@ -133,18 +135,36 @@ public class CommentDAO {
 		}
 	}
 	
-	public ResponseDTO getMyComment(Integer userId, Integer page) throws Exception{
+	public ResponseDTO getMyComment(Integer page) throws Exception{
 		try {
 			// 인증 유효 확인
-			authDAO.auth(userId);
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
 			Pageable pageable = PageRequest.of(page-1, 20, Sort.by("id").ascending());
-			Page<Comments> comments = commentRepository.findCommentsByUserId(userId, pageable);
+			Page<Comments> comments = commentRepository.findCommentsByUserId(user.getId(), pageable);
 			List<CommentDTO> commentList = new ArrayList<CommentDTO>();
 			for(Comments comment : comments) {
 				CommentDTO dto = CommentDTO.toDTO(comment);
 				commentList.add(dto);
 			}
 			return new ResponseDTO(commentList, new PageDTO(comments.getSize(), comments.getTotalElements(), comments.getTotalPages()));
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+
+	public void deleteComment(CommentDTO dto) throws Exception{
+		try {
+			// 인증 유효 확인
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
+			Optional<Comments> commentOpt = commentRepository.findById(dto.getId());
+			if(commentOpt.isEmpty()){
+				throw new Exception("후기 조회 오류");
+			}else if(!authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())
+					&& !commentOpt.get().getUser().getId().equals(user.getId())){
+				throw new Exception("권한 오류");
+			}
+			Comments comment = commentOpt.get();
+			commentRepository.delete(comment);
 		}catch(Exception e) {
 			throw e;
 		}

@@ -15,55 +15,47 @@ public class CommentService {
 	@Autowired
 	CommentDAO commentDAO;
 	
-	public void writeComment(Integer userId, CommentDTO dto, List<MultipartFile> files) throws Exception{
-		if(userId == null) { 
-			throw new Exception("권한 없음");
-		}
-		else {
-			try {
-				commentDAO.writeComment(userId, dto, files);
-			}catch(Exception e) {
-				throw e;
-			}
+	public void writeComment(CommentDTO dto, List<MultipartFile> files) throws Exception{
+		try {
+			commentDAO.writeComment(dto, files);
+		}catch(Exception e) {
+			throw e;
 		}
 	}
 	
-	public ResponseDTO getItemComment(Integer userId, Integer itemId, Integer page) throws Exception{
-		if(userId == null) { 
-			throw new Exception("권한 없음");
-		}
-		else {
-			try {
-				return commentDAO.getItemComment(userId, itemId, page);
-			}catch(Exception e) {
-				throw e;
-			}
+	public ResponseDTO getItemComment(Integer itemId, Integer page) throws Exception{
+		try {
+			return commentDAO.getItemComment(itemId, page);
+		}catch(Exception e) {
+			throw e;
 		}
 	}
 	
-	public ResponseDTO getComment(Integer userId, Integer commentId) throws Exception{
-		if(userId == null) { 
-			throw new Exception("권한 없음");
-		}
-		else {
-			try {
-				return commentDAO.getComment(userId, commentId);
-			}catch(Exception e) {
-				throw e;
-			}
+	public ResponseDTO getComment(Integer commentId) throws Exception{
+		try {
+			return commentDAO.getComment(commentId);
+		}catch(Exception e) {
+			throw e;
 		}
 	}
 	
-	public ResponseDTO getMyComment(Integer userId, Integer page) throws Exception{
-		if(userId == null) { 
-			throw new Exception("권한 없음");
+	public ResponseDTO getMyComment(Integer page) throws Exception{
+		try {
+			return commentDAO.getMyComment(page);
+		}catch(Exception e) {
+			throw e;
 		}
-		else {
-			try {
-				return commentDAO.getMyComment(userId, page);
-			}catch(Exception e) {
-				throw e;
+	}
+
+	// 관리자 + 본인 삭제 가능
+	public void deleteComment(CommentDTO dto) throws Exception{
+		try {
+			if(dto.getId() == null){
+				throw new Exception("필수 정보 오류");
 			}
+			commentDAO.deleteComment(dto);
+		}catch(Exception e) {
+			throw e;
 		}
 	}
 }

@@ -15,12 +15,8 @@ public class UserService {
 	UserDAO userDAO;
 	
 	public void sign(UserDTO dto) throws Exception {
-		// SNS 로그인이 아님
-		if(dto.getSnsAuth() == null || dto.getSnsAuth().equals("")) {
-			dto.setSnsAuth(false);
-		}
 		// validation
-		if(dto.getEmail() == null || dto.getName() == null || (dto.getSnsAuth() == false && dto.getPw() == null)) {
+		if(dto.getEmail() == null || dto.getName() == null || (!dto.getSnsAuth() && dto.getPw() == null)) {
 			throw new Exception("입력 오류");
 		}
 		// 비밀번호 해시화 해야함(security 사용?)
@@ -50,16 +46,16 @@ public class UserService {
 			throw e;
 		}
 	}
-	public ResponseDTO getUser(Integer userId) throws Exception {
+	public ResponseDTO getUser() throws Exception {
 		try {
-				return userDAO.getUser(userId);
+				return userDAO.getUser();
 		}catch(Exception e) {
 			throw e;
 		}
 	}
-	public void modifyUser(Integer userId, UserDTO dto) throws Exception {
+	public void modifyUser(UserDTO dto) throws Exception {
 		try {
-				userDAO.modifyUser(userId, dto);
+				userDAO.modifyUser(dto);
 		}catch(Exception e) {
 			throw e;
 		}
@@ -78,9 +74,9 @@ public class UserService {
 			throw e;
 		}
 	}
-	public void deleteMyself(Integer userId) throws Exception {
+	public void deleteMyself() throws Exception {
 		try {
-			userDAO.deleteMyself(userId);
+			userDAO.deleteMyself();
 		}catch(Exception e) {
 			throw e;
 		}

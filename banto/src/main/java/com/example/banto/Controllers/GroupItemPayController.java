@@ -22,25 +22,12 @@ import jakarta.servlet.http.HttpServletRequest;
 @Controller
 public class GroupItemPayController {
 	@Autowired
-	AuthDAO authDAO;
-	
-	@Autowired
 	GroupItemPayService groupItemPayService;
-	
-	@Autowired
-	JwtUtil jwtUtil;
 	
 	// 아이템 별로 결제 내역 조회(판매자만)
 	@GetMapping("/group-pay/item/get-list")
-	public ResponseEntity getPayListByItem(HttpServletRequest request, @RequestBody GroupBuyItemDTO dto) {
+	public ResponseEntity getPayListByItem(@RequestBody GroupBuyItemDTO dto) {
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer userId = Integer.parseInt(token);
-			
-			if(authDAO.authSeller(userId) == -1){
-				return ResponseEntity.badRequest().body("권한 오류");
-			}
 			ResponseDTO payList = groupItemPayService.getPayListByItem(dto);
 			return ResponseEntity.ok().body(payList);
 		}catch(Exception e) {
@@ -50,12 +37,9 @@ public class GroupItemPayController {
 
 	// 내 결제 내역 조회
 	@GetMapping("/group-pay/my/get-list/{year}")
-	public ResponseEntity getMyGroupPayList(HttpServletRequest request, @PathVariable("year") Integer year) {
+	public ResponseEntity getMyGroupPayList(@PathVariable("year") Integer year) {
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer userId = Integer.parseInt(token);
-			ResponseDTO payList = groupItemPayService.getMyGroupPayList(userId, year);
+			ResponseDTO payList = groupItemPayService.getMyGroupPayList(year);
 			return ResponseEntity.ok().body(payList);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -65,12 +49,9 @@ public class GroupItemPayController {
 
 	// 결제 처리
 	@PostMapping("/group-pay/pay")
-	public ResponseEntity payGroupItem(HttpServletRequest request, @RequestBody GroupItemPayDTO dto) {
+	public ResponseEntity payGroupItem(@RequestBody GroupItemPayDTO dto) {
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer userId = Integer.parseInt(token);
-			groupItemPayService.payGroupItem(userId, dto);
+			groupItemPayService.payGroupItem(dto);
 			return ResponseEntity.ok().body(null);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -79,16 +60,9 @@ public class GroupItemPayController {
 
 	// 배송 처리
 	@PostMapping("/group-pay/delivering-check")
-	public ResponseEntity deliveringCheck(HttpServletRequest request, @RequestBody GroupItemPayDTO dto) {
+	public ResponseEntity deliveringCheck(@RequestBody GroupItemPayDTO dto) {
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer sellerId = authDAO.authSeller(Integer.parseInt(token));
-			// 판매자 확인
-			if(sellerId == -1){
-				return ResponseEntity.badRequest().body("권한 오류");
-			}
-			groupItemPayService.deliveringCheck(sellerId, dto);
+			groupItemPayService.deliveringCheck(dto);
 			return ResponseEntity.ok().body(null);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -97,16 +71,9 @@ public class GroupItemPayController {
 
 	// 배송 완료 처리
 	@PostMapping("/group-pay/delivered-check")
-	public ResponseEntity deliveredCheck(HttpServletRequest request, @RequestBody GroupItemPayDTO dto) {
+	public ResponseEntity deliveredCheck(@RequestBody GroupItemPayDTO dto) {
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer sellerId = authDAO.authSeller(Integer.parseInt(token));
-			// 판매자 확인
-			if(sellerId == -1){
-				return ResponseEntity.badRequest().body("권한 오류");
-			}
-			groupItemPayService.deliveredCheck(sellerId, dto);
+			groupItemPayService.deliveredCheck(dto);
 			return ResponseEntity.ok().body(null);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());

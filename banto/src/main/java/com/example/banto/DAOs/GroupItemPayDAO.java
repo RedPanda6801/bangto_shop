@@ -10,6 +10,7 @@ import com.example.banto.Repositorys.*;
 import com.example.banto.Utils.PayCulculator;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.example.banto.DTOs.GroupBuyItemDTO;
@@ -37,6 +38,9 @@ public class GroupItemPayDAO {
 
 	public ResponseDTO getPayListByItem(GroupBuyItemDTO dto) throws Exception {
 		try {
+			if(authDAO.authSeller(SecurityContextHolder.getContext().getAuthentication()) == -1){
+				throw new Exception("권한 오류");
+			}
 			// 현재 이벤트 찾기
 			List<GroupItemPays> pays = groupItemPayRepository.findByItemId(dto.getItemPk());
 			// 비어있으면 빈값 주기
@@ -55,11 +59,11 @@ public class GroupItemPayDAO {
 	}
 
 	@Transactional
-	public void payGroupItem(Integer userId, GroupItemPayDTO dto) throws Exception {
+	public void payGroupItem(GroupItemPayDTO dto) throws Exception {
 		try {
 			// 인증 및 지갑 가져오기
-			Users user = authDAO.auth(userId);
-			Optional<Wallets> walletOpt = walletRepository.findByUser_Id(userId);
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
+			Optional<Wallets> walletOpt = walletRepository.findByUser_Id(user.getId());
 			// 현재 이벤트 찾기
 			Optional<Items> itemOpt = itemRepository.findById(dto.getItemPk());
 			Optional<GroupBuyItems> groupItemOpt = groupBuyItemRepository.findById(dto.getGroupItemPk());
@@ -125,11 +129,11 @@ public class GroupItemPayDAO {
 		}
 	}
 
-	public ResponseDTO getMyGroupPayList(Integer userId, Integer year) throws Exception {
+	public ResponseDTO getMyGroupPayList(Integer year) throws Exception {
 		try {
-			Users user = authDAO.auth(userId);
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
 			// 현재 이벤트 찾기
-			List<GroupItemPays> pays = groupItemPayRepository.findByUserIdAndYear(userId, year);
+			List<GroupItemPays> pays = groupItemPayRepository.findByUserIdAndYear(user.getId(), year);
 			// 비어있으면 빈값 주기
 			if(pays.isEmpty()) {
 				return new ResponseDTO();
@@ -146,8 +150,12 @@ public class GroupItemPayDAO {
 	}
 
 	@Transactional
-	public void deliveringCheck(Integer sellerId, GroupItemPayDTO dto) throws Exception {
+	public void deliveringCheck(GroupItemPayDTO dto) throws Exception {
 		try {
+			int sellerId = authDAO.authSeller(SecurityContextHolder.getContext().getAuthentication());
+			if(authDAO.authSeller(SecurityContextHolder.getContext().getAuthentication()) == -1){
+				throw new Exception("권한 오류");
+			}
 			Optional<GroupItemPays> payOpt = groupItemPayRepository.findById(dto.getId());
 			if(payOpt.isEmpty()){
 				throw new Exception("정보 조회 오류");
@@ -201,8 +209,12 @@ public class GroupItemPayDAO {
 
 
 	@Transactional
-	public void deliveredCheck(Integer sellerId, GroupItemPayDTO dto) throws Exception {
+	public void deliveredCheck(GroupItemPayDTO dto) throws Exception {
 		try {
+			int sellerId = authDAO.authSeller(SecurityContextHolder.getContext().getAuthentication());
+			if(authDAO.authSeller(SecurityContextHolder.getContext().getAuthentication()) == -1){
+				throw new Exception("권한 오류");
+			}
 			Optional<GroupItemPays> payOpt = groupItemPayRepository.findById(dto.getId());
 			if(payOpt.isEmpty()){
 				throw new Exception("정보 조회 오류");

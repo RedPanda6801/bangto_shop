@@ -2,13 +2,18 @@ package com.example.banto.DAOs;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
+import com.example.banto.Entitys.*;
+import com.example.banto.Repositorys.GroupBuyPayRepository;
+import com.example.banto.Repositorys.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.example.banto.Configs.EnvConfig;
@@ -16,9 +21,6 @@ import com.example.banto.DTOs.PageDTO;
 import com.example.banto.DTOs.ResponseDTO;
 import com.example.banto.DTOs.SellerDTO;
 import com.example.banto.DTOs.StoreDTO;
-import com.example.banto.Entitys.Sellers;
-import com.example.banto.Entitys.Stores;
-import com.example.banto.Entitys.Users;
 import com.example.banto.Repositorys.SellerRepository;
 import com.example.banto.Repositorys.StoreRepository;
 
@@ -31,18 +33,19 @@ public class StoreDAO {
 	@Autowired
 	SellerRepository sellerRepository;
 	@Autowired
-	SellerDAO sellerDAO;
+	UserRepository userRepository;
+	@Autowired
+	GroupBuyPayRepository groupBuyPayRepository;
 	@Autowired
 	AuthDAO authDAO;
-	@Autowired
-	EnvConfig envConfig;
+
 	@Transactional
-	public void create(Integer userId, StoreDTO dto) throws Exception {
+	public void create(StoreDTO dto) throws Exception {
 		try {
 			// 인증 유효 확인
-			authDAO.auth(userId);
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
 			// 판매자 가져오기
-			Optional<Sellers> seller = sellerRepository.findByUser_Id(userId);
+			Optional<Sellers> seller = sellerRepository.findByUser_Id(user.getId());
 			if(seller.isEmpty()) {
 				throw new Exception("판매자 권한 오류");
 			}
@@ -57,26 +60,33 @@ public class StoreDAO {
 		}
 	}
 	
-	public ResponseDTO getMyStores(Integer userId) throws Exception {
+	public ResponseDTO getMyStores() throws Exception {
 		try {
 			// 인증 유효 확인
-			authDAO.auth(userId);
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
 			// 판매자 가져오기
-			ResponseDTO sellerDTO = sellerDAO.findSeller(userId);
+			Optional<Sellers> sellerOpt = sellerRepository.findByUser_Id(user.getId());
+			if(sellerOpt.isEmpty()){
+				throw new Exception("판매자 정보 오류");
+			}
 			//판매자 pk로 store 전부 찾기
-			List<StoreDTO> storeList = storeRepository.findAllBySellerId(((SellerDTO)sellerDTO.getContent()).getId());
+			List<StoreDTO> storeList = storeRepository.findAllBySellerId(sellerOpt.get().getId());
 			return new ResponseDTO(storeList, null);
 		}catch(Exception e) {
 			throw e;
 		}
 	}
 	
-	public ResponseDTO getStore(Integer userId, Integer storeId) throws Exception {
+	public ResponseDTO getStore(Integer storeId) throws Exception {
 		try {
 			// 인증 유효 확인
-			authDAO.auth(userId);
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
 			// 판매자 가져오기
-			ResponseDTO sellerDTO = sellerDAO.findSeller(userId);
+			Optional<Sellers> sellerOpt = sellerRepository.findByUser_Id(user.getId());
+			if(sellerOpt.isEmpty()){
+				throw new Exception("판매자 정보 오류");
+			}
+			Sellers seller = sellerOpt.get();
 			//판매자 pk로 store 전부 찾기
 			Optional<Stores> storeOpt = storeRepository.findById(storeId);
 			if(storeOpt.isEmpty()) {
@@ -84,7 +94,7 @@ public class StoreDAO {
 			}
 			else {
 				Stores store = storeOpt.get();
-				if(((SellerDTO)sellerDTO.getContent()).getId() == store.getSeller().getId()) {
+				if((Objects.equals(seller.getId(), store.getSeller().getId()))) {
 					// 필요한 데이터만 조회
 					store.setItems(null);
 					return new ResponseDTO(StoreDTO.toDTO(store), null);
@@ -99,10 +109,70 @@ public class StoreDAO {
 	}
 	
 	@Transactional
-	public void modify(Integer userId, StoreDTO dto) throws Exception {
+	public void modify(StoreDTO dto) throws Exception {
 		try {
 			// 인증 유효 확인
-			authDAO.auth(userId);
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
+			// 판매자 가져오기
+			Optional<Stores> storeOpt = storeRepository.findStoreByUserId(user.getId(), dto.getId());
+			if(storeOpt.isEmpty()) {
+				throw new Exception("매장 없음");
+			}
+			else {
+				Stores store = storeOpt.get();
+				store.setBusiNum(
+						(dto.getBusiNum() != null && !dto.getBusiNum().equals("")) ?
+								dto.getBusiNum() : store.getBusiNum());
+				store.setName((dto.getName() != null && !dto.getName().equals("")) ?
+						dto.getName() : store.getName());
+				storeRepository.save(store);
+			}
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+
+	@Transactional
+	public void delete(StoreDTO dto) throws Exception {
+		try {
+			// 인증 유효 확인
+			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
+			// 매장 가져오기
+			Optional<Stores> storeOpt = storeRepository.findStoreByUserId(user.getId(), dto.getId());
+			if(storeOpt.isEmpty()) {
+				throw new Exception("매장 없음");
+			}else if(!storeOpt.get().getSeller().getUser().getId().equals(user.getId())){
+				throw new Exception("권한 없음");
+			}
+			else {
+				Stores store = storeOpt.get();
+				if(!store.getItems().isEmpty()){
+					for(Items item : store.getItems()){
+						List<GroupItemPays> payments = groupBuyPayRepository.findByItemId(item.getId());
+						for(GroupItemPays payment : payments){
+							payment.setItem(null);
+							groupBuyPayRepository.save(payment);
+						}
+					}
+				}
+				storeRepository.delete(store);
+			}
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+
+	@Transactional
+	public void modifyForRoot(Integer userId, StoreDTO dto) throws Exception {
+		try {
+			// 인증 유효 확인
+			if(!authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())){
+				throw new Exception("관리자 권한 오류");
+			}
+			Optional<Users> user = userRepository.findById(userId);
+			if(user.isEmpty()){
+				throw new Exception("유저 정보 오류");
+			}
 			// 판매자 가져오기
 			Optional<Stores> storeOpt = storeRepository.findStoreByUserId(userId, dto.getId());
 			if(storeOpt.isEmpty()) {
@@ -124,6 +194,9 @@ public class StoreDAO {
 	
 	public ResponseDTO getMyStoresByRoot(Integer page) throws Exception {
 		try {
+			if(!authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())){
+				throw new Exception("관리자 권한 오류");
+			}
 			// 10명씩 끊기
 			Pageable pageable = PageRequest.of(page-1, 10, Sort.by("id").ascending());
 			Page<Stores> storeListPage = storeRepository.findAll(pageable);

@@ -24,25 +24,36 @@ public class GroupBuyItemService {
 		}
 	}
 
-	public void addItem(Integer userId, GroupBuyItemDTO dto) throws Exception {
+	public void addItem(GroupBuyItemDTO dto) throws Exception {
 		try {
 			if(dto.getItemPk() == null || dto.getLimitPerBuyer() == null
 			|| dto.getMaxAmount() == null || dto.getEventPk() == null
 			|| dto.getOptionPk() == null){
 				throw new Exception("필수 정보 오류");
 			}
-			groupBuyItemDAO.addItem(userId, dto);
+			groupBuyItemDAO.addItem(dto);
 		}catch(Exception e) {
 			throw e;
 		}
 	}
 	
-	public void modifyItem(Integer userId, GroupBuyItemDTO dto) throws Exception {
+	public void modifyGroupItem(GroupBuyItemDTO dto) throws Exception {
 		try {
 			if(dto.getItemPk() == null){
 				throw new Exception("필수 정보 오류");
 			}
-			groupBuyItemDAO.modifyItem(userId, dto);
+			groupBuyItemDAO.modifyGroupItem(dto);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+
+	public void deleteGroupItem(GroupBuyItemDTO dto) throws Exception {
+		try {
+			if(dto.getId() == null){
+				throw new Exception("필수 정보 오류");
+			}
+			groupBuyItemDAO.deleteGroupItem(dto);
 		}catch(Exception e) {
 			throw e;
 		}

@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,10 +22,6 @@ import jakarta.servlet.http.HttpServletRequest;
 @Controller
 public class GroupBuyController {
 	@Autowired
-	JwtUtil jwtUtil;
-	@Autowired
-	AuthDAO authDAO;
-	@Autowired
 	GroupBuyService groupBuyService;
 	
 	// 현재 공동 구매 기간 조회 (무권한)
@@ -39,15 +37,8 @@ public class GroupBuyController {
 	
 	// 기간 추가 (관리자)
 	@PostMapping("/manager/group-buy/add")
-	public ResponseEntity addEvent(HttpServletRequest request, @RequestBody GroupBuyDTO groupBuyDTO) throws Exception {
+	public ResponseEntity addEvent(@RequestBody GroupBuyDTO groupBuyDTO) throws Exception {
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer rootId = Integer.parseInt(token);
-			// 관리자 체크
-			if(!authDAO.authRoot(rootId)) {
-				return ResponseEntity.badRequest().body("Forbidden Error");
-			}
 			groupBuyService.addEvent(groupBuyDTO);
 			return ResponseEntity.ok().body(null);
 		}catch(Exception e) {
@@ -57,12 +48,9 @@ public class GroupBuyController {
 	
 	// 관리자 OR 판매자만 조회 가능(전체 조회)
 	@GetMapping("/group-buy/get-list")
-	public ResponseEntity getEventList(HttpServletRequest request) throws Exception {
+	public ResponseEntity getEventList() throws Exception {
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer userId = Integer.parseInt(token);
-			ResponseDTO eventList = groupBuyService.getEventList(userId);
+			ResponseDTO eventList = groupBuyService.getEventList();
 			return ResponseEntity.ok().body(eventList);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -71,15 +59,8 @@ public class GroupBuyController {
 
 	// 물건 추가 가능한 날짜 조회 (판매자만)
 	@GetMapping("/group-buy/get-choose-list")
-	public ResponseEntity getChooseList(HttpServletRequest request) throws Exception {
+	public ResponseEntity getChooseList() throws Exception {
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer userId = Integer.parseInt(token);
-			// 판매자 체크
-			if(authDAO.authSeller(userId) == -1) {
-				return ResponseEntity.badRequest().body("Forbidden Error");
-			}
 			ResponseDTO eventList = groupBuyService.getChooseList();
 			return ResponseEntity.ok().body(eventList);
 		}catch(Exception e) {
@@ -89,17 +70,21 @@ public class GroupBuyController {
 
 	// 올린 물건이 있는 이벤트만 조회 (판매자)
 	@GetMapping("/group-buy/seller/get-list")
-	public ResponseEntity getEventListToSeller(HttpServletRequest request) throws Exception {
+	public ResponseEntity getEventListToSeller() throws Exception {
 		try {
-			String token = jwtUtil.validateToken(request);
-			if(token == null) return ResponseEntity.badRequest().body("토큰 인증 오류");
-			Integer userId = Integer.parseInt(token);
-			// 판매자 체크
-			if(authDAO.authSeller(userId) == -1) {
-				return ResponseEntity.badRequest().body("Forbidden Error");
-			}
-			ResponseDTO eventList = groupBuyService.getEventListToSeller(userId);
+			ResponseDTO eventList = groupBuyService.getEventListToSeller();
 			return ResponseEntity.ok().body(eventList);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+
+	// 기간 추가 (관리자)
+	@PostMapping("/manager/group-buy/delete")
+	public ResponseEntity deleteEvent(@RequestBody GroupBuyDTO groupBuyDTO) throws Exception {
+		try {
+			groupBuyService.deleteEvent(groupBuyDTO);
+			return ResponseEntity.ok().body(null);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
