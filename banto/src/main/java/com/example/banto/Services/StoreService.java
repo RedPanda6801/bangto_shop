@@ -53,9 +53,9 @@ public class StoreService {
 		}
 	}
 
-	public void modifyForRoot(Integer userId, StoreDTO dto) throws Exception {
+	public void modifyForRoot(StoreDTO dto) throws Exception {
 		try {
-			storeDAO.modifyForRoot(userId, dto);
+			storeDAO.modifyForRoot(dto);
 		}catch(Exception e) {
 			throw e;
 		}
@@ -64,6 +64,14 @@ public class StoreService {
 	public ResponseDTO getMyStoresByRoot(Integer page) throws Exception {
 		try {
 			return storeDAO.getMyStoresByRoot(page);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+	
+	public void deleteByRoot(StoreDTO dto) throws Exception {
+		try {
+			storeDAO.deleteByRoot(dto);
 		}catch(Exception e) {
 			throw e;
 		}

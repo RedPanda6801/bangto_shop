@@ -34,7 +34,6 @@ public class Stores {
     @JoinColumn(name="SELLER_PK")
     private Sellers seller;
 
-    @JsonIgnore
     @OneToMany(mappedBy="store", cascade = CascadeType.ALL, fetch = FetchType.LAZY)  // 'Items' 엔티티에서 'store' 필드를 기준으로 관계를 매핑
     private List<Items> items;
     

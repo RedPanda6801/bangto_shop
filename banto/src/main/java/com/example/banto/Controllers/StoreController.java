@@ -92,14 +92,24 @@ public class StoreController {
 	}
 	
 	// 관리자 매장 수정
-	@PostMapping("/manager/store/modify/{userId}")
-	public ResponseEntity modifyStoreByRoot(@RequestBody StoreDTO dto, @PathVariable("userId") Integer userId) throws Exception {
+	@PostMapping("/manager/store/modify")
+	public ResponseEntity modifyStoreByRoot(@RequestBody StoreDTO dto) throws Exception {
 		try {
-			storeService.modifyForRoot(userId, dto);
+			storeService.modifyForRoot(dto);
 			return ResponseEntity.ok().body(null);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
 	
+	// 매장 삭제
+	@PostMapping("/manager/store/delete")
+	public ResponseEntity deleteStoreByRoot(@RequestBody StoreDTO dto) throws Exception {
+		try {
+			storeService.deleteByRoot(dto);
+			return ResponseEntity.ok().body(null);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
 }

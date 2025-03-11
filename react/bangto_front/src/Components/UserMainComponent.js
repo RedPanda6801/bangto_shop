@@ -11,17 +11,17 @@ const UserMainComponent = () =>
 
     const slides = ["/images/03_main/main_01.jpg", "/images/03_main/main_02.jpg", "/images/03_main/main_03.jpg"];
     const wishlistItems = [
-        { name: "물품 1", price: "10,000 원" },
-        { name: "물품 2", price: "20,000 원" },
-        { name: "물품 3", price: "30,000 원" },
-        { name: "물품 4", price: "40,000 원" },
-        { name: "물품 5", price: "50,000 원" },
-        { name: "물품 6", price: "60,000 원" },
-        { name: "물품 7", price: "70,000 원" },
-        { name: "물품 8", price: "80,000 원" },
-        { name: "물품 9", price: "90,000 원" },
-        { name: "물품 10", price: "100,000 원" },
-        { name: "물품 11", price: "10,000 원" }
+        // { name: "물품 1", price: "10,000 원" },
+        // { name: "물품 2", price: "20,000 원" },
+        // { name: "물품 3", price: "30,000 원" },
+        // { name: "물품 4", price: "40,000 원" },
+        // { name: "물품 5", price: "50,000 원" },
+        // { name: "물품 6", price: "60,000 원" },
+        // { name: "물품 7", price: "70,000 원" },
+        // { name: "물품 8", price: "80,000 원" },
+        // { name: "물품 9", price: "90,000 원" },
+        // { name: "물품 10", price: "100,000 원" },
+        // { name: "물품 11", price: "10,000 원" }
     ];
     const totalSlides = slides.length;
     const totalWishlistItems = wishlistItems.length;
@@ -145,34 +145,43 @@ const UserMainComponent = () =>
                     찜 목록
                 </div>
                 <div className="wishlist_Item">
-                    <button 
-                        className="wishlist_arrow left"
-                        onClick={moveToPrevWishlist}
-                        style={{ cursor: currentWishlist === 0 ? 'default' : 'pointer' }}>
-                        &#10094;
-                    </button>
-                    <div className="wishlist_Row">
-                        <div className="wishlist_Item_Container">
-                            {wishlistItems
-                                .slice(currentWishlist * itemsPerPage, (currentWishlist + 1) * itemsPerPage)
-                                .map((item) => (
-                                    <div className="wishlist_Item_Card">
-                                        <input 
-                                            type="image" 
-                                            alt="물품 이미지"/>
-                                        <div>{item.name}</div>
-                                        <div>{item.price}</div>
-                                    </div>
-                                ))}
+                    {wishlistItems? (
+                        <div>
+                            <button 
+                                className="wishlist_arrow left"
+                                onClick={moveToPrevWishlist}
+                                style={{ cursor: currentWishlist === 0 ? 'default' : 'pointer' }}>
+                                &#10094;
+                            </button>
+                            <div className="wishlist_Row">
+                                <div className="wishlist_Item_Container">
+                                    {wishlistItems
+                                        .slice(currentWishlist * itemsPerPage, (currentWishlist + 1) * itemsPerPage)
+                                        .map((item) => (
+                                            <div className="wishlist_Item_Card">
+                                                <input 
+                                                    type="image" 
+                                                    alt="물품 이미지"/>
+                                                <div>{item.name}</div>
+                                                <div>{item.price}</div>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+                            </div>
+                            {currentWishlist < Math.ceil(totalWishlistItems / itemsPerPage) - 1 && (
+                                <button 
+                                    className="wishlist_arrow right"
+                                    onClick={moveToNextWishlist}>
+                                    &#10095;
+                                </button>
+                            )}
                         </div>
-                    </div>
-                    {currentWishlist < Math.ceil(totalWishlistItems / itemsPerPage) - 1 && (
-                        <button 
-                            className="wishlist_arrow right"
-                            onClick={moveToNextWishlist}>
-                            &#10095;
-                        </button>
-                    )}                    
+                    ) :
+                        <div>
+                            찜 목록을 추가해보세요!
+                        </div>
+                    }                    
                 </div>
             </div>
             <div className="box_Itemlist">

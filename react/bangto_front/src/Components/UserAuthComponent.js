@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './UserAuthComponent.css'; 
 import { useNavigate } from 'react-router-dom';
+import {resContent} from './ResponseData';
 
 const UserAuthComponent = (props) => 
 {  
@@ -17,21 +18,18 @@ const UserAuthComponent = (props) =>
     {
       const response = await axios.post("http://localhost:9000/login", 
         {"email":email, "pw":password}, {withCredentials : true});
-      if (response.status == 200) 
-      {
-        console.log("로그인 성공");
-        //console.log(response.data.content.token);
-        localStorage.setItem("token",response.data.content.token);
-        props.setToken(response.data.content.token);
-        navigate("/");
-      } 
-      else 
-      {
-        console.error("로그인 실패:");
-      }
+
+      localStorage.setItem("token", resContent(response).token);
+      props.setToken(resContent(response).token);
+      navigate("/");
     } 
     catch (error) 
     {
+      if(error.status === 400){
+        alert("잘못된 입력입니다.");
+      }else{
+        alert("현재 로그인 할 수 없습니다.");
+      }
       console.error("로그인 오류:", error);
     }
   };
@@ -99,24 +97,17 @@ const UserAuthComponent = (props) =>
       }
       const loginResponse = await axios.post("http://localhost:9000/login", 
         {"email":email, "snsAuth":true}, {withCredentials : true});
-      if (loginResponse.status == 200) 
-      {
-        console.log("로그인 성공");
-        //console.log(loginResponse.data.content.token);
-        props.setToken(loginResponse.data.content.token);
-        localStorage.setItem("token",loginResponse.data.content.token);
-        //alert("카카오 로그인 성공");
-        navigate("/");
-      } 
-      else 
-      {
-        console.error("로그인 실패:");
-      }
-      //await props.setUserName(info.data.kakao_account.profile.nickname);
-      //await localStorage.setItem("kakaoAccessToken", accessToken);
-      //navigate("/");
+      localStorage.setItem("token",resContent(loginResponse).token);
+      props.setToken(resContent(loginResponse).token);
+      localStorage.setItem("kakaoAccessToken", accessToken);
+      navigate("/");
     }
     catch (error) {
+      if(error.status === 400){
+        alert("잘못된 입력입니다.");
+      }else{
+        alert("현재 로그인 할 수 없습니다.");
+      }
       console.error("로그인 오류:", error);
     }
   }

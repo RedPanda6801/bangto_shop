@@ -3,6 +3,7 @@ package com.example.banto.Entitys;
 import java.util.List;
 
 import com.example.banto.DTOs.SellerDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -33,6 +34,7 @@ public class Sellers {
 	    @OneToMany(mappedBy="seller", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	    private List<Stores> stores;
 	    
+	    @JsonIgnore
 	    @OneToOne
 	    @JoinColumn(name = "USER_PK")
 	    private Users user;
