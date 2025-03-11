@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { resPage , resContent } from '../ResponseData';
+import { resPage , resContent } from '../UtilComponent/ResponseData';
 import { useNavigate } from 'react-router-dom';
-import TimeStamp from "../UtilComponent/DateFormat";
+import {TimeStamp} from "../UtilComponent/DateFormat";
 import PagenationComponent from "../UtilComponent/PagenationComponent";
 
 const ManagerApplyComponent = () => {
@@ -14,7 +14,7 @@ const ManagerApplyComponent = () => {
     useEffect(() => {handleApplyList()},[applyPage])
 
     const handleApplyList = () => {
-        axios.get(`http://localhost:9000/manager/apply/get-list/${applyPage}`, {
+        axios.get(`${process.env.REACT_APP_BACKEND_SERVER_PORT}/manager/apply/get-list/${applyPage}`, {
             withCredentials : true,
             headers: { "Authorization": `Bearer ${localStorage.getItem("token")}`,
         }}).then((res)=> {

@@ -2,7 +2,7 @@ import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import '../ManagerComponent.css';
 import { useEffect, useState } from "react";
-import { resPage , resContent } from '../ResponseData';
+import { resPage , resContent } from '../UtilComponent/ResponseData';
 import Modal from 'react-modal';
 import PagenationComponent from "../UtilComponent/PagenationComponent";
 
@@ -21,7 +21,7 @@ const ManagerUserComponent = () => {
     useEffect(() => {handleUserList()},[userPage])
 
     const handleUserList = () => {
-        axios.get(`http://localhost:9000/manager/user/get-list/${userPage}`, {
+        axios.get(`${process.env.REACT_APP_BACKEND_SERVER_PORT}/manager/user/get-list/${userPage}`, {
             withCredentials : true,
             headers: { "Authorization": `Bearer ${localStorage.getItem("token")}`,
         }}).then((res)=> {
@@ -45,7 +45,7 @@ const ManagerUserComponent = () => {
     const handleUserDel = async (userId) => {
         if(window.confirm("회원을 삭제 하시겠습니까?")) {
             try {    
-                const response = await axios.post(`http://localhost:9000/manager/user/delete/${userId}`, {}, {
+                const response = await axios.post(`${process.env.REACT_APP_BACKEND_SERVER_PORT}/manager/user/delete/${userId}`, {}, {
                         withCredentials : true,
                         headers: { "Authorization": `Bearer ${localStorage.getItem("token")}`,
                 }
@@ -67,7 +67,7 @@ const ManagerUserComponent = () => {
     
     const handleUserModiModal = async(selectedUser) => {
         try {   
-            const response = await axios.post(`http://localhost:9000/manager/user/modify/${selectedUser.id}`, 
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_SERVER_PORT}/manager/user/modify/${selectedUser.id}`, 
                 { name : editName, addr : editAddr, phone : editPhone}, {
                     withCredentials : true,
                     headers: { "Authorization": `Bearer ${localStorage.getItem("token")}`,

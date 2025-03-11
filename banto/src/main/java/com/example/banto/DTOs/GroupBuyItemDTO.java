@@ -45,7 +45,7 @@ public class GroupBuyItemDTO {
 				.maxAmount(entity.getMaxAmount())
 				.item(entity.getItem())
 				.sellerPk(entity.getSellerPk())
-				.optionPk(entity.getOption().getId())
+				.option(entity.getOption())
 				.itemPk(entity.getItem().getId())
 				.build();
 	}

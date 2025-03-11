@@ -28,10 +28,10 @@ public class GroupBuyItemDAO {
 	@Autowired
 	AuthDAO authDAO;
 
-	public ResponseDTO getCurrentItemList(GroupBuyDTO dto) throws Exception {
+	public ResponseDTO getCurrentItemList(int eventId) throws Exception {
 		try {
 			// 현재 이벤트 찾기
-			Optional<GroupBuys> eventOpt = groupBuyRepository.findById(dto.getId());
+			Optional<GroupBuys> eventOpt = groupBuyRepository.findById(eventId);
 			if(eventOpt.isEmpty()) {
 				throw new Exception("이벤트 정보 없음");
 			}else {

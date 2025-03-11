@@ -45,7 +45,8 @@ public class Items {
     
     @Column(name="IMG")
     private String img;
-
+    
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="STORE_PK")
     private Stores store;
@@ -54,9 +55,11 @@ public class Items {
     @OneToMany(mappedBy="item", cascade = CascadeType.ALL)  // 추가: cascade 설정
     private List<QNAs> qnas;
     
+    @JsonIgnore
     @OneToMany(mappedBy="item", cascade = CascadeType.ALL)  // 추가: cascade 설정
     private List<Options> options;
 
+    @JsonIgnore
     @OneToMany(mappedBy="item", cascade = CascadeType.ALL)  // 추가: cascade 설정
     private List<GroupBuyItems> events;
 

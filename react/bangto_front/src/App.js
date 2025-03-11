@@ -22,7 +22,7 @@ import './Components/LayoutComponent.css';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { resContent } from './Components/ResponseData';
+import { resContent } from './Components/UtilComponent/ResponseData';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
@@ -44,7 +44,7 @@ function App() {
     else
     {
       console.log(localStorage.getItem("token"));
-      axios.get("http://localhost:9000/user/get-info", {
+      axios.get(`${process.env.REACT_APP_BACKEND_SERVER_PORT}/user/get-info`, {
             headers: {
               "Authorization": `Bearer ${localStorage.getItem("token")}`,
             }

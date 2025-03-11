@@ -3,7 +3,7 @@ import axios from "axios";
 import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
 import '../ManagerComponent.css';
-import { resContent, resPage } from '../ResponseData';
+import { resContent, resPage } from '../UtilComponent/ResponseData';
 import PagenationComponent from "../UtilComponent/PagenationComponent";
 Modal.setAppElement('#root');
 
@@ -20,7 +20,7 @@ const ManagerStoreComponent = () => {
     useEffect(()=> {handleStoreList()},[storePage]);
     
     const handleStoreList = () => {
-        axios.get(`http://localhost:9000/manager/store/get-list/${storePage}`, {
+        axios.get(`${process.env.REACT_APP_BACKEND_SERVER_PORT}/manager/store/get-list/${storePage}`, {
             withCredentials : true,
             headers: { "Authorization": `Bearer ${localStorage.getItem("token")}`}
         }).then((res)=> {

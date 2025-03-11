@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './UserAuthComponent.css'; 
 import { useNavigate } from 'react-router-dom';
-import {resContent} from './ResponseData';
+import {resContent} from './UtilComponent/ResponseData';
 
 const UserAuthComponent = (props) => 
 {  

@@ -3,7 +3,14 @@ const TimeStamp = (data) => {
     const [year, month, day] = date.split("-");
     const [hour, min, sec] = time.split(":");
 
-    return `${year}년 ${month}월 ${day}일 ${hour}시 ${min}분 ${sec}초`;
+    return `${year}년 ${month}월 ${day}일 (${hour}:${min}:${sec})`;
 }
 
-export default TimeStamp;
+const StartTimeFormat = (data) => {
+    return data + "T00:00:00";
+}
+const EndTimeFormat = (data) => {
+    return data + "T23:59:59";
+}
+
+export {TimeStamp, StartTimeFormat, EndTimeFormat};
