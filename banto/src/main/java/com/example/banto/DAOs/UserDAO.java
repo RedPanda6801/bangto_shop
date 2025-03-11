@@ -71,6 +71,7 @@ public class UserDAO {
 				if(userOpt.isPresent()) {
 					user = userOpt.get();
 					user.setSnsAuth(true);
+					user.setName(dto.getName());
 				}
 				else {
 					user = Users.toEntity(dto);
@@ -289,10 +290,17 @@ public class UserDAO {
 	public ResponseDTO isSnsSigned(String email) throws Exception{
 		try {
 			Optional<Users> userOpt = userRepository.findByEmail(email);
+			int response;
 			if(userOpt.isEmpty()) {
-				throw new Exception("해당 유저는 없습니다.");
+				response = -1;
 			}
-			return new ResponseDTO(userOpt.get().getSnsAuth(), null);
+			else if(userOpt.get().getSnsAuth() == false) {
+				response = 0;
+			}
+			else {
+				response = 1;
+			}
+			return new ResponseDTO(response, null);
 		}catch(Exception e) {
 			throw e;
 		}

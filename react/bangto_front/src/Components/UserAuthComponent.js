@@ -20,9 +20,9 @@ const UserAuthComponent = (props) =>
       if (response.status == 200) 
       {
         console.log("로그인 성공");
-        console.log(response.data.token);
-        localStorage.setItem("token",response.data.token);
-        props.setToken(response.data.token);
+        //console.log(response.data.content.token);
+        localStorage.setItem("token",response.data.content.token);
+        props.setToken(response.data.content.token);
         navigate("/");
       } 
       else 
@@ -38,7 +38,6 @@ const UserAuthComponent = (props) =>
   
   const kakaoLogin = async () => {
     try {
-
       const getToken = await axios.post(
         "https://kauth.kakao.com/oauth/token",
         {
@@ -69,11 +68,11 @@ const UserAuthComponent = (props) =>
       const SnsSignCheck = await axios.get(
         `http://localhost:9000/user/get-sns-signed/${email}`
       )
-      const isSnsSigned = SnsSignCheck.data;
-      if(!isSnsSigned) {
+      const isSnsSigned = SnsSignCheck.data.content;
+      if(isSnsSigned === -1) {
         const signResponse = await axios.post("http://localhost:9000/sign", 
           {email, name, "snsAuth": true}, {withCredentials : true});
-        if (signResponse.status == 200) 
+        if (signResponse.status === 200) 
         {
           console.log("회원가입 성공");
         } 
@@ -81,15 +80,31 @@ const UserAuthComponent = (props) =>
         {
           console.error("회원가입 실패");
         }
+      } else if(isSnsSigned === 0) {
+        if(window.confirm("이미 가입된 이메일입니다. 카카오톡 계정과 연동하시겠습니까?")) {
+          const signResponse = await axios.post("http://localhost:9000/sign", 
+            {email, name, "snsAuth": true}, {withCredentials : true});
+          if (signResponse.status === 200) 
+          {
+            console.log("계정 연동 성공");
+          } 
+          else 
+          {
+            console.error("계정 연동 실패");
+          }
+        }
+        else {
+          return;
+        }
       }
       const loginResponse = await axios.post("http://localhost:9000/login", 
         {"email":email, "snsAuth":true}, {withCredentials : true});
       if (loginResponse.status == 200) 
       {
         console.log("로그인 성공");
-        console.log(loginResponse.data.token);
-        localStorage.setItem("token",loginResponse.data.token);
-        props.setToken(loginResponse.data.token);
+        //console.log(loginResponse.data.content.token);
+        props.setToken(loginResponse.data.content.token);
+        localStorage.setItem("token",loginResponse.data.content.token);
         //alert("카카오 로그인 성공");
         navigate("/");
       } 
@@ -98,8 +113,8 @@ const UserAuthComponent = (props) =>
         console.error("로그인 실패:");
       }
       //await props.setUserName(info.data.kakao_account.profile.nickname);
-      await localStorage.setItem("kakaoAccessToken", accessToken);
-      navigate("/");
+      //await localStorage.setItem("kakaoAccessToken", accessToken);
+      //navigate("/");
     }
     catch (error) {
       console.error("로그인 오류:", error);

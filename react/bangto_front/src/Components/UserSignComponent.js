@@ -42,7 +42,7 @@ const UserSignComponent = () => {
       }
 
       const response = await axios.post("http://localhost:9000/sign", 
-        {email, pw, name, addr, phone}, {withCredentials : true});
+        {email, pw, name, addr, phone, snsAuth : false}, {withCredentials : true});
       if (response.status == 200) 
       {
         console.log("회원가입 성공");
