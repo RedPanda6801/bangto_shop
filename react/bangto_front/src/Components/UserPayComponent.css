@@ -1,9 +1,11 @@
 .layout_User_Pay
 {  
-	display: grid;
+	/* display: grid;
 	grid-template-columns: repeat(19, 100px);
-	grid-auto-rows: minmax(30px, auto);
+	grid-auto-rows: minmax(30px, auto); */
 	margin-top: 40px;
+  display: flex;
+  justify-content: center;
 }
 
 @media (max-width: 1500px) 
@@ -16,7 +18,8 @@
 
 .box_User_Pay
 {    
-    grid-column: 7 / 14;
+    /* grid-column: 7 / 14; */
+    width: 700px;
     grid-auto-rows: minmax(30px, auto);
   
     display: flex;

@@ -84,29 +84,35 @@ const UserItemDetailComponent = () =>
             <div className="box_Item_Category">
                 카테고리
             </div>
-            <div className="box_Item_Img">
-                이미지
-            </div>
-            <div className="box_Item_Store">
-                매장 이름
-            </div>
-            <div className="box_Item_Wishlist">
-                찜
-            </div>
-            <div className="box_Item_Name">
-                물품 이름
-            </div>
-            <div className="box_Item_Opt">
-                옵션
-            </div>
-            <div className="box_Item_Price">
-                가격
-            </div>
-            <div className="box_Item_Amount">
-                재고 수량
-            </div>
-            <div className="box_Item_Cart">
-                장바구니
+            <div>
+                <div className="box_Item_Img">
+                    이미지
+                </div>
+                <div>
+                    <div>
+                        <div className="box_Item_Store">
+                            매장 이름
+                        </div>
+                        <div className="box_Item_Wishlist">
+                            찜
+                        </div>
+                    </div>
+                    <div className="box_Item_Name">
+                        물품 이름
+                    </div>
+                    <div className="box_Item_Opt">
+                        옵션
+                    </div>
+                    <div className="box_Item_Price">
+                        가격
+                    </div>
+                    <div className="box_Item_Amount">
+                        재고 수량
+                    </div>
+                    <div className="box_Item_Cart">
+                        장바구니
+                    </div>
+                </div>
             </div>
             <div className="box_Item_Menu">
                 <button

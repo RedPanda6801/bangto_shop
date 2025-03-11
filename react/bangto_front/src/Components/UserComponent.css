@@ -1,14 +1,17 @@
 .layout_User
 {  
-  display: grid;
+  /* display: grid;
 	grid-template-columns: repeat(19, 100px);
-	grid-auto-rows: minmax(30px, auto);
+	grid-auto-rows: minmax(30px, auto); */
   padding-top: 80px;
+  display: flex;
+  justify-content: center;
 }
 
 .layout_User_Contents
 {
-  grid-column: 6 / 16;
+  /* grid-column: 6 / 16; */
+  width: 1000px;
   grid-auto-rows: minmax(30px, auto);
 
   display: flex;
@@ -27,7 +30,8 @@
 
 .box_User_Menu
 {  
-  grid-column: 4 / 6;
+  /* grid-column: 4 / 6; */
+  width: 200px;
   grid-auto-rows: minmax(30px, auto);
   
   display: flex;
@@ -181,9 +185,9 @@
 .user_Addr_Zip		
 {
 	width: 300px;
-	height: 30px;
+	min-height: 45px;
 	font-size: 18px;
-	padding: 10px;
+	padding: 0 10px;
 	outline: none;
 	border: 1px solid #ccc;
 }
@@ -222,7 +226,7 @@
 .user_Addr_Detail		, 
 .user_Addr_Zip
 {
-	margin-top: -7px;
+	margin-top: -1px;
 }
 
 .User_Addr_Search
@@ -257,7 +261,7 @@
 {
 	border: 1px solid #ccc;
   border-radius: 20px;
-  width: 80px;
+  min-width: 80px;
   height: 30px;
   background-color: white;
   cursor: pointer;

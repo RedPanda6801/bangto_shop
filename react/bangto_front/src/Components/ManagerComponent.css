@@ -1,14 +1,17 @@
 .layout_Manager
 {  
-	display: grid;
-	grid-template-columns: repeat(19, 100px);
+	/* display: grid; */
+	/* grid-template-columns: repeat(19, 100px); */
 	grid-auto-rows: minmax(30px, auto);
   padding-top: 40px;
+  display: flex;
+  justify-content: center;
 }
 
 .box_Manager_Menu
 {  
-  grid-column: 4 / 6;
+  /* grid-column: 4 / 6; */
+  width: 200px;
   grid-auto-rows: minmax(30px, auto);
   
   display: flex;
@@ -18,7 +21,8 @@
 
 .layout_Manager_Contents
 {  
-  grid-column: 6 / 16;
+  /* grid-column: 6 / 16; */
+  width: 1000px;
   grid-auto-rows: minmax(30px, auto);
 
   display: flex;

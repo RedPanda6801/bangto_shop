@@ -1,15 +1,20 @@
 .layout_Group_Contents
 {  
-    display: grid;
+    /* display: grid;
     grid-template-columns: repeat(38, 50px);
-    grid-auto-rows: minmax(15px, auto);
-    padding-top: 40px;
+    grid-auto-rows: minmax(15px, auto); */
+    padding-top: 80px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
 }
 
 .box_Group_Promote
 {    
-    grid-column: 10 / 28;
-    grid-row: 3 / 20;
+    /* grid-column: 10 / 28; */
+    width: 900px;
+    /* grid-row: 3 / 20; */
+    height: 255px;
 
     display: flex;
     flex-direction: column;
@@ -21,8 +26,10 @@
 
 .box_Group_Date
 {
-    grid-column: 10 / 28;
-    grid-row: 20 / 23;
+    /* grid-column: 10 / 28; */
+    width: 900px;
+    /* grid-row: 20 / 23; */
+    height: 45px;
 
     display: flex;
     flex-direction: column;
@@ -34,8 +41,10 @@
 
 .box_Group_Guide
 {
-    grid-column: 10 / 28;
-    grid-row: 23 / 28;
+    /* grid-column: 10 / 28; */
+    width: 900px;
+    /* grid-row: 23 / 28; */
+    height: 75px;
 
     display: flex;
     flex-direction: column;
@@ -47,8 +56,10 @@
 
 .box_Group_Itemlist
 {
-    grid-column: 10 / 28;
-    grid-row: 28 / 30;
+    /* grid-column: 10 / 28; */
+    width: 900px;
+    /* grid-row: 28 / 30; */
+    /* height: 30px; */
 
     margin-bottom: 30px;
     display: flex;

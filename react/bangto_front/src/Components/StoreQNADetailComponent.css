@@ -1,17 +1,21 @@
 .layout_QNA
 {  
 	margin: auto;
-	display: grid;
+	/* display: grid;
 	grid-template-columns: repeat(19, 100px);
-	grid-template-rows: repeat(20, 30px);
+	grid-template-rows: repeat(20, 30px); */
     padding-top: 75px;
+    display: flex;
+    justify-content: center;
+    margin: 100px 0;
 }
 
 .box_QNA
 {
-    grid-column: 6 / 15;
-    grid-row: 3 / 18;
-  
+    /* grid-column: 6 / 15; */
+    width: 900px;
+    /* grid-row: 3 / 18; */
+    /* min-height: 450px; */
     display: flex;
     align-items: center;
     flex-direction: column;
