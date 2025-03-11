@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import ManagerComponent from './Components/ManagerComponent';
+import ManagerComponent from './Components/ManagerComponents/ManagerComponent';
 import UserMainComponent from './Components/UserMainComponent';
 import UserAuthComponent from './Components/UserAuthComponent';
 import UserSignComponent from './Components/UserSignComponent';
@@ -22,6 +22,8 @@ import './Components/LayoutComponent.css';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { resContent } from './Components/ResponseData';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   const [userName, setUserName] = useState("");
@@ -47,15 +49,17 @@ function App() {
               "Authorization": `Bearer ${localStorage.getItem("token")}`,
             }
           }).then((res)=> {
-          setUserEmail(res.data.content.email);
-          setUserName(res.data.content.name);
+            const content = resContent(res);
+            setUserEmail(content.email);
+            setUserName(content.name);
 
-          if (res.data.content.email === rootEmail) 
-          {
-            navigate("/manager");
-          }
+            if (content.email === rootEmail) 
+            {
+              navigate("/manager");
+            }
       }).catch((err)=>{
-          console.log(err);
+        
+          //console.log(err);
           //alert("로그인해주세요");
           navigate("/");
       })

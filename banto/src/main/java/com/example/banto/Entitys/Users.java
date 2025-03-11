@@ -21,12 +21,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString(exclude = {"wallets", "sellers", "sellerAuths", "favorites", "carts", "soldItems", "groupItemPays", "comments","qnas" })
 public class Users {
 
     @Id

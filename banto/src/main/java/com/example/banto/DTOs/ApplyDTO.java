@@ -20,6 +20,7 @@ public class ApplyDTO {
     private LocalDateTime applyDate;
     private LocalDateTime signDate;
     private Integer userPk;
+    private String userName;
     
    public static ApplyDTO toDTO(SellerAuths entity) {
         return ApplyDTO.builder()
@@ -28,6 +29,7 @@ public class ApplyDTO {
                 .applyDate(entity.getApplyDate())
                 .signDate(entity.getSignDate())
                 .userPk(entity.getUser().getId())
+                .userName(entity.getUser().getName())
                 .build();
     }
 }

@@ -252,10 +252,12 @@ public class UserDAO {
 			}
 
 			Optional<Users> userOpt = userRepository.findById(userId);
+			Optional<Wallets> walletOpt = walletRepository.findByUser_Id(userId);
 			if(userOpt.isEmpty()){
 				throw new Exception("유저 정보 오류");
 			}
 			Users user = userOpt.get();
+			Wallets wallet = walletOpt.get();
 			// 결제 내역 전부 null 처리
 			List<SoldItems> soldItems = payRepository.findAllByUserId(user.getId());
 			for(SoldItems payment : soldItems){
@@ -264,6 +266,7 @@ public class UserDAO {
 			}
 			// 그룹 결제 내역 전부 null 처리
 			List<GroupItemPays> groupPays = groupBuyPayRepository.findByUserId(user.getId());
+
 			for(GroupItemPays groupPayment : groupPays){
 				groupPayment.setUser(null);
 				groupBuyPayRepository.save(groupPayment);
@@ -281,6 +284,10 @@ public class UserDAO {
 				qna.setUser(null);
 				qnaRepository.save(qna);
 			}
+			System.out.println("!@3123");
+			wallet.setUser(null);
+			user.setWallets(null);
+			walletRepository.delete(wallet);
 			userRepository.delete(user);
 		}catch(Exception e) {
 			throw e;

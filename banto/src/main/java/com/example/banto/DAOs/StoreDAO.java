@@ -163,18 +163,14 @@ public class StoreDAO {
 	}
 
 	@Transactional
-	public void modifyForRoot(Integer userId, StoreDTO dto) throws Exception {
+	public void modifyForRoot(StoreDTO dto) throws Exception {
 		try {
 			// 인증 유효 확인
 			if(!authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())){
 				throw new Exception("관리자 권한 오류");
 			}
-			Optional<Users> user = userRepository.findById(userId);
-			if(user.isEmpty()){
-				throw new Exception("유저 정보 오류");
-			}
 			// 판매자 가져오기
-			Optional<Stores> storeOpt = storeRepository.findStoreByUserId(userId, dto.getId());
+			Optional<Stores> storeOpt = storeRepository.findById(dto.getId());
 			if(storeOpt.isEmpty()) {
 				throw new Exception("매장 없음");
 			}
@@ -205,6 +201,35 @@ public class StoreDAO {
 				storeList.add(StoreDTO.toDTO(store));
 			}
 			return new ResponseDTO(storeList, new PageDTO(storeListPage.getSize(), storeListPage.getTotalElements(), storeListPage.getTotalPages()));
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+	
+	@Transactional
+	public void deleteByRoot(StoreDTO dto) throws Exception {
+		try {
+			// 인증 유효 확인
+			if(!authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())){
+				throw new Exception("관리자 권한 오류");
+			}
+			// 매장 가져오기
+			Optional<Stores> storeOpt = storeRepository.findById(dto.getId());
+			if(storeOpt.isEmpty()) {
+				throw new Exception("매장 없음");
+			}else {
+				Stores store = storeOpt.get();
+				if(!store.getItems().isEmpty()){
+					for(Items item : store.getItems()){
+						List<GroupItemPays> payments = groupBuyPayRepository.findByItemId(item.getId());
+						for(GroupItemPays payment : payments){
+							payment.setItem(null);
+							groupBuyPayRepository.save(payment);
+						}
+					}
+				}
+				storeRepository.delete(store);
+			}
 		}catch(Exception e) {
 			throw e;
 		}

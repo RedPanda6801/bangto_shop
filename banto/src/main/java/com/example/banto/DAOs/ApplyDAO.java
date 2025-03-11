@@ -162,6 +162,7 @@ public class ApplyDAO {
 				dto.setId(auth.getId());
 				dto.setSignDate(auth.getSignDate());
 				dto.setUserPk(auth.getUser().getId());
+				dto.setUserName(auth.getUser().getName());
 				return new ResponseDTO(dto, null);
 			}
 		}catch(Exception e) {

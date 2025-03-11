@@ -58,7 +58,7 @@ public class ApplyController {
 	}
 	
 	// 판매자 인증 신청서 목록 조회(20개씩, 관리자)
-	@GetMapping("/apply/get-list/{page}")
+	@GetMapping("/manager/apply/get-list/{page}")
 	public ResponseEntity getApplyList(@PathVariable("page") Integer page) {
 		try {
 			ResponseDTO applyList = applyService.getApplyList(page);
@@ -69,7 +69,7 @@ public class ApplyController {
 	}
 	
 	// 판매자 인증 신청서 세부 조회(관리자)
-	@GetMapping("/apply/get-info/{sellerAuthId}")
+	@GetMapping("/manager/apply/get-info/{sellerAuthId}")
 	public ResponseEntity getApply(HttpServletRequest request, @PathVariable("sellerAuthId") Integer sellerAuthId) {
 		try {
 			ResponseDTO apply = applyService.getApply(sellerAuthId);
