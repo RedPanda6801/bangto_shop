@@ -27,6 +27,7 @@ function App() {
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [token, setToken] = useState("");
+  const [auth, setAuth] = useState("GUEST");
   const navigate = useNavigate();
 
   const rootEmail = process.env.REACT_APP_ROOT_EMAIL;

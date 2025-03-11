@@ -8,17 +8,16 @@
 .layout_Main_Contents
 {  
   /* display: grid; */
-  /* display: flex; */
   width: 100%;
-  display:flex;
+  display: flex;
   flex-direction: column;
   /* justify-content: center; */
   align-items: center;
-  /* 앞에 9개 뒤에 6개 자르기 */
   /* grid-template-columns: repeat(38, 50px); */
   /* grid-template-columns: repeat(23, 50px); */
   /* grid-auto-rows: minmax(15px, auto); */
   padding-top: 40px;
+  height: 100%;
 }
 
 .box
@@ -82,7 +81,6 @@
   width: 900px;
   /* grid-row: 31 / 43; */
   /* height: 244px; */
-
   padding: 0px 20px;
 }
 
@@ -106,18 +104,21 @@
   /* grid-column: 21 / 24; */
   width: 150px;
   /* grid-row: 9 / 29; */
-  height: 300px;
+  height: 326px;
+  border-radius: 7px;
 
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   margin-bottom: 30px;
+  background-color: white;
 
-  position: sticky;
+  /* position: sticky; */
+  position: fixed;
   top: 200px;
   /* left: calc(50px * 29); */
-  right: 300px;
+  right: 50px;
 }
 
 .main_Search_Input 
@@ -262,6 +263,7 @@
 {
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 .wishlist_Item_Card input,
@@ -277,6 +279,7 @@
   font-size: 24px;
   font-weight: 600;
   margin-bottom: 20px;
+  margin-left: 15px;
   color: #333;
   width: 100%;
 }
