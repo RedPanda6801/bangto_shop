@@ -10,6 +10,7 @@ import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -24,10 +25,10 @@ public class GroupBuyItemController {
 	GroupBuyItemService groupBuyItemService;
 
 	// 이벤트의 공동 구매 물건 조회
-	@GetMapping("/group-item/event/get-list")
-	public ResponseEntity getCurrentEvent(@RequestBody GroupBuyDTO groupBuyDTO) throws Exception {
+	@GetMapping("/group-item/event/get-list/{eventId}")
+	public ResponseEntity getCurrentEvent(@PathVariable("eventId") Integer eventId) throws Exception {
 		try {
-			ResponseDTO event = groupBuyItemService.getCurrentItemList(groupBuyDTO);
+			ResponseDTO event = groupBuyItemService.getCurrentItemList(eventId);
 			return ResponseEntity.ok().body(event);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());

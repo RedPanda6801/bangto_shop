@@ -2,6 +2,7 @@ package com.example.banto.Controllers;
 
 import java.util.List;
 
+import com.example.banto.DTOs.StoreDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -26,9 +27,9 @@ public class ApplyController {
 	
 	// 판매자 인증 신청
 	@PostMapping("/apply")
-	public ResponseEntity apply() {
+	public ResponseEntity apply(@RequestBody StoreDTO storeDTO) {
 		try {
-			applyService.applySellerAuth();
+			applyService.applySellerAuth(storeDTO);
 			return ResponseEntity.ok().body("판매자 인증 신청 완료");
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -47,7 +48,7 @@ public class ApplyController {
 	}
 	
 	// 판매자 인증 신청서 처리(관리자)
-	@PostMapping("/apply/modify")
+	@PostMapping("/manager/apply/modify")
 	public ResponseEntity modifyApply(@RequestBody ProcessDTO dto) {
 		try {
 			applyService.modify(dto);

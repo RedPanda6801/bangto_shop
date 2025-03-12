@@ -2,6 +2,7 @@ package com.example.banto.Services;
 
 import java.util.List;
 
+import com.example.banto.DTOs.StoreDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +24,12 @@ public class ApplyService {
 		}
 	}
 	
-	public void applySellerAuth() throws Exception {
+	public void applySellerAuth(StoreDTO storeDTO) throws Exception {
 		try {
-			applyDAO.applySellerAuth();
+			if(storeDTO.getName() == null || storeDTO.getBusiNum() == null){
+				throw new Exception("필수 정보 오류");
+			}
+			applyDAO.applySellerAuth(storeDTO);
 		}catch(Exception e) {
 			throw e;
 		}
@@ -33,6 +37,9 @@ public class ApplyService {
 	
 	public void modify(ProcessDTO dto) throws Exception {
 		try {
+			if(dto.getSellerAuthPk() == null || dto.getProcess() == null){
+				throw new Exception("필수 정보 오류");
+			}
 			applyDAO.modify(dto);
 		}catch(Exception e) {
 			throw e;

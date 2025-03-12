@@ -41,7 +41,13 @@ public class SellerAuths {
     
     @Column(name="SIGN_DATE")
     private LocalDateTime signDate;
-    
+
+    @Column(name="STORE_NAME")
+    private String storeName;
+
+    @Column(name="BUSI_NUM")
+    private String busiNum;
+
     @ManyToOne
     @JoinColumn(name="USER_PK")
     private Users user;

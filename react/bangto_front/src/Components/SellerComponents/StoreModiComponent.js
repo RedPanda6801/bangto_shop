@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './StoreModiComponent.css'; 
+import '../StoreModiComponent.css'; 
 
 const StoreModiComponent = () => {  
   const navigate = useNavigate();

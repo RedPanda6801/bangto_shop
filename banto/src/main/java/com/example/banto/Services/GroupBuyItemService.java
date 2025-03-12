@@ -16,9 +16,9 @@ public class GroupBuyItemService {
 	GroupBuyItemDAO groupBuyItemDAO;
 	
 	
-	public ResponseDTO getCurrentItemList(GroupBuyDTO dto) throws Exception {
+	public ResponseDTO getCurrentItemList(int eventId) throws Exception {
 		try {
-			return groupBuyItemDAO.getCurrentItemList(dto);
+			return groupBuyItemDAO.getCurrentItemList(eventId);
 		}catch(Exception e) {
 			throw e;
 		}

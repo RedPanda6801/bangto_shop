@@ -58,8 +58,7 @@
 .box_Manager_User_Info,
 .box_Manager_Store_Info,
 .box_Manager_StoreAuth_Info,
-.box_Manager_Group_Item_Info,
-.table_Manager_Group_Item_Date
+.box_Manager_Group_Item_Info
 {
   display: flex;
   justify-content: space-between;
@@ -156,8 +155,8 @@
 
 .box_Manager_Store_Info td:nth-child(1),
 .box_Manager_Store_Info td:nth-child(2),
-.box_Manager_Store_Info td:nth-child(3),
-.box_Manager_Group_Item_Info td
+.box_Manager_Store_Info td:nth-child(3)
+td
 {
   width: 25%;
 }
