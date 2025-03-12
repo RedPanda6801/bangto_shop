@@ -3,8 +3,8 @@ import ManagerComponent from './Components/ManagerComponents/ManagerComponent';
 import UserMainComponent from './Components/UserMainComponent';
 import UserAuthComponent from './Components/UserAuthComponent';
 import UserSignComponent from './Components/UserSignComponent';
-import StoreComponent from './Components/StoreComponent';
-import StoreModiComponent from './Components/StoreModiComponent';
+import StoreComponent from './Components/SellerComponents/StoreComponent';
+import StoreModiComponent from './Components/SellerComponents/StoreModiComponent';
 import StoreItemRegisterComponent from './Components/StoreItemRegisterComponent';
 import StoreItemModifyComponent from './Components/StoreItemModifyComponent';
 import StoreGroupItemRegisterComponent from './Components/StoreGroupItemRegisterComponent';
@@ -43,7 +43,6 @@ function App() {
     }
     else
     {
-      console.log(localStorage.getItem("token"));
       axios.get(`${process.env.REACT_APP_BACKEND_SERVER_PORT}/user/get-info`, {
             headers: {
               "Authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -107,7 +106,7 @@ function App() {
     setToken("");
   }
 
-  return (  
+  return (
     <div className="layout_Main">
       <div className="layout_Header">
       <button className="header_Logo" onClick={() => {

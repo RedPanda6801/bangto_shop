@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import com.example.banto.Entitys.ApplyType;
 import com.example.banto.Entitys.SellerAuths;
 
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,6 +22,8 @@ public class ApplyDTO {
     private LocalDateTime signDate;
     private Integer userPk;
     private String userName;
+    private String storeName;
+    private String busiNum;
     
    public static ApplyDTO toDTO(SellerAuths entity) {
         return ApplyDTO.builder()
@@ -30,6 +33,8 @@ public class ApplyDTO {
                 .signDate(entity.getSignDate())
                 .userPk(entity.getUser().getId())
                 .userName(entity.getUser().getName())
+                .storeName(entity.getStoreName())
+                .busiNum(entity.getBusiNum())
                 .build();
     }
 }

@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.banto.DTOs.*;
+import com.example.banto.Entitys.*;
+import com.example.banto.Repositorys.StoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,10 +17,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.example.banto.Entitys.ApplyType;
-import com.example.banto.Entitys.SellerAuths;
-import com.example.banto.Entitys.Sellers;
-import com.example.banto.Entitys.Users;
 import com.example.banto.Repositorys.ApplyRepository;
 import com.example.banto.Repositorys.SellerRepository;
 import com.example.banto.Repositorys.UserRepository;
@@ -25,17 +24,13 @@ import com.example.banto.Repositorys.UserRepository;
 import jakarta.transaction.Transactional;
 
 import com.example.banto.Configs.EnvConfig;
-import com.example.banto.DTOs.ApplyDTO;
-import com.example.banto.DTOs.PageDTO;
-import com.example.banto.DTOs.ProcessDTO;
-import com.example.banto.DTOs.ResponseDTO;
 
 @Component
 public class ApplyDAO {
 	@Autowired
 	ApplyRepository applyRepository;
 	@Autowired
-	UserRepository userRepository;
+	StoreRepository storeRepository;
 	@Autowired
 	SellerRepository sellerRepository;
 	@Autowired
@@ -63,23 +58,27 @@ public class ApplyDAO {
 	}
 	
 	@Transactional
-	public void applySellerAuth() throws Exception {
+	public void applySellerAuth(StoreDTO storeDTO) throws Exception {
 		try {
 			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
 			// 판매자 가져오기
 			Optional<Sellers> seller = sellerRepository.findByUser_Id(user.getId());
 			Optional<SellerAuths> processing = applyRepository.findProcessingAuthByUserId(user.getId());
-			if(processing.isEmpty() && seller.isEmpty()) {
+			List<SellerAuths> busiNumCheckOpt = applyRepository.findByBusiNum(storeDTO.getBusiNum());
+
+			if(!busiNumCheckOpt.isEmpty()) {
+				throw new Exception("사업자 번호 중복 오류");
+			} else if(processing.isPresent()) {
+				throw new Exception("판매자 인증 대기 중인 사용자입니다.");
+			} else if(seller.isPresent()) {
+				throw new Exception("이미 판매자 인증된 사용자입니다.");
+			} else{
 				SellerAuths apply = new SellerAuths();
+				apply.setStoreName(storeDTO.getName());
+				apply.setBusiNum(storeDTO.getBusiNum());
 				apply.setUser(user);
 				apply.setAuth(ApplyType.Processing);
 				applyRepository.save(apply);
-			}
-			else if(processing.isPresent()) {
-				throw new Exception("판매자 인증 대기 중인 사용자입니다.");
-			}
-			else if(seller.isPresent()) {
-				throw new Exception("이미 판매자 인증된 사용자입니다.");
 			}
 		}catch(Exception e) {
 			throw e;
@@ -109,6 +108,12 @@ public class ApplyDAO {
 					Sellers seller = new Sellers();
 					seller.setUser(user);
 					sellerRepository.save(seller);
+					Stores store = new Stores();
+					store.setBusiNum(apply.getBusiNum());
+					store.setSeller(seller);
+					store.setName(apply.getStoreName());
+					storeRepository.save(store);
+
 				}
 				else if(process.equals("Duplicated")) {
 					apply.setAuth(ApplyType.Duplicated);

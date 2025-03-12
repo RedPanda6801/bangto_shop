@@ -20,6 +20,8 @@ public interface ApplyRepository extends JpaRepository<SellerAuths, Integer> {
 	
 	@Query("SELECT s FROM SellerAuths s WHERE s.user.id = :userId")
 	public List<SellerAuths> findAllByUserId(@Param("userId") Integer userId);
+
+	public List<SellerAuths> findByBusiNum(String busiNum);
 	
 	//@Query("SELECT new com.example.banto.DTOs.ApplyDTO(s.id, s.auth, s.applyDate, s.signDate, (SELECT u.id FROM s.user u)) FROM SellerAuths s")
 	//public List<ApplyDTO> findAllSellerAuths();

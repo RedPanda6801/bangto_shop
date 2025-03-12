@@ -8,6 +8,7 @@ const UserMainComponent = () =>
     const [searchText, setSearchText] = useState("");
     const [currentSlide, setCurrentSlide] = useState(0); 
     const [currentWishlist, setCurrentWishlist] = useState(0);
+    const [selectedCategory, setSelectedCategory] = useState("");
 
     const slides = ["/images/03_main/main_01.jpg", "/images/03_main/main_02.jpg", "/images/03_main/main_03.jpg"];
     const wishlistItems = [
@@ -119,7 +120,8 @@ const UserMainComponent = () =>
                         </button>
                     </div>
                 </div>
-            </div>   
+            </div>
+            <>
             <div className="box_Slide">
                 <div className="box_item box_slider">
                     <div className="slider_track">
@@ -289,6 +291,7 @@ const UserMainComponent = () =>
                     </button>
                 </div>
             </div>
+            </> 
         </div>
     );
 }
