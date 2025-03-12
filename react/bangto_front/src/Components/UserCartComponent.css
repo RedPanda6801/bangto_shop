@@ -1,14 +1,17 @@
 .layout_User_Cart
 {  
-    display: grid;
+    /* display: grid;
     grid-template-columns: repeat(19, 100px);
-	grid-auto-rows: minmax(30px, auto);
+	grid-auto-rows: minmax(30px, auto); */
     margin-top: 80px;
+    display: flex;
+    justify-content: center;
 }
 
 .box_User_Cart
 {    
-    grid-column: 6 / 14;
+    /* grid-column: 6 / 14; */
+    width: 800px;
     grid-auto-rows: minmax(30px, auto);
   
     display: flex;
@@ -35,7 +38,7 @@
     position: fixed;
     top: 200px;
     right: 200px;
-    width: 220px;
+    width: 250px;
     height: auto;
     z-index: 10;
     border: 1px solid #ccc;

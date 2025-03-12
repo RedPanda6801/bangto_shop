@@ -1,15 +1,20 @@
 .layout_Store_Item_Regi
 {  
-	display: grid;
-	grid-template-columns: repeat(19, 100px);
-	grid-template-rows: repeat(32, 30px);
+	/* display: grid; */
+	/* grid-template-columns: repeat(19, 100px); */
+	/* grid-template-rows: repeat(32, 30px); */
     padding-top: 80px;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 50px;
 }
 
 .box_Store_Item_Add
 {
-    grid-column: 6 / 15;
-    grid-row: 1 / 29;
+    /* grid-column: 6 / 15; */
+    width: 900px;
+    /* grid-row: 1 / 29; */
+    height: 840px;
   
     display: flex;
     flex-direction: column;

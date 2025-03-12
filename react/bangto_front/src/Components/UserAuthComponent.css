@@ -1,16 +1,21 @@
 .layout_Auth
 {  
 	margin: auto;
-	display: grid;
-	grid-template-columns: repeat(19, 100px);
+	/* display: grid; */
+	/* grid-template-columns: repeat(19, 100px); */
 	grid-template-rows: repeat(24, 30px);
   padding-top: 40px;
+  display: flex;
+  justify-content: center;
 }
 
 .box_Auth
 {
-  grid-column: 8 / 13;
-  grid-row: 5 / 21;
+  /* grid-column: 8 / 13; */
+  width: 500px;
+  /* grid-row: 5 / 21; */
+  height: 480px;
+  margin: 120px 0;
   
   border-radius: 10px;
   display: flex;

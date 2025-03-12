@@ -351,17 +351,19 @@ const UserSignComponent = () => {
               </td>
             </tr>
           </table>
-          <button 
-            className="button_sign"
-            onClick={() =>   setIsMembershipOpen(false)}
-            disabled={!isAgreeValid}>
-              가입하기
-            </button>
-          <button 
-            className="button_auth"
-            onClick={() => { setIsMembershipOpen(false); window.location.href = '/login'; }}>
-              로그인화면으로 돌아가기
-            </button>
+          <div className="button_div">
+            <button 
+              className="button_sign"
+              onClick={() =>   setIsMembershipOpen(false)}
+              disabled={!isAgreeValid}>
+                가입하기
+              </button>
+            <button 
+              className="button_auth"
+              onClick={() => { setIsMembershipOpen(false); window.location.href = '/login'; }}>
+                로그인화면으로 돌아가기
+              </button>
+          </div>
         </Modal>
         <table>
           <tr>
@@ -503,7 +505,7 @@ const UserSignComponent = () => {
               <tr 
                 key={index} 
                 onClick={() => handleAddressSelect(address)}>
-                <td>{address.roadAddr}</td>
+                <td className='pointer'>{address.roadAddr}</td>
                 <td>{address.zipNo}</td>
               </tr>
             ))}

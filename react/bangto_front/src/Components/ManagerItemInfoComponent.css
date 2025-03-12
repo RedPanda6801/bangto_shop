@@ -1,14 +1,17 @@
 .layout_Manager_Item_Info
 {  
-  display: grid;
+  /* display: grid;
 	grid-template-columns: repeat(19, 100px);
-	grid-auto-rows: minmax(30px, auto);
+	grid-auto-rows: minmax(30px, auto); */
   padding-top: 40px;
+  display: flex;
+  justify-content: center;
 }
 
 .box_Manager_Item_Info
 {  
-  grid-column: 6 / 15;
+  /* grid-column: 6 / 15; */
+  width: 900px;
   grid-auto-rows: minmax(30px, auto);
   
   display: flex;
