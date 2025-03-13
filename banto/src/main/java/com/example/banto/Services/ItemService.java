@@ -28,6 +28,14 @@ public class ItemService {
 		}
 	}
 	
+	public ResponseDTO getRecommendItemList() throws Exception {
+		try {
+			return itemDAO.getRecommendItemList();
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+	
 	public ResponseDTO getFilterdItemList(ItemDTO dto) throws Exception {
 		try {
 			return itemDAO.getFilterdItemList(dto);

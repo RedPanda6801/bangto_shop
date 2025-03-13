@@ -18,7 +18,8 @@ const UserAuthComponent = (props) =>
     {
       const response = await axios.post("http://localhost:9000/login", 
         {"email":email, "pw":password}, {withCredentials : true});
-
+      
+      localStorage.removeItem("token");
       localStorage.setItem("token", resContent(response).token);
       props.setToken(resContent(response).token);
       navigate("/");
@@ -97,6 +98,7 @@ const UserAuthComponent = (props) =>
       }
       const loginResponse = await axios.post("http://localhost:9000/login", 
         {"email":email, "snsAuth":true}, {withCredentials : true});
+      localStorage.removeItem("token");
       localStorage.setItem("token",resContent(loginResponse).token);
       props.setToken(resContent(loginResponse).token);
       localStorage.setItem("kakaoAccessToken", accessToken);

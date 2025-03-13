@@ -28,4 +28,7 @@ public interface ItemRepository extends JpaRepository<Items, Integer> {
 	
 	@Query("SELECT i FROM Items i WHERE (:title IS NULL OR i.title LIKE %:title%) AND (:storeName IS NULL OR i.store.name LIKE %:storeName%) AND (:category IS NULL OR i.category = :category)")
 	Page<Items> getFilterdItemList(@Param("title") String title, @Param("storeName") String storeName, @Param("category") CategoryType category, Pageable pageable);
+	
+	@Query("SELECT i FROM Items i ORDER BY SIZE(i.favorites) DESC")
+	Page<Items> getItemsOrderByFavoritesSizeDesc(Pageable pageable);
 }

@@ -122,7 +122,8 @@ public class SecurityConfig {
 						new AntPathRequestMatcher("/item/get-by-title/**"),
 						new AntPathRequestMatcher("/item/get-by-store-name/**"),
 						new AntPathRequestMatcher("/item/get-by-category/**"),
-						new AntPathRequestMatcher("/item/get-filtered-list/**")
+						new AntPathRequestMatcher("/item/get-filtered-list/**"),
+						new AntPathRequestMatcher("/item/get-recommend-list")
 						).permitAll()
 				// 그 외 모든 요청 허용
 				.anyRequest().permitAll()
