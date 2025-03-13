@@ -1,7 +1,7 @@
 package com.example.banto.DAOs;
 
 import com.example.banto.Entitys.*;
-import com.example.banto.Repositorys.GroupBuyPayRepository;
+import com.example.banto.Repositorys.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
@@ -20,9 +20,6 @@ import com.example.banto.DTOs.ItemDTO;
 import com.example.banto.DTOs.OptionDTO;
 import com.example.banto.DTOs.PageDTO;
 import com.example.banto.DTOs.ResponseDTO;
-import com.example.banto.Repositorys.ItemRepository;
-import com.example.banto.Repositorys.OptionRepository;
-import com.example.banto.Repositorys.StoreRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -43,6 +40,8 @@ public class ItemDAO {
 	EnvConfig envConfig;
 	@Autowired
 	GroupBuyPayRepository groupBuyPayRepository;
+	@Autowired
+	GroupBuyItemRepository groupBuyItemRepository;
 
 	public ResponseDTO getAllItemList(Integer page) throws Exception{
 		try {
@@ -234,6 +233,8 @@ public class ItemDAO {
 				Items newItem = itemRepository.save(item);
 				
 				for(Options option : itemDTO.getOptions()) {
+					option.setAmount(option.getAmount());
+					option.setOptionInfo(option.getOptionInfo());
 					option.setAddPrice(option.getAddPrice());
 					option.setItem(newItem); // 연관 관계 설정
 	                optionRepository.save(option); // 개별적으로 저장
@@ -335,12 +336,38 @@ public class ItemDAO {
 			throw e;
 		}
 	}
+
+	@Transactional
+	public void addItemOption(OptionDTO dto) throws Exception{
+		try {
+			int sellerId = authDAO.authSeller(SecurityContextHolder.getContext().getAuthentication());
+			if(sellerId == -1 && !authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())){
+				throw new Exception("판매자 권한 오류");
+			}
+			Optional<Items> itemOpt = itemRepository.findById(dto.getItemPk());
+			if(itemOpt.isEmpty()) {
+				throw new Exception("물건 조회 오류");
+			}else if(!itemOpt.get().getStore().getSeller().getUser().getId().equals(sellerId)){
+				throw new Exception("판매자 정보 불일치");
+			}else {
+				Items item = itemOpt.get();
+				Options option = new Options();
+				option.setOptionInfo(dto.getOptionInfo());
+				option.setAddPrice(dto.getAddPrice());
+				option.setAmount(dto.getAmount());
+				option.setItem(item);
+				optionRepository.save(option);
+			}
+		}catch(Exception e) {
+			throw e;
+		}
+	}
 	
 	@Transactional
 	public void modifyItemOption(OptionDTO dto) throws Exception{
 		try {
 			int sellerId = authDAO.authSeller(SecurityContextHolder.getContext().getAuthentication());
-			if(sellerId == -1 || !authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())){
+			if(sellerId == -1 && !authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())){
 				throw new Exception("판매자 권한 오류");
 			}
 			Optional<Options> optionOpt = optionRepository.findById(dto.getId());
@@ -365,24 +392,35 @@ public class ItemDAO {
 	}
 
 	@Transactional
-	public void deleteOption(OptionDTO dto) throws Exception{
+	public void deleteOption(OptionDTO dto) throws Exception {
 		try {
 			int sellerId = authDAO.authSeller(SecurityContextHolder.getContext().getAuthentication());
-			if(sellerId == -1 || !authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())){
+			if (sellerId == -1 && !authDAO.authRoot(SecurityContextHolder.getContext().getAuthentication())) {
 				throw new Exception("판매자 권한 오류");
 			}
+
 			Optional<Options> optionOpt = optionRepository.findById(dto.getId());
-			if(optionOpt.isEmpty()) {
+			if (optionOpt.isEmpty()) {
 				throw new Exception("매장 조회 오류");
-			}else if(!optionOpt.get().getItem().getStore().getSeller().getUser().getId().equals(sellerId)){
+			} else if (!optionOpt.get().getItem().getStore().getSeller().getUser().getId().equals(sellerId)) {
 				throw new Exception("판매자 정보 불일치");
-			}else if(optionOpt.get().getItem().getOptions().size() == 1) {
+			} else if (optionOpt.get().getItem().getOptions().size() == 1) {
 				throw new Exception("필수 옵션 제거 불가");
 			} else {
 				Options option = optionOpt.get();
-				optionRepository.save(option);
+				Items item = option.getItem();
+
+				// 연관 엔티티 정리
+				option.getCarts().clear();
+				option.getEventItems().clear();
+
+                item.getOptions().remove(option);
+
+                // 삭제 실행
+				optionRepository.delete(option);
+				optionRepository.flush();
 			}
-		}catch(Exception e) {
+		} catch (Exception e) {
 			throw e;
 		}
 	}

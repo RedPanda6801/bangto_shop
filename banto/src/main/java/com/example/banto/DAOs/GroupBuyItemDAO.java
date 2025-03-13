@@ -67,6 +67,9 @@ public class GroupBuyItemDAO {
 				}
 				else {
 					Items item = itemOpt.get();
+					if(groupBuyItemRepository.findByItemIdAndEventId(item.getId(), eventOpt.get().getId()).isPresent()){
+						throw new Exception("중복된 물품입니다.");
+					}
 					boolean isOption = false;
 					for(Options option : item.getOptions()) {
 						if(Objects.equals(option.getId(), dto.getOptionPk())) {

@@ -16,6 +16,9 @@ public class StoreService {
 	
 	public void create(StoreDTO dto) throws Exception {
 		try {
+			if(dto.getName() == null || dto.getBusiNum() == null){
+				throw new Exception("필수 정보 오류");
+			}
 			storeDAO.create(dto);
 		}catch(Exception e) {
 			throw e;

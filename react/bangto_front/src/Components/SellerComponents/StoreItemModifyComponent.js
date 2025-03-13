@@ -1,43 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
+import { CategoryType } from '../UtilComponent/DataFormat';
 import axios from 'axios';
-import './StoreItemModifyComponent.css'; 
+import '../StoreItemModifyComponent.css'; 
+import Modal from 'react-modal';
+Modal.setAppElement('#root');
 
-const StoreItemModifyComponent = () => {   
+const StoreItemModifyComponent = (props) => {   
   const navigate = useNavigate();
-  const [image, setImage] = useState(null);
+  const [images, setImages] = useState([]);
+  const [files, setFiles] = useState("");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [amount, setAmount] = useState(0);
-  const [category, setCategory] = useState("1");
+  const [category, setCategory] = useState(CategoryType.Clothing);
   const [optionInfo, setOptionInfo] = useState("");
   const [addPrice, setAddPrice] = useState(0);
   const [price, setPrice] = useState(0);
   const [options, setOptions] = useState([]);
 
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);  
-  const storeName = searchParams.get("storeName");
-  const storePk = searchParams.get("storePk");
+  useEffect(()=> {
+    // if(props.item){
+    //   const filesArray = Array.from(e.target.files);
+    //   setFiles(filesArray);
+    //   filesArray.forEach((file) => {
+    //     const reader = new FileReader();
+    //     reader.onloadend = () => {
+    //       setImages((prevImages) => [...prevImages, reader.result]); 
+    //     };
+    //     reader.readAsDataURL(file);
+    //   });
+    // }
+  }, [props.item])
 
   const handleImageChange = (e) => 
   {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImage(reader.result);
-      };
-      reader.readAsDataURL(file);
+    if (e.target.files.length > 0) {
+      const filesArray = Array.from(e.target.files);
+      setFiles(filesArray);
+      filesArray.forEach((file) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImages((prevImages) => [...prevImages, reader.result]); 
+        };
+        reader.readAsDataURL(file);
+      });
     }
   };
   
   const handleAddOption = () => 
   {
-    if (optionInfo && addPrice) 
+    if (optionInfo && addPrice && amount) 
     {
-      setOptions([...options, { optionInfo, addPrice }]);
+      setOptions([...options, { optionInfo, addPrice, amount }]);
       setOptionInfo('');
       setAddPrice('');
     } 
@@ -56,16 +71,14 @@ const StoreItemModifyComponent = () => {
   {
     try 
     {   
-      const response = await axios.post("http://localhost:9000/item/add-item", {
-          storePk, 
-          title, 
-          "img":"그림1.jpg", 
-          price, 
-          content, 
-          category, 
-          amount, 
-          options
-        }, { withCredentials : true,
+      const dto = {storePk : props.store.id, title, price, content, category, options};
+      console.log(dto);
+      const formData = new FormData();
+      formData.append("dto", new Blob([JSON.stringify(dto)], { type: "application/json" }));
+      files.forEach((file) => {
+        formData.append("files", file);
+      });
+      const response = await axios.post("http://localhost:9000/item/add-item", formData, { withCredentials : true,
           headers: {
             "Authorization": `Bearer ${localStorage.getItem("token")}`,
           }
@@ -74,7 +87,7 @@ const StoreItemModifyComponent = () => {
       if (response.status == 200) 
       {
         alert("물품등록 성공");
-        navigate(-1);
+        navigate(0);
       } 
       else 
       {
@@ -87,33 +100,49 @@ const StoreItemModifyComponent = () => {
     }
   };
 
+  const handleCloseModal = () => {
+    props.setModal(false);
+  }
+
+
   return  (
-    <>
+    <Modal 
+      isOpen={props.modal} 
+      onRequestClose={handleCloseModal} 
+      className="modal_Manager_User_Modi" 
+      overlayClassName="modal_Manager_User_Modi_Overlay">
       <div className="layout_Store_Item_Regi">
         <div className="box_Store_Item_Add">
           <input 
             className="Item_Add_Store" 
-            type="text" 
-            defaultValue={storeName}
+            type="text"
             disabled/>
           <div className="Item_Add_Title">상품정보</div>
-          <table className="Item_Add_Table">
+          {props.item ? 
+          <>
+            <table className="Item_Add_Table">
             <tr><td>상품이미지</td>
               <td>
                 <div className="Item_Add_Img">
                   <input 
                     type="file" 
-                    accept="image/*" 
+                    accept="image/*"
+                    multiple
                     onChange={handleImageChange} 
                     id="btn_Img_Upload"/>
                   <label htmlFor="btn_Img_Upload">
-                    {image ? (
-                      <img 
-                        src={image} 
-                        alt="업로드된 이미지 미리보기"/>
-                    ) : (
+                    {/* {images && images.length > 0 ? images.map((image)=> ( */}
+                      {
+                        props.item.img ? props.item.img.split("/").map((ele)=>{
+                          {console.log(`${process.env.REACT_APP_IMG_PUBLIC_URI}/${ele}`)}
+                          <img
+                          src={`${process.env.REACT_APP_IMG_PUBLIC_URI}/${ele}`}
+                          alt="업로드된 이미지 미리보기"/>
+                        }) : <div></div>
+                      } 
+                    {/* )) : (
                       <div>이미지 등록</div>
-                    )}
+                    )} */}
                   </label>
                 </div>
               </td>
@@ -122,10 +151,12 @@ const StoreItemModifyComponent = () => {
           <table className="Item_Add_Table">
             <tr><td>상품명</td>
               <td>
+                {console.log(props.item)}
                 <input 
                   type="text"
                   className="Item_Add_Name"
-                  placeholder="상품명을 입력해주세요"
+                  placeholder={props.item.title}
+                  defaultValue={props.item.title}
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}/>
               </td>
@@ -137,11 +168,9 @@ const StoreItemModifyComponent = () => {
               <select 
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}>
-                <option value={1}>1</option>
-                <option value={2}>2</option>
-                <option value={3}>3</option>
-                <option value={4}>4</option>
-                <option value={5}>5</option>
+                  {Object.keys(CategoryType).map((key)=>
+                    <option value={key}>{CategoryType[key]}</option>
+                  )}
               </select>
               </td>
             </tr>
@@ -152,7 +181,8 @@ const StoreItemModifyComponent = () => {
                 <input 
                   type="number"
                   className="Item_Add_Price"
-                  value={price}
+                  placeholder={props.item.price}
+                  defaultValue={props.item.price}
                   onChange={(e) => setPrice(e.target.value)}/>
               </td>
             </tr>
@@ -179,6 +209,14 @@ const StoreItemModifyComponent = () => {
                    onChange={(e) => setAddPrice(e.target.value)}/>
               </td>
               <td>
+                <input 
+                  type="number"
+                  className="Item_Add_Amount"
+                  placeholder="물건 개수" 
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}/>
+              </td>
+              <td>
                 <button 
                   onClick={handleAddOption}>
                   추가
@@ -188,7 +226,8 @@ const StoreItemModifyComponent = () => {
               {options.map((option, index) => (
                 <tr key={index}>
                   <td>{option.optionInfo}</td>
-                  <td>{option.addPrice} 원</td>
+                  <td>{option.addPrice}원</td>
+                  <td>{option.amount}개</td>
                   <td>
                     <button 
                       onClick={() => handleDeleteOption(index)}>
@@ -199,23 +238,12 @@ const StoreItemModifyComponent = () => {
               ))}
           </table>
           <table className="Item_Add_Table">
-            <tr><td>물품 개수</td>
-              <td>
-                <input 
-                  type="number"
-                  className="Item_Add_Amount"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}/>
-              </td>
-            </tr>
-          </table>
-          <table className="Item_Add_Table">
             <tr><td>내용</td>
               <td> 
                 <textarea 
                   className="Item_Add_Content"
-                  placeholder="내용을 입력해주세요"
-                   value={content}
+                  placeholder={props.item.content}
+                   value={props.item.content}
                    onChange={(e) => setContent(e.target.value)}>
                 </textarea>
               </td>
@@ -225,17 +253,18 @@ const StoreItemModifyComponent = () => {
             <input 
               className="btn_Item_Add"
               type="button" 
-              value="수정"
+              value="물품 등록"
               onClick={handelAddItem}/>
             <input 
               className="btn_Item_Add"
               type="button" 
               value="취소"
-              onClick={() => navigate(-1)}/>
+              onClick={() => handleCloseModal()}/>
           </div>
+          </> : <div></div>}
         </div>
       </div>
-    </>
+    </Modal>
   );
 };
 

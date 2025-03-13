@@ -153,7 +153,18 @@ public class ItemController {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
-	
+	// 옵션 추가
+	@PostMapping("/item/option/add")
+	public ResponseEntity AddItemOption(@RequestBody OptionDTO optionDTO) throws Exception {
+		try {
+			System.out.println(optionDTO);
+			itemService.addItemOption(optionDTO);
+			return ResponseEntity.ok().body(null);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+
 	// 옵션 수정
 	@PostMapping("/item/option/modify")
 	public ResponseEntity modifyItemOption(@RequestBody OptionDTO optionDTO) throws Exception {

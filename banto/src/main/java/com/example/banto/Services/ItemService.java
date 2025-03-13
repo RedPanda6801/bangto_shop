@@ -102,6 +102,10 @@ public class ItemService {
 	
 	public void addItem(ItemDTO itemDTO, List<MultipartFile> files) throws Exception {
 		try {
+			if(itemDTO.getStorePk() == null || itemDTO.getOptions() == null || itemDTO.getContent() == null ||
+				itemDTO.getCategory() == null || itemDTO.getTitle() == null){
+				throw new Exception("필수 정보 오류");
+			}
 			itemDAO.addItem(itemDTO, files);
 		}catch(Exception e) {
 			throw e;
@@ -122,10 +126,24 @@ public class ItemService {
 	// dto.id
 	public void deleteItem(ItemDTO itemDTO) throws Exception {
 		try {
-			if(itemDTO.getId() == null){
+			if(itemDTO.getId() == null || itemDTO.getStorePk() == null){
 				throw new Exception("필수 정보 오류");
 			}
 			itemDAO.deleteItem(itemDTO);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+
+	public void addItemOption(OptionDTO optionDTO) throws Exception {
+		try {
+			System.out.println("hehe");
+			System.out.println(optionDTO.getOptionInfo());
+			if(optionDTO.getOptionInfo() == null || optionDTO.getItemPk() == null
+					|| optionDTO.getAmount() == null || optionDTO.getAddPrice() == null){
+				throw new Exception("필수 정보 오류");
+			}
+			itemDAO.addItemOption(optionDTO);
 		}catch(Exception e) {
 			throw e;
 		}

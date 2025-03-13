@@ -5,10 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.banto.DTOs.FavoriteDTO;
 import com.example.banto.DTOs.ItemDTO;
@@ -28,7 +25,7 @@ public class QNAController {
 	// 매장 별 QNA 전체 조회(판매자)
 	// 답변 대기중인 QNA 우선 조회
 	@GetMapping("/qna/store/get-list/{page}")
-	public ResponseEntity getListByStore(@RequestBody QNADTO qnaDTO, @PathVariable("page") Integer page) throws Exception{
+	public ResponseEntity getListByStore(@ModelAttribute QNADTO qnaDTO, @PathVariable("page") Integer page) throws Exception{
 		try {
 			ResponseDTO itemList = qnaService.getListByStore(qnaDTO, page);
 			return ResponseEntity.ok().body(itemList);
@@ -38,7 +35,7 @@ public class QNAController {
 	}
 
 //	내 QNA 조회(고객)
-	@GetMapping("/qna/get-list/{page}")
+	@GetMapping("/qna/my-list/{page}")
 	public ResponseEntity getItemList(@PathVariable("page") Integer page) throws Exception{
 		try {
 			ResponseDTO favoriteList = qnaService.getMyList(page);
@@ -50,7 +47,7 @@ public class QNAController {
 	
 	// QNA 세부 조회(판매자 or 고객)
 	@GetMapping("/qna/get-detail")
-	public ResponseEntity getQnaDetail(@RequestBody QNADTO qnaDTO) throws Exception{
+	public ResponseEntity getQnaDetail(@ModelAttribute QNADTO qnaDTO) throws Exception{
 		try {
 			ResponseDTO itemList = qnaService.getQnaDetail(qnaDTO);
 			return ResponseEntity.ok().body(itemList);
