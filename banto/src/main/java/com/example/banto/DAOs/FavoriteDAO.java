@@ -56,7 +56,7 @@ public class FavoriteDAO {
 	}
 	
 	@Transactional
-	public void deleteFavotie(ItemDTO dto) throws Exception{
+	public void deleteFavorite(ItemDTO dto) throws Exception{
 		try {
 			// 인증 유효 확인
 			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());

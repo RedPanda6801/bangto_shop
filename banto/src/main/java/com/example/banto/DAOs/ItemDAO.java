@@ -59,6 +59,22 @@ public class ItemDAO {
 		}
 	}
 	
+	public ResponseDTO getRecommendItemList() throws Exception{
+		try {
+			int size = 20;
+			Pageable pageable = PageRequest.of(0, size);
+			Page<Items>items = itemRepository.getItemsOrderByFavoritesSizeDesc(pageable);
+			List<ItemDTO>itemList = new ArrayList<ItemDTO>();
+			for(Items item : items) {
+				ItemDTO dto = ItemDTO.toDTO(item);
+				itemList.add(dto);
+			}
+			return new ResponseDTO(itemList, new PageDTO(size, size, 1));
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+	
 	public ResponseDTO getFilterdItemList(ItemDTO dto) throws Exception{
 		try {
 			if(dto.getPage() == null || dto.getPage() < 1) {

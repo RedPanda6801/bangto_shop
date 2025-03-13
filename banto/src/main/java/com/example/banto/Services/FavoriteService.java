@@ -26,12 +26,12 @@ public class FavoriteService {
 		}
 	}
 	
-	public void deleteFavotie(ItemDTO itemDTO) throws Exception {
+	public void deleteFavorite(ItemDTO itemDTO) throws Exception {
 		try {
 			if(itemDTO.getId() == null) {
 				throw new Exception("필수 정보 오류");
 			}
-			favoriteDAO.deleteFavotie(itemDTO);
+			favoriteDAO.deleteFavorite(itemDTO);
 		}catch(Exception e) {
 			throw e;
 		}

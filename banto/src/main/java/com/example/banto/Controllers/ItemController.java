@@ -48,6 +48,17 @@ public class ItemController {
 		}
 	}
 	
+	// 추천 상품 20개 조회
+	@GetMapping("/item/get-recommend-list")
+	public ResponseEntity getRecommendItemList() throws Exception{
+		try {
+			ResponseDTO itemList = itemService.getRecommendItemList();
+			return ResponseEntity.ok().body(itemList);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	
 	// 종합 검색 기능(물품 이름, 매장 이름, 카테고리 검색어별 물건 조회/가격순 정렬)
 	@GetMapping("/item/get-filtered-list")
 	public ResponseEntity getFilterdItemList(@ModelAttribute ItemDTO dto) throws Exception{

@@ -24,6 +24,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { resContent } from './Components/UtilComponent/ResponseData';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import ScrollToTop from './Components/UtilComponent/ScrollToTop';
 
 function App() {
   const [userName, setUserName] = useState("");
@@ -215,6 +216,7 @@ function App() {
               </>
         )}
       </div>
+      <ScrollToTop />
       <Routes>
         <Route path="/manager" element={<ManagerComponent setUserName={setUserName} />} />
         <Route path="/" element={<UserMainComponent />} />

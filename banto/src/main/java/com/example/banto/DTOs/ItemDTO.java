@@ -40,7 +40,7 @@ public class ItemDTO {
     
     private Integer star;
     
-    @JsonIgnore
+    //@JsonIgnore
     private Stores store;
     
     private List<QNAs> qnas;

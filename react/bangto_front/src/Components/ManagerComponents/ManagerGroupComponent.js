@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { StartTimeFormat, EndTimeFormat } from "../UtilComponent/DateFormat";
+import { StartTimeFormat, EndTimeFormat } from "../UtilComponent/DataFormat";
 import { resContent } from "../UtilComponent/ResponseData";
 import { useNavigate } from "react-router-dom";
 

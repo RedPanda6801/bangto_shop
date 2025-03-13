@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { resPage , resContent } from '../UtilComponent/ResponseData';
 import { useNavigate } from 'react-router-dom';
-import {TimeStamp} from "../UtilComponent/DateFormat";
+import {TimeStamp} from "../UtilComponent/DataFormat";
 import PagenationComponent from "../UtilComponent/PagenationComponent";
 
 const ManagerApplyComponent = () => {
