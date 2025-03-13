@@ -5,8 +5,9 @@ import '../StoreComponent.css';
 import { resContent } from '../UtilComponent/ResponseData';
 import SellerApplyComponent from './SellerApplyComponent';
 import StoreListComponent from './StoreListComponent';
+import StoreQNAComponent from './StoreQNAComponent';
 
-const StoreAuthComponent = (props) => 
+const StoreComponent = (props) => 
 { 
   // 판매자 인증 X
   const navigate = useNavigate();
@@ -78,26 +79,7 @@ const StoreAuthComponent = (props) =>
     }
     else if("QNA" == menu)
     {
-      return <div className="box_QNA_Detail">              
-              <table>
-                <tr>
-                  <th>상품명</th>
-                  <th>질문내용</th>
-                  <th>답변 상태</th>
-                </tr>
-                <tr>
-                  <td>1111</td>
-                  <td
-                    onClick={() => navigate("/qna/detail")}>2222</td>
-                  <td>답변상태</td>
-                </tr>
-                <tr>
-                  <td>3333</td>
-                  <td>4444</td>
-                  <td>답변상태</td>
-                </tr>
-              </table>
-            </div>;
+      return <StoreQNAComponent sellerName={sellerName} storeInfo={storeInfo}></StoreQNAComponent>
     }
     else if("주문 목록" == menu)
     {
@@ -196,4 +178,4 @@ const StoreAuthComponent = (props) =>
   );
 }
 
-export default StoreAuthComponent;
+export default StoreComponent;

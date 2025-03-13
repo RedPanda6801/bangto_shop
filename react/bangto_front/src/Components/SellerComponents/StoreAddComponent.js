@@ -1,30 +1,37 @@
 import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../StoreModiComponent.css'; 
 import Modal from 'react-modal';
 Modal.setAppElement('#root');
 
-const StoreModiComponent = (props) => {  
+const StoreAddComponent = (props) => {  
   const navigate = useNavigate();
   const [name, setName] = useState("");
+  const [busiNum, setBusiNum] = useState("");
 
   let isStoreValid = name;
+  
+  useEffect(()=> {
+    console.log(props.store);
+  }, [props.modal])
 
   // 입력 항목 유효성 검사
   const handleStoreAuth = async () => 
   {  
     try 
     {      
+      console.log(props.store)
       const validChar = /^[a-zA-Z가-힣0-9]+$/;
 
-      if( 0 < name.length  && 11 > name.length  && validChar.test(name)  ) isStoreValid = true;
+      if( 0 < name.length  && 11 > name.length  && validChar.test(name)) isStoreValid = true;
 
-      const response = await axios.post("http://localhost:9000/store/modify", 
-        { "id" : props.store.id,
-          "sellerName" : props.sellerName,
-          "busiNum" : props.store.busiNum,
-          name}
+      const response = await axios.post("http://localhost:9000/store/add", 
+        {
+          busiNum,
+          name
+        }
         , {withCredentials : true, headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }});
       
       if(!isStoreValid)
@@ -35,21 +42,22 @@ const StoreModiComponent = (props) => {
       {
         if (response.status == 200) 
         {
-          alert("판매자 정보 수정이 완료되었습니다."); 
+          alert("매장 추가가 완료되었습니다."); 
           navigate(0);
         } 
         else 
         {
-          console.error("판매자 정보 수정 실패", response.data);
+          console.error("매장 추가 실패", response.data);
         }
       }
     }  
     catch (error) 
     {
-      console.error("판매자 정보 수정 오류:", error);
+      alert("매장 추가가 실패하였습니다.");
+      console.error("매장 추가 실패", error);
       if (error.response) 
       {
-        console.error("서버 응답 오류:", error.response.data);
+        console.error("매장 추가 실패", error.response.data);
       }
     }
   };
@@ -76,16 +84,15 @@ const StoreModiComponent = (props) => {
         <input
           className="Modi_Store_Name"
           type="text"
-          placeholder={props.store.name}
-          defaultValue={props.store.name}
+          placeholder="매장 이름"
           value={name}
           onChange={(e) => setName(e.target.value)}/>
         <input
           className="Modi_Busi_Num"
           type="text"
-          placeholder="* 사업자 번호"
-          defaultValue={props.store.busiNum}
-          disabled/>
+          placeholder="사업자 번호"
+          value={busiNum}
+          onChange={(e) => setBusiNum(e.target.value)}/>
         <div className="box_btn_Store_Modi">
           <input 
             className="btn_Store_Modi"
@@ -106,4 +113,4 @@ const StoreModiComponent = (props) => {
   );
 };
 
-export default StoreModiComponent;
+export default StoreAddComponent;

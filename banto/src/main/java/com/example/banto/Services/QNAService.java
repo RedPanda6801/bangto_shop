@@ -30,7 +30,7 @@ public class QNAService {
 	
 	public void addSellerAnswer(QNADTO qnaDTO) throws Exception {
 		try {
-			if(qnaDTO.getAContent() == null || qnaDTO.getAContent() == "" || qnaDTO.getItemPk() == null) {
+			if(qnaDTO.getAContent() == null || qnaDTO.getId() == null || qnaDTO.getItemPk() == null) {
 				throw new Exception("필수 정보 오류");
 			}
 			else {

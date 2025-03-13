@@ -28,7 +28,11 @@ public class QNADTO {
     private LocalDateTime aWriteDate;
     
     private Integer itemPk;
-    
+
+    private String itemTitle;
+
+    private String userName;
+
     private Integer userPk;
     
     private Integer storePk;
@@ -44,8 +48,9 @@ public class QNADTO {
                 .aContent(entity.getAContent())
                 .qWriteDate(entity.getQWriteDate())
                 .aWriteDate(entity.getAWriteDate())
+                .itemTitle(entity.getItem().getTitle())
+                .userName(entity.getUser().getName())
                 .itemPk(entity.getItem().getId())
-                .userPk(entity.getUser().getId())
                 .build();
     }
 }
