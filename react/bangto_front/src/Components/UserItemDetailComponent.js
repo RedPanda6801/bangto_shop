@@ -27,6 +27,7 @@ const UserItemDetailComponent = () =>
             setItem(rescontent);
             setTotalImage(rescontent.img.split("/").length);
             setCurrentImage(0);
+            setSelectedOption(rescontent.options[0]);
             console.log(rescontent);
             axios.get(`${process.env.REACT_APP_BACKEND_SERVER_PORT}/favorite/get-list/1`,
                 {   
