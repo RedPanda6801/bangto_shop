@@ -90,7 +90,7 @@ public class SecurityConfig {
 						new AntPathRequestMatcher("/apply/my-info"),
 						new AntPathRequestMatcher("/cart/**"),
 						new AntPathRequestMatcher("/favorite/**"),
-						new AntPathRequestMatcher("/qna/get-list/**"),
+						new AntPathRequestMatcher("/qna/my-list/**"),
 						new AntPathRequestMatcher("/qna/add"),
 						new AntPathRequestMatcher("/pay"),
 						new AntPathRequestMatcher("/pay/get-info/**"),

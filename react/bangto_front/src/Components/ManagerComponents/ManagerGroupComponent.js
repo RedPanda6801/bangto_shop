@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { StartTimeFormat, EndTimeFormat } from "../UtilComponent/DataFormat";
+import { StartTimeFormat, EndTimeFormat, CategoryType } from "../UtilComponent/DataFormat";
 import { resContent } from "../UtilComponent/ResponseData";
 import { useNavigate } from "react-router-dom";
 
@@ -124,7 +124,7 @@ const ManagerGroupComponent = () => {
                                 groupItemList.map((groupItem) => 
                                     <tr>
                                         <td>{groupItem.item.title}</td>
-                                        <td>{groupItem.item.category}</td>
+                                        <td>{CategoryType[groupItem.item.category]}</td>
                                         <td><img style={{maxWidth : "100%"}} src={`${process.env.REACT_APP_IMG_PUBLIC_URI}/${groupItem.item.img}`}/></td>
                                         <td>{groupItem.option.optionInfo}</td>
                                         <td>{groupItem.item.price+groupItem.option.addPrice}</td>

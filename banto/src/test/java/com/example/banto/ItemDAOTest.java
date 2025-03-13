@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Optional;
 
+import com.example.banto.Entitys.Options;
+import com.example.banto.Repositorys.OptionRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +30,8 @@ class ItemDAOTest {
 	StoreRepository storeRepository;
 	@Autowired
 	ItemRepository itemRepository;
-	
+	@Autowired
+	OptionRepository optionRepository;
 	@AfterEach
 	public void after() {
 		System.out.println("아이템 테스트 종료");
@@ -60,6 +63,17 @@ class ItemDAOTest {
 		Optional<Stores> store = storeRepository.findById(id);
 		
 		Assertions.assertThat(store.get().getItems()).isNotNull();
+	}
+
+	@Test
+	@Transactional
+	void optionDeleteTest() {
+		int id = 2;
+
+		// 인증 유효 확인
+		Optional<Options> option = optionRepository.findById(id);
+		optionRepository.delete(option.get());
+
 	}
 	
 	@Test

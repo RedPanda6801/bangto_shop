@@ -50,6 +50,6 @@ public class Options {
     private List<Carts> carts;
 
     @JsonIgnore
-    @OneToMany(mappedBy="option", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy="option", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<GroupBuyItems> eventItems;
 }

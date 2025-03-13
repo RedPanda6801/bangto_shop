@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import '../ManagerComponent.css';
 import { useEffect, useState } from "react";
 import { resPage , resContent } from '../UtilComponent/ResponseData';
-import Modal from 'react-modal';
 import PagenationComponent from "../UtilComponent/PagenationComponent";
-
+import Modal from 'react-modal';
 Modal.setAppElement('#root');
+
 const ManagerUserComponent = () => {
     const navigate = useNavigate();
     const [userPage, setUserPage] = useState(1);
