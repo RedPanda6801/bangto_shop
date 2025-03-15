@@ -57,6 +57,10 @@ const StoreItemRegisterComponent = (props) => {
   {
     try 
     {  
+      if(category == -1){
+        alert("카테고리를 선택하세요");
+        return;
+      }
       const dto = {storePk : props.store.id, title, price, content, category, options};
       console.log(dto);
       const formData = new FormData();
@@ -145,6 +149,7 @@ const StoreItemRegisterComponent = (props) => {
               <select 
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}>
+                  <option value={-1}>카테고리를 선택하세요</option>
                   {Object.keys(CategoryType).map((key)=>
                     <option value={key}>{CategoryType[key]}</option>
                   )}

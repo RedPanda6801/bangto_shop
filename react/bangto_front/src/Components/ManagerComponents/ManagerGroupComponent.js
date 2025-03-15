@@ -22,7 +22,7 @@ const ManagerGroupComponent = () => {
         try{
             const startDate = StartTimeFormat(startInputDate);
             const endDate = EndTimeFormat(endInputDate);
-            
+            console.log(startDate);
             const response = await axios.post(`${process.env.REACT_APP_BACKEND_SERVER_PORT}/manager/group-buy/add`,{
                 startDate, endDate
             },{headers: { "Authorization": `Bearer ${localStorage.getItem("token")}`}})
@@ -125,7 +125,7 @@ const ManagerGroupComponent = () => {
                                     <tr>
                                         <td>{groupItem.item.title}</td>
                                         <td>{CategoryType[groupItem.item.category]}</td>
-                                        <td><img style={{maxWidth : "100%"}} src={`${process.env.REACT_APP_IMG_PUBLIC_URI}/${groupItem.item.img}`}/></td>
+                                        <td><img style={{maxWidth : "100%"}} src={`${process.env.REACT_APP_IMG_PUBLIC_URI}/03_upload/${groupItem.item.img}`}/></td>
                                         <td>{groupItem.option.optionInfo}</td>
                                         <td>{groupItem.item.price+groupItem.option.addPrice}</td>
                                         <td>{groupItem.limitPerBuyer}</td>

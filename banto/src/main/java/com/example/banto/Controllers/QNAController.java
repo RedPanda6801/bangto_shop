@@ -88,15 +88,15 @@ public class QNAController {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
-	
-	//  아이템별 QNA 조회
+
+	//	아이템별 QNA 조회
 	@GetMapping("/qna/item/get-list/{itemId}/{page}")
 	public ResponseEntity getListByItem(@PathVariable("itemId") Integer itemId, @PathVariable("page") Integer page) throws Exception{
-    try {
-       ResponseDTO favoriteList = qnaService.getListByItem(itemId, page);
-       return ResponseEntity.ok().body(favoriteList);
-    }catch(Exception e) {
-       return ResponseEntity.badRequest().body(e.getMessage());
-    }
-}
+		try {
+			ResponseDTO favoriteList = qnaService.getListByItem(itemId, page);
+			return ResponseEntity.ok().body(favoriteList);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
 }
