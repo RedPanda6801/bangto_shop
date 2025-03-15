@@ -54,11 +54,14 @@ public class CartDAO {
 			List<Carts> carts = cartRepository.findAllByUserId(user.getId());
 			for(Carts cart : carts) {
 				if(dto.getAmount() > cart.getOption().getAmount()){
+					//System.out.println(cart.getOption().getAmount());
 					throw new Exception("물품 재고가 부족합니다.");
 				}
 				if(Objects.equals(cart.getItem().getId(), itemPk) && Objects.equals(cart.getOption().getId(), optionPk)) {
 					int sum = cart.getAmount() + dto.getAmount();
 					if(sum > cart.getOption().getAmount()) {
+						System.out.println(sum);
+						System.out.println(cart.getOption().getAmount());
 						throw new Exception("물품 재고가 부족합니다.");
 					}
 					cart.setAmount(sum);

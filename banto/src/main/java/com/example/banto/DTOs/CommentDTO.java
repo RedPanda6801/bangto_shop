@@ -20,10 +20,10 @@ public class CommentDTO {
 	private String content;
 	private Integer star;
 	private LocalDateTime writeDate;
-	@JsonIgnore
 	private Integer soldItemPk;
 	private Integer itemPk;
 	private Integer userPk;
+	private String writer;
 	private String img;
 	
 	public static CommentDTO toDTO(Comments entity) {
@@ -35,6 +35,7 @@ public class CommentDTO {
                 .img(entity.getImg())
                 .itemPk(entity.getItem().getId())
                 .userPk(entity.getUser().getId())
+                .writer(entity.getUser().getName())
                 .build();
     }
 }

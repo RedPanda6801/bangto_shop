@@ -16,27 +16,28 @@ import UserQNAComponent from './Components/UserQNAComponent';
 import ManagerItemInfoComponent from './Components/ManagerItemInfoComponent';
 import './Components/LayoutComponent.css';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { resContent } from './Components/UtilComponent/ResponseData';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ScrollToTop from './Components/UtilComponent/ScrollToTop';
 
 function App() {
-  const [userName, setUserName] = useState("");
-  const [userEmail, setUserEmail] = useState("");
-  const [token, setToken] = useState("");
-  const [auth, setAuth] = useState("GUEST");
+  const [userEmail, setUserEmail] = useState(localStorage.getItem("USEREMAIL") || "");
+  const [userName, setUserName] = useState(localStorage.getItem("USERNAME") || "");
+  const [token, setToken] = useState(localStorage.getItem("token") || "");
   const navigate = useNavigate();
 
   const rootEmail = process.env.REACT_APP_ROOT_EMAIL;
 
   useEffect(()=>{
-    if(localStorage.getItem("token") === undefined || localStorage.getItem("token") === null || localStorage.getItem("token") === "")
+    if(!token)
     {
-      //console.log("로컬스토리지 감지");
-      //alert("로그인해주세요");
-      //navigate("/");
+      localStorage.setItem("USERROLE", "GUEST");
+      localStorage.removeItem("USERNAME");
+      localStorage.removeItem("USEREMAIL");
+      setUserEmail("");
+      setUserName("");
     }
     else
     {
@@ -44,23 +45,40 @@ function App() {
             headers: {
               "Authorization": `Bearer ${localStorage.getItem("token")}`,
             }
-          }).then((res)=> {
-            const content = resContent(res);
-            setUserEmail(content.email);
-            setUserName(content.name);
+      }).then((res)=> {
+        const userContent = resContent(res);
+        localStorage.setItem("USEREMAIL", userContent.email);
+        localStorage.setItem("USERNAME", userContent.name);
+        setUserName(localStorage.getItem("USERNAME") || "");
+        setUserEmail(localStorage.getItem("USEREMAIL") || "");
 
-            if (content.email === rootEmail) 
-            {
-              navigate("/manager");
+        if (userContent.email === rootEmail) 
+        {
+          localStorage.setItem("USERROLE", "ADMIN");
+          navigate("/manager");
+        } else {
+          axios.get(`${process.env.REACT_APP_BACKEND_SERVER_PORT}/seller/get-info`, {
+            headers: {
+              "Authorization": `Bearer ${localStorage.getItem("token")}`,
             }
+          }).then((res) => {
+            localStorage.setItem("USERROLE", "SELLER");
+          }).catch((err) => {
+            localStorage.setItem("USERROLE", "BUYER");
+          })
+        }
       }).catch((err)=>{
-        
           //console.log(err);
           //alert("로그인해주세요");
           navigate("/");
       })
     }
   },[token])
+
+  useEffect(() => {
+    setUserName(localStorage.getItem("USERNAME") || "");
+    setUserEmail(localStorage.getItem("USEREMAIL") || "");
+  }, [])
 
   const logout = () => {
     //카카오톡 소셜 로그인 사용자일 경우
@@ -97,6 +115,8 @@ function App() {
     }
     
     localStorage.removeItem("token");
+    localStorage.removeItem("USERNAME");
+    localStorage.setItem("USERROLE", "GUEST");
     navigate("/");
     setUserEmail("");
     setUserName("");
@@ -214,21 +234,21 @@ function App() {
       </div>
       <ScrollToTop />
       <Routes>
-        <Route path="/manager" element={<ManagerComponent setUserName={setUserName} />} />
+        <Route path="/manager" element={<ManagerComponent />} />
         <Route path="/" element={<UserMainComponent />} />
-        <Route path="/login" element={<UserAuthComponent setUserName={setUserName} setToken={setToken} />} />
+        <Route path="/login" element={<UserAuthComponent setToken={setToken} />} />
         <Route path="/sign" element={<UserSignComponent />} />
-        <Route path="/seller/apply" element={<StoreComponent setUserName={setUserName} />} />
-        <Route path="/user/cart" element={<UserCartComponent setUserName={setUserName} />} />
-        <Route path="/user/pay" element={<UserPayComponent setUserName={setUserName} />} />
-        <Route path="/manager/store/info" element={<ManagerItemInfoComponent setUserName={setUserName} />} />
-        <Route path="/qna/detail" element={<StoreQNADetailComponent setUserName={setUserName} />} />
-        <Route path="/user" element={<UserComponent setUserName={setUserName} />} />
-        <Route path="/user/review" element={<UserReviewComponent setUserName={setUserName} />} />
-        <Route path="/user/groupitem" element={<UserGroupItemComponent setUserName={setUserName} />} />
-        <Route path="/user/item" element={<UserItemDetailComponent setUserName={setUserName} />} />
-        <Route path="/user/gorupitem/detail" element={<UserGroupItemDetailComponent setUserName={setUserName} />} />
-        <Route path="/user/item/qna" element={<UserQNAComponent setUserName={setUserName} />} />
+        <Route path="/seller/apply" element={<StoreComponent />} />
+        <Route path="/user/cart" element={<UserCartComponent />} />
+        <Route path="/user/pay" element={<UserPayComponent />} />
+        <Route path="/manager/store/info" element={<ManagerItemInfoComponent />} />
+        <Route path="/qna/detail" element={<StoreQNADetailComponent />} />
+        <Route path="/user" element={<UserComponent />} />
+        <Route path="/user/review" element={<UserReviewComponent />} />
+        <Route path="/user/groupitem" element={<UserGroupItemComponent />} />
+        <Route path="/user/item" element={<UserItemDetailComponent />} />
+        <Route path="/user/gorupitem/detail" element={<UserGroupItemDetailComponent />} />
+        <Route path="/user/item/qna" element={<UserQNAComponent />} />
       </Routes>
       
         <div className="layout_Footer_Buttons">

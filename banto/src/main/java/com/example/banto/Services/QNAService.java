@@ -92,4 +92,19 @@ public class QNAService {
 			throw e;
 		}
 	}
+	
+	public ResponseDTO getListByItem(Integer itemId, Integer page) throws Exception {
+	    try {
+	       if(itemId == null) {
+	          throw new Exception("필수 정보 오류");
+	       }
+	       else if(page == null || page < 1) {
+	          throw new Exception("페이지 입력 오류");
+	       }else {
+	          return qnaDAO.getListByItem(itemId, page);
+	       }
+	    }catch(Exception e) {
+	       throw e;
+	    }
+	}
 }

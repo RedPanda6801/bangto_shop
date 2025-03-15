@@ -48,7 +48,7 @@ public class CommentController {
 	
 	// 후기 세부 조회
 	@GetMapping("/comment/get/{commentId}")
-	public ResponseEntity getComment(HttpServletRequest request, @PathVariable("commentId") Integer commentId) {
+	public ResponseEntity getComment(@PathVariable("commentId") Integer commentId) {
 		try {
 			ResponseDTO comment = commentService.getComment(commentId);
 			return ResponseEntity.ok().body(comment);

@@ -16,6 +16,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -66,7 +67,8 @@ public class JwtTokenFilter extends OncePerRequestFilter{
 				|| path.startsWith("/item/get-by-store-name")
 				|| path.startsWith("/item/get-by-category")
 				|| path.startsWith("/item/get-filtered-list")
-				|| path.startsWith("/item/get-recommend-list"));
+				|| path.startsWith("/item/get-recommend-list")
+				|| path.startsWith("/qna/item/get-list"));
 	}
 	
 	@Override
