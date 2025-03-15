@@ -5,7 +5,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.Optional;
 
 import com.example.banto.Entitys.Options;
+import com.example.banto.Entitys.QNAs;
 import com.example.banto.Repositorys.OptionRepository;
+import com.example.banto.Repositorys.QNARepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +34,8 @@ class ItemDAOTest {
 	ItemRepository itemRepository;
 	@Autowired
 	OptionRepository optionRepository;
+	@Autowired
+	QNARepository qnaRepository;
 	@AfterEach
 	public void after() {
 		System.out.println("아이템 테스트 종료");
@@ -85,5 +89,18 @@ class ItemDAOTest {
 		Page<Items>items = itemRepository.findAll(pageable);
 		
 		Assertions.assertThat(items.getContent().size()).isEqualTo(20);
+	}
+
+	@Test
+	@Transactional
+	void getQNAByItem() {
+		System.out.println("성공 메소드 - input : 1");
+		int id = 1;
+		Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
+		Page<QNAs> qnaList = qnaRepository.findAllByItemId(id,pageable);
+		for(QNAs qna : qnaList){
+			System.out.println(qna.getQContent());
+		}
+		Assertions.assertThat(qnaList).isNotNull();
 	}
 }

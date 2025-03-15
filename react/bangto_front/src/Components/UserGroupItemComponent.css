@@ -23,7 +23,14 @@
     position: relative;
     border: 1px solid black;
 }
-
+.box_Slide
+{
+    height: 500px;
+}
+.box_item
+{
+    height: 500px;
+}
 .box_Group_Date
 {
     /* grid-column: 10 / 28; */
@@ -74,15 +81,31 @@
   height: 240px;
   border: 1px solid #ccc;
 }
-
-.table_Group_Itemlist
+.group_item_list{
+    width: 1000px;
+    display: flex;
+    flex-flow : wrap;
+    justify-content: flex-start; /* 왼쪽 정렬 (기본값) */
+}
+.group_Item
 {
   border: 1px solid #ccc;
-  text-align: center;
-  width: 44%;
-  height: 380px;
+  width: 300px;
+  height: 300px;
   padding: 5px;
   margin: 15px;
   padding-top: 13px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+.group_item_img
+{
+    justify-content: center;
+    width: 100%;
+    height: 70%;
+}
+.group_Item_info
+{
+
 }

@@ -10,10 +10,11 @@ import UserPayComponent from './Components/UserPayComponent';
 import UserItemDetailComponent from './Components/UserItemDetailComponent';
 import UserComponent from './Components/UserComponent';
 import UserReviewComponent from './Components/UserReviewComponent';
-import UserGroupItemComponent from './Components/UserGroupItemComponent';
-import UserGroupItemDetailComponent from './Components/UserGroupItemDetailComponent';
+import UserGroupItemComponent from './Components/GroupItemComponents/UserGroupItemComponent';
+import UserGroupItemDetailComponent from './Components/GroupItemComponents/UserGroupItemDetailComponent';
 import UserQNAComponent from './Components/UserQNAComponent';
 import ManagerItemInfoComponent from './Components/ManagerItemInfoComponent';
+import UserGroupItemPayComponent from './Components/GroupItemComponents/UserGroupItemPayComponent';
 import './Components/LayoutComponent.css';
 import axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
@@ -238,17 +239,18 @@ function App() {
         <Route path="/" element={<UserMainComponent />} />
         <Route path="/login" element={<UserAuthComponent setToken={setToken} />} />
         <Route path="/sign" element={<UserSignComponent />} />
-        <Route path="/seller/apply" element={<StoreComponent />} />
-        <Route path="/user/cart" element={<UserCartComponent />} />
-        <Route path="/user/pay" element={<UserPayComponent />} />
-        <Route path="/manager/store/info" element={<ManagerItemInfoComponent />} />
-        <Route path="/qna/detail" element={<StoreQNADetailComponent />} />
-        <Route path="/user" element={<UserComponent />} />
-        <Route path="/user/review" element={<UserReviewComponent />} />
-        <Route path="/user/groupitem" element={<UserGroupItemComponent />} />
-        <Route path="/user/item" element={<UserItemDetailComponent />} />
-        <Route path="/user/gorupitem/detail" element={<UserGroupItemDetailComponent />} />
-        <Route path="/user/item/qna" element={<UserQNAComponent />} />
+        <Route path="/seller/apply" element={<StoreComponent setUserName={setUserName} />} />
+        <Route path="/user/cart" element={<UserCartComponent setUserName={setUserName} />} />
+        <Route path="/user/pay" element={<UserPayComponent setUserName={setUserName} />} />
+        <Route path="/manager/store/info" element={<ManagerItemInfoComponent setUserName={setUserName} />} />
+        <Route path="/qna/detail" element={<StoreQNADetailComponent setUserName={setUserName} />} />
+        <Route path="/user" element={<UserComponent setUserName={setUserName} />} />
+        <Route path="/user/review" element={<UserReviewComponent setUserName={setUserName} />} />
+        <Route path="/user/groupitem" element={<UserGroupItemComponent setUserName={setUserName} />} />
+        <Route path="/user/item" element={<UserItemDetailComponent setUserName={setUserName} />} />
+        <Route path="/user/gorupitem/detail" element={<UserGroupItemDetailComponent setUserName={setUserName} />} />
+        <Route path="/user/item/qna" element={<UserQNAComponent setUserName={setUserName} />} />
+        <Route path="/group-item/pay" element={<UserGroupItemPayComponent setUserName={setUserName} />} />
       </Routes>
       
         <div className="layout_Footer_Buttons">

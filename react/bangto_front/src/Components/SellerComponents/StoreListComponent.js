@@ -149,7 +149,7 @@ const StoreListComponent = (props) => {
                         { itemlist.map((item) => (
                             <tr>
                             <td style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                                <img style={{ width: "200px" }} src={`${process.env.REACT_APP_IMG_PUBLIC_URI}/${item.img.split("/")[0]}`} />
+                                <img style={{ width: "200px" }} src={`${process.env.REACT_APP_IMG_PUBLIC_URI}/03_upload/${item.img.split("/")[0]}`} />
                                 <div>{item.title}</div>
                             </td>
                             <td>{item.content}</td>

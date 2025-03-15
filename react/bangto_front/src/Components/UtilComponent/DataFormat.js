@@ -7,7 +7,9 @@ const TimeStamp = (data) => {
 }
 
 const StartTimeFormat = (data) => {
-    return new Date(`${data}T00:00:00`).toISOString();
+    const date = new Date(`${data}T00:00:00`);
+    const dateFormat =  new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString();
+	return dateFormat.split(".")[0];
 }
 const EndTimeFormat = (data) => {
     return new Date(`${data}T23:59:59`).toISOString();

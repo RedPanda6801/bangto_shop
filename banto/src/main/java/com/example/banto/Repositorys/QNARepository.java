@@ -11,13 +11,15 @@ import org.springframework.data.repository.query.Param;
 import com.example.banto.Entitys.QNAs;
 
 public interface QNARepository  extends JpaRepository<QNAs, Integer>{
-    
-    @Query("SELECT q FROM QNAs q WHERE q.user.id = :userId")
-    Page<QNAs> findAllByUserId(@Param("userId") Integer userId, Pageable page);
-    
-    @Query("SELECT q FROM QNAs q JOIN Items i ON i.store.id = :storeId WHERE q.item.id = i.id")
-    Page<QNAs> findAllByStore(@Param("storeId") Integer storeId, Pageable page);
 
-    @Query("SELECT q FROM QNAs q WHERE q.item.id = :itemId")
-    Page<QNAs> findAllByItemId(@Param("itemId") Integer itemId, Pageable page);
+	
+	@Query("SELECT q FROM QNAs q WHERE q.user.id = :userId")
+	Page<QNAs> findAllByUserId(@Param("userId") Integer userId, Pageable page);
+	
+	@Query("SELECT q FROM QNAs q JOIN Items i ON i.store.id = :storeId WHERE q.item.id = i.id")
+	Page<QNAs> findAllByStore(@Param("storeId") Integer storeId, Pageable page);
+
+	@Query("SELECT q FROM QNAs q WHERE q.item.id = :itemId")
+	Page<QNAs> findAllByItemId(@Param("itemId") Integer itemId, Pageable page);
 }
+
