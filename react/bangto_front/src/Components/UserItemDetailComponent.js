@@ -3,8 +3,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import './UserItemDetailComponent.css';
 import UserCartListComponent from "./UserCartListComponent";
 import axios from "axios";
-import { resContent } from "./UtilComponent/ResponseData";
-import { CategoryType } from "./UtilComponent/DataFormat";
+import { resContent, resPage } from "./UtilComponent/ResponseData";
+import { CategoryType, TimeStamp } from "./UtilComponent/DataFormat";
+import PagenationComponent from "./UtilComponent/PagenationComponent";
 
 const UserItemDetailComponent = () => 
 {
@@ -19,6 +20,15 @@ const UserItemDetailComponent = () =>
     const [isFavorite20, setIsFavorite20] = useState(false);
     const [amount, setAmount] = useState(0);
     const [selectedOption, setSelectedOption] = useState({});
+    const [currentReviewPage, setCurrentReviewPage] = useState(1);
+    const [totalReviewPage, setTotalReviewPage] = useState(1);
+    const [reviews, setReviews] = useState([]);
+    const [totalReivewImages, setTotalReviewImages] = useState([]);
+    const [currentReviewImages, setCurrentReviewImages] = useState([]);
+    const [currentQnaPage, setCurrentQnaPage] = useState(1);
+    const [totlaQnaPage, setTotalQnaPage] = useState(1);
+    const [qnas, setQnas] = useState([]);
+    const [qnaWrite, setQnaWrite] = useState("");
 
     useEffect(() => {
         axios.get(`${process.env.REACT_APP_BACKEND_SERVER_PORT}/item/get-detail/${itemPk}`)
@@ -27,7 +37,8 @@ const UserItemDetailComponent = () =>
             setItem(rescontent);
             setTotalImage(rescontent.img.split("/").length);
             setCurrentImage(0);
-            console.log(rescontent);
+            setSelectedOption(rescontent.options[0]);
+            // console.log(rescontent);
             axios.get(`${process.env.REACT_APP_BACKEND_SERVER_PORT}/favorite/get-list/1`,
                 {   
                     withCredentials: true,
@@ -39,12 +50,43 @@ const UserItemDetailComponent = () =>
                 setIsFavored(favored);
                 setIsFavorite20(rescontent.length >= 20);
             }).catch((err) => {
-                setIsFavored(false);
-                setIsFavorite20(false);
+                setIsFavored(null);
+                setIsFavorite20(null);
             })
+        }).catch((err) => {
         })
-        
     }, [itemPk])
+
+    useEffect(() => {
+        axios.get(`${process.env.REACT_APP_BACKEND_SERVER_PORT}/comment/item/${itemPk}/${currentReviewPage}`)
+        .then((res) => {
+            const rescontent = resContent(res);
+            const respage = resPage(res);
+            setReviews(rescontent);
+            setCurrentReviewPage(currentReviewPage);
+            setTotalReviewPage(respage.totalPages);
+            // console.log(rescontent);
+            setTotalReviewImages(Array.from({length: rescontent.length}, (_, idx) => rescontent[idx].img?.split("/").length));
+            setCurrentReviewImages(Array.from({length: rescontent.length}, () => 0));
+
+        }).catch((err) => {
+            // console.log(err);
+        })
+    }, [currentReviewPage])
+
+    useEffect(() => {
+        axios.get(`${process.env.REACT_APP_BACKEND_SERVER_PORT}/qna/item/get-list/${itemPk}/${currentQnaPage}`)
+        .then((res) => {
+            const rescontent = resContent(res);
+            const respage = resPage(res);
+            setQnas(rescontent);
+            setCurrentQnaPage(currentQnaPage);
+            setTotalQnaPage(respage.totalPages);
+            // console.log(rescontent);
+        }).catch((err) => {
+            // console.log(err);
+        })
+    }, [currentQnaPage])
 
     const handleWishlist = () => {
         if(isFavorite20) {
@@ -57,8 +99,11 @@ const UserItemDetailComponent = () =>
             headers: {
                 "Authorization": `Bearer ${localStorage.getItem("token")}`,
             }
+        }).then(() => {
+            setIsFavored(true);
+            alert("찜 목록에 추가되었습니다.");
         });
-        setIsFavored(true);
+
     }
 
     const handleUnwishlist = () => {
@@ -68,8 +113,10 @@ const UserItemDetailComponent = () =>
             headers: {
                 "Authorization": `Bearer ${localStorage.getItem("token")}`,
             }
+        }).then(() => {
+            setIsFavored(false);
+            alert("찜 목록에서 해제되었습니다.")
         });
-        setIsFavored(false);
     }
 
     const handleCart = () => {
@@ -80,7 +127,12 @@ const UserItemDetailComponent = () =>
             headers: {
                 "Authorization": `Bearer ${localStorage.getItem("token")}`,
             }
-        }).catch((err) => {
+        }).then(() => {
+            if(window.confirm("장바구니에 추가되었습니다. 장바구니로 이동하시겠습니까?")) {
+                navigate("/user/cart");
+            }
+        })
+        .catch((err) => {
             alert(err.response.data);
         });
     }
@@ -97,6 +149,25 @@ const UserItemDetailComponent = () =>
     const handleAmount = (e) => {
         setAmount(selectedOption.amount < e.target.value ? selectedOption.amount : (e.target.value < 0 ? 0 : e.target.value));
     }
+
+    const handleQna = () => {
+        if(window.confirm("해당 내용으로 문의하시겠습니까?")) {   
+            axios.post("http://localhost:9000/qna/add", {
+                itemPk,
+                qcontent: qnaWrite
+            }, { withCredentials : true,
+                headers: {
+                    "Authorization": `Bearer ${localStorage.getItem("token")}`,
+                }
+            }).then(() => {
+                alert("문의에 성공하셨습니다.");
+                setCurrentQnaPage(1);
+            })
+            .catch((err) => {
+                alert(err.response.data);
+            });
+        }
+    }
     
     const renderContentForMenu = (menu) => 
     {
@@ -108,61 +179,125 @@ const UserItemDetailComponent = () =>
         }
         else if("후기" == menu)
         {
-            return <div className="box_Item_Review">
-                    <table className="table_Item_Review">
-                        <tr>
-                            <td>
-                                작성자
-                            </td>
-                            <td rowSpan={3}>
-                                좋다
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                *****
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                2025.02.28
-                            </td>
-                        </tr>
-                    </table>
-                </div>;
+            return reviews.length === 0 ? <div className="box_No_Review">
+                첫 후기 작성자가 되어보세요!
+            </div> :
+            <div className="box_Item_Review">
+                {
+                    reviews.map((review, idx) => {
+                        return <table className="table_Item_Review" key={`table${idx}`}>
+                            <tr>
+                                <td className="box_Review_Info">
+                                    <div className="review_Writer">
+                                        {review.writer}
+                                    </div>
+                                    <div className="review_Writedate">
+                                        {TimeStamp(review.writeDate)}
+                                    </div>
+                                </td>
+                                {
+                                    review.img === null ?
+                                    <td className="box_Review_Image">
+                                        <div className="review_Image">
+                                            이미지 없음
+                                        </div>
+                                    </td> :
+                                    <td className="box_Review_Image">
+                                        <img className="review_Image" src={`${process.env.REACT_APP_IMG_PUBLIC_URI}/03_upload/${review.img?.split("/")[currentReviewImages[idx]] || ""}`} alt="후기 이미지" />
+                                        <button
+                                            onClick={() => {
+                                                let result = [...currentReviewImages];
+                                                result[idx] -= 1
+                                                
+                                                setCurrentReviewImages(result);
+                                            }}
+                                            className="review_imglist_arrow review_arrow_left"
+                                            style={currentReviewImages[idx] === 0 ? {display:"none"} : {}}>
+                                            &#10094;
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                let result = [...currentReviewImages];
+                                                result[idx] += 1
+                                                setCurrentReviewImages(result);
+                                            }}
+                                            className="review_imglist_arrow review_arrow_right"
+                                            style={currentReviewImages[idx] === totalReivewImages[idx] - 1 ? {display:"none"} : {}}>
+                                            &#10095;
+                                        </button>
+                                    </td>
+                                }
+                                <td className="box_Review_Content">
+                                    {review.content}
+                                </td>
+                            </tr>
+                        </table>;
+                    })
+                }
+                <PagenationComponent page={currentReviewPage} setPage={setCurrentReviewPage} totalPage={totalReviewPage} />
+            </div>;
             }
         else if("문의" == menu)
         {
-            return <div className="box_Btn_Item_QNA">                    
-                    <button 
-                        className="btn_Regi_QNA"
-                        onClick={() => navigate("/user/item/qna")}>
-                        문의하기
-                    </button>
-                    <table className="table_Item_QNA">
-                        <tr>
-                            <td colSpan={2}>
-                                문의자
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                내용
-                            </td>
-                            <td>
-                                문의 작성일
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                답변
-                            </td>
-                            <td>
-                                답변 작성일
-                            </td>
-                        </tr>
-                    </table>
-            </div>;
+            return <div className="box_Btn_Item_QNA">
+                        <div className="box_Qna_Write">
+                            <textarea
+                                className="box_Qna_Write_Content"
+                                value={localStorage.getItem("USERROLE") === "GUEST" ? "로그인 후 이용하실 수 있습니다." : qnaWrite}
+                                onChange={(e) => setQnaWrite(e.target.value)}
+                                disabled = {localStorage.getItem("USERROLE") === "GUEST"}
+                            />
+                            <button 
+                                className="btn_Regi_QNA"
+                                onClick={handleQna}>
+                                문의하기
+                            </button>
+                        </div> 
+                        {
+                            qnas.map((qna, idx) => {
+                                return <div className="box_Item_Qna" key={`table${idx}`}>
+                                    <table className="table_Item_Review">
+                                        <tr>
+                                            <td className="box_Review_Info">
+                                                <div className="review_Writer">
+                                                    {qna.userName}
+                                                </div>
+                                                <div className="review_Writedate">
+                                                    {TimeStamp(qna.qwriteDate)}
+                                                </div>
+                                            </td>
+                                            <td className="box_Review_Content">
+                                                {qna.qcontent}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    {
+                                        !qna.acontent ? null :
+                                        <div className="box_Qna">
+                                            <img
+                                                src={`${process.env.REACT_APP_IMG_PUBLIC_URI}/02_icon/reply.png`}
+                                                alt="답변 이미지"
+                                                className="qna_Image"    
+                                            />
+                                            <table className="table_Item_Review" key={`table${idx}`}>
+                                                <tr>
+                                                    <td className="box_Review_Info">
+                                                        <div className="review_Writedate">
+                                                            {TimeStamp(qna.awriteDate)}
+                                                        </div>
+                                                    </td>
+                                                    <td className="box_Review_Content">
+                                                        {qna.acontent}
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    }
+                                </div>;
+                            })
+                        }
+                        <PagenationComponent page={currentQnaPage} setPage={setCurrentQnaPage} totalPage={totlaQnaPage} />
+                    </div>;
         }
         else
         {
@@ -194,19 +329,22 @@ const UserItemDetailComponent = () =>
                             </button>
                         </div>
                         <div className="box_Item_Infobox">
-                            {isFavored ?
-                            <div 
-                                className="box_Item_Unwishlist"
-                                onClick={handleUnwishlist}
-                            >
-                                찜 해제
-                            </div>:
-                            <div 
-                                className="box_Item_Wishlist"
-                                onClick={handleWishlist}
-                            >
-                                찜
-                            </div>}
+                            {
+                                isFavored === null ? null :
+                                isFavored ?
+                                <div 
+                                    className="box_Item_Unwishlist"
+                                    onClick={handleUnwishlist}
+                                >
+                                    찜 해제
+                                </div>:
+                                <div 
+                                    className="box_Item_Wishlist"
+                                    onClick={handleWishlist}
+                                >
+                                    찜
+                                </div>
+                            }
                             <div className="box_Item_Store">
                                 {item.store?.name}
                             </div>
@@ -264,8 +402,7 @@ const UserItemDetailComponent = () =>
                         </div>
                         <div className="box_Item_Contents">
                             {renderContentForMenu(selectedMenu)}
-                        </div>            
-                        
+                        </div>
                     </div>
                 </div>
                 <UserCartListComponent />

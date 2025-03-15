@@ -172,4 +172,19 @@ public class QNADAO {
 			throw e;
 		}
 	}
+	
+	public ResponseDTO getListByItem(Integer itemId, Integer page) throws Exception{
+	    try {
+	       Pageable pageable = PageRequest.of(page-1, 10, Sort.by("qWriteDate").descending());
+	       Page<QNAs> qnaList = qnaRepository.findAllByItemId(itemId,pageable);
+	       List<QNADTO> dtos = new ArrayList<>();
+	       for(QNAs qna : qnaList) {
+	          QNADTO dto = QNADTO.toDTO(qna);
+	          dtos.add(dto);
+	       }
+	       return new ResponseDTO(dtos, null);
+	    }catch(Exception e) {
+	       throw e;
+	    }
+	}
 }

@@ -78,7 +78,7 @@
 .box_Item_Store
 {
     /* grid-column: 20 / 27; */
-    width: 400px;
+    /* width: 400px; */
     /* grid-row: 4 / 5; */
 
     /* display: flex; */
@@ -93,6 +93,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     cursor: pointer;
+    align-self: flex-start;
 }
 
 .box_Item_Infobox
@@ -291,6 +292,16 @@
   padding: 10px;
 }
 
+.box_No_Review
+{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
 .box_Item_Review
 {
     width: 100%;
@@ -299,6 +310,7 @@
     align-items: center;
     justify-content: center;
     position: relative;
+    min-height: 100px;
 }
 
 .table_Item_Review
@@ -307,22 +319,100 @@
     border-collapse: collapse;
     border: 1px solid #bbb;
     margin: 10px 0px;
+    /* display: flex; */
+    /* align-items: center; */
 }
 
-.table_Item_Review td
+.table_Item_Review tr
 {
-    padding: 5px;
+  display: flex;
 }
 
-.table_Item_Review tr:nth-child(1) td:nth-child(2)
+.box_Review_Info
 {
-    border: 1px solid #bbb;
-    width: 80%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 150px;
 }
 
-.table_Item_Review td:first-child
+.review_Writer
 {
-    text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.review_Writedate
+{
+  text-align: center;
+  font-size: 14px;
+}
+
+.box_Review_Image,
+.box_Review_Content
+{
+  padding: 5px 10px;
+  border-left: 1px solid #bbb;
+  display: flex;
+  align-items: center;
+}
+
+.box_Review_Image
+{
+  justify-content: center;
+  position: relative;
+}
+
+.review_Image
+{
+  width: 100px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.review_imglist_arrow
+{
+  border: none;
+  background: none;
+  font-size: 15px;
+  position: absolute;
+  top: 45px;
+}
+
+.review_arrow_left
+{
+  left: 5px;
+}
+
+.review_arrow_right
+{
+  right: 5px;
+}
+
+.box_Btn_Item_QNA
+{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.box_Qna_Write
+{
+  display: flex;
+  align-items: center;
+  margin: 20px 0 15px;
+}
+
+.box_Qna_Write_Content
+{
+  width: 600px;
+  border: 1px solid blue;
+  border-radius: 5px;
+  margin-right: 5px;
+  resize: none;
 }
 
 .btn_Regi_QNA
@@ -336,8 +426,30 @@
     cursor: pointer;
     font-size: 14px;
     font-weight: 600;
-    margin-left: 85.5%;
-    margin-top: 10px;
+    /* margin-left: 85.5%; */
+    /* margin-top: 10px; */
+}
+
+.box_Item_Qna
+{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+}
+
+.box_Qna
+{
+  display: flex;
+  align-items: center;
+  width: 95%;
+}
+
+.qna_Image
+{
+  width: 50px;
+  height: 50px;
+  transform: scaleX(-1);
 }
 
 .table_Item_QNA

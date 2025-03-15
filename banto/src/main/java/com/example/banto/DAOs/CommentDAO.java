@@ -102,15 +102,14 @@ public class CommentDAO {
 	
 	public ResponseDTO getItemComment(Integer itemId, Integer page) throws Exception{
 		try {
-			// 인증 유효 확인
-			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
-			Pageable pageable = PageRequest.of(page-1, 20, Sort.by("id").ascending());
+			Pageable pageable = PageRequest.of(page-1, 20, Sort.by("writeDate").descending());
 			Page<Comments> comments = commentRepository.findCommentsByItemId(itemId, pageable);
 			List<CommentDTO> commentList = new ArrayList<CommentDTO>();
 			for(Comments comment : comments) {
 				CommentDTO dto = CommentDTO.toDTO(comment);
 				commentList.add(dto);
 			}
+
 			return new ResponseDTO(commentList, new PageDTO(comments.getSize(), comments.getTotalElements(), comments.getTotalPages()));
 		}catch(Exception e) {
 			throw e;
@@ -119,8 +118,6 @@ public class CommentDAO {
 	
 	public ResponseDTO getComment(Integer commentId) throws Exception{
 		try {
-			// 인증 유효 확인
-			authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
 			Optional<Comments> commentOpt = commentRepository.findById(commentId);
 			if(commentOpt.isEmpty()) {
 				throw new Exception("존재하지 않는 후기입니다.");
