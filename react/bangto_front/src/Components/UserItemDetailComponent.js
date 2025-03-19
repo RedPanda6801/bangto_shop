@@ -75,18 +75,25 @@ const UserItemDetailComponent = () =>
     }, [currentReviewPage])
 
     useEffect(() => {
-        axios.get(`${process.env.REACT_APP_BACKEND_SERVER_PORT}/qna/item/get-list/${itemPk}/${currentQnaPage}`)
-        .then((res) => {
-            const rescontent = resContent(res);
-            const respage = resPage(res);
-            setQnas(rescontent);
-            setCurrentQnaPage(currentQnaPage);
-            setTotalQnaPage(respage.totalPages);
-            // console.log(rescontent);
-        }).catch((err) => {
-            // console.log(err);
-        })
+        getQna();
     }, [currentQnaPage])
+
+    const getQna = async () => {
+        try {
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_SERVER_PORT}/qna/item/get-list/${itemPk}/${currentQnaPage}`)
+            if(response.status === 200) {
+                const rescontent = resContent(response);
+                const respage = resPage(response);
+                console.log(response);
+                setQnas(rescontent);
+                setCurrentQnaPage(currentQnaPage);
+                setTotalQnaPage(respage.totalPages);
+            }
+        }
+        catch (err) {
+            alert(err);
+        }
+    }
 
     const handleWishlist = () => {
         if(isFavorite20) {
@@ -121,7 +128,7 @@ const UserItemDetailComponent = () =>
 
     const handleCart = () => {
         axios.post("http://localhost:9000/cart/add", {
-            optionPk : itemPk,
+            optionPk : selectedOption.id,
             amount
         }, { withCredentials : true,
             headers: {
@@ -162,6 +169,7 @@ const UserItemDetailComponent = () =>
             }).then(() => {
                 alert("문의에 성공하셨습니다.");
                 setCurrentQnaPage(1);
+                getQna();
             })
             .catch((err) => {
                 alert(err.response.data);

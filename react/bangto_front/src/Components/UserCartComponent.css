@@ -88,6 +88,74 @@
     text-align: right;
 }
 
+.box_Cart_Item
+{
+    display: flex;
+    border: 1px solid #ccc;
+    background-color: white;
+    padding: 10px;
+    margin: 5px 0;
+    width: 100%;
+    align-items: center;
+}
+
+.box_Cart_CheckBox,
+.box_Cart_Img
+{
+    margin-right: 10px;
+}
+
+.box_Cart_Item_Title
+{   
+    /* margin: 15px 5px; */
+    /* display: block; */
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-weight: bold;
+    cursor: pointer;
+    /* max-width: 625px; */
+}
+
+.box_Cart_Item_Option
+{
+    display: flex;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.cart_Item_Option
+{
+    width: 400px;
+    margin-right: 20px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.cart_Item_Amount
+{
+    width: 50px;
+    margin-right: 20px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.cart_Item_Price
+{
+    width: 135px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.btn_Opt_Modi
+{
+    width: 100px;
+}
+
 .btn_User_Cart_Opt_Modi
 {    
     width: 100px;
@@ -98,6 +166,15 @@
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
+}
+
+.box_Cart_Item_Info
+{
+    width: 625px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    height: 100px;
 }
 
 .box_User_Cart_Info table

@@ -70,7 +70,13 @@ function App() {
         }
       }).catch((err)=>{
           //console.log(err);
-          //alert("로그인해주세요");
+          //alert("로그인해주세요");localStorage.setItem("USERROLE", "GUEST");
+          localStorage.removeItem("token");
+          localStorage.setItem("USERROLE", "GUEST");
+          localStorage.removeItem("USERNAME");
+          localStorage.removeItem("USEREMAIL");
+          setUserEmail("");
+          setUserName("");
           navigate("/");
       })
     }
