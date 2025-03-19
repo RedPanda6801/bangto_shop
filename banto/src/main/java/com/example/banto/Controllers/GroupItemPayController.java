@@ -5,10 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.banto.DAOs.AuthDAO;
 import com.example.banto.DTOs.GroupBuyItemDTO;
@@ -25,10 +22,10 @@ public class GroupItemPayController {
 	GroupItemPayService groupItemPayService;
 	
 	// 아이템 별로 결제 내역 조회(판매자만)
-	@GetMapping("/group-pay/item/get-list")
-	public ResponseEntity getPayListByItem(@RequestBody GroupBuyItemDTO dto) {
+	@GetMapping("/group-pay/store/get-list")
+	public ResponseEntity getPayListByStore(@ModelAttribute GroupItemPayDTO dto) {
 		try {
-			ResponseDTO payList = groupItemPayService.getPayListByItem(dto);
+			ResponseDTO payList = groupItemPayService.getPayListByStore(dto);
 			return ResponseEntity.ok().body(payList);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -63,6 +60,16 @@ public class GroupItemPayController {
 	public ResponseEntity deliveringCheck(@RequestBody GroupItemPayDTO dto) {
 		try {
 			groupItemPayService.deliveringCheck(dto);
+			return ResponseEntity.ok().body(null);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+
+	@PostMapping("/group-pay/delivering-check-total")
+	public ResponseEntity deliveringCheckTotal(@RequestBody GroupItemPayDTO dto) {
+		try {
+			groupItemPayService.deliveringCheckTotal(dto);
 			return ResponseEntity.ok().body(null);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());

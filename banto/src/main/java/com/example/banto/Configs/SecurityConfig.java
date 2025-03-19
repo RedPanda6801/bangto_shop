@@ -70,7 +70,8 @@ public class SecurityConfig {
 						new AntPathRequestMatcher("/seller/delete-me"),
 						new AntPathRequestMatcher("/group-item/delete"),
 						new AntPathRequestMatcher("/group-item/modify"),
-						new AntPathRequestMatcher("/group-item/add")
+						new AntPathRequestMatcher("/group-item/add"),
+						new AntPathRequestMatcher("/group-pay/store/get-list")
 						).hasAuthority("SELLER")
 				// 구매자만 허용된 URL
 				.requestMatchers(
