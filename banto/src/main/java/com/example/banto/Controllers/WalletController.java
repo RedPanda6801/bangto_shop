@@ -25,7 +25,7 @@ public class WalletController {
 	
 	// 내 지갑 조회
 	@GetMapping("/wallet/my/get-info")
-	public ResponseEntity getWallet(HttpServletRequest request, HttpServletResponse response) {
+	public ResponseEntity getWallet() {
 		try {
 			ResponseDTO wallet = walletService.getMyWallet();
 			return ResponseEntity.ok().body(wallet);

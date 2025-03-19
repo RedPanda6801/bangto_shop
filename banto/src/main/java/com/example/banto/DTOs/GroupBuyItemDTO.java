@@ -42,6 +42,7 @@ public class GroupBuyItemDTO {
 		return GroupBuyItemDTO.builder()
 				.id(entity.getId())
 				.limitPerBuyer(entity.getLimitPerBuyer())
+				.nowAmount(entity.getNowAmount())
 				.maxAmount(entity.getMaxAmount())
 				.item(entity.getItem())
 				.sellerPk(entity.getSellerPk())

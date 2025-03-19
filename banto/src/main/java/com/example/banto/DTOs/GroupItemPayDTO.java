@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 @Data
 @AllArgsConstructor
@@ -37,11 +38,15 @@ public class GroupItemPayDTO {
 
 	private Integer itemPk;
 
+	private Integer storePk;
+
 	private Integer groupItemPk;
 	@JsonIgnore
 	private Users user;
 	@JsonIgnore
 	private Items item;
+
+	private ArrayList<Integer> payIdList;
 	
 	public static GroupItemPayDTO toDTO(GroupItemPays entity) {
 		return GroupItemPayDTO.builder()

@@ -16,9 +16,12 @@ public class GroupItemPayService {
 	@Autowired
 	GroupItemPayDAO groupItemPayDAO;
 	
-	public ResponseDTO getPayListByItem(GroupBuyItemDTO dto) throws Exception {
+	public ResponseDTO getPayListByStore(GroupItemPayDTO dto) throws Exception {
 		try {
-			return groupItemPayDAO.getPayListByItem(dto);
+			if(dto.getStorePk() == null){
+				throw new Exception("필수 정보 오류");
+			}
+			return groupItemPayDAO.getPayListByStore(dto);
 		}catch(Exception e) {
 			throw e;
 		}
@@ -52,6 +55,23 @@ public class GroupItemPayService {
 				throw new Exception("필수 정보 오류");
 			}
 			groupItemPayDAO.deliveringCheck(dto);
+		}catch(Exception e) {
+			throw e;
+		}
+	}
+
+	public void deliveringCheckTotal(GroupItemPayDTO dto) throws Exception {
+		try {
+			// Validation
+			if(dto.getPayIdList() == null){
+				throw new Exception("필수 정보 오류");
+			}
+			for(Integer id : dto.getPayIdList()) {
+				if(id == null){
+					throw new Exception("필수 정보 오류");
+				}
+			}
+			groupItemPayDAO.deliveringCheckTotal(dto);
 		}catch(Exception e) {
 			throw e;
 		}
