@@ -1,14 +1,43 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
 import './UserCartComponent.css';
+import axios from 'axios';
+import { resContent } from './UtilComponent/ResponseData';
 
-Modal.setAppElement('#root');
+// Modal.setAppElement('#root');
 
 const UserCartComponent = () => 
 {
     const navigate = useNavigate();
     const [optionModal, setOptionModal] = useState(false);
+    const [carts, setCarts] = useState([]);
+    const [isChecked, setIsChecked] = useState([]);
+    const [allChecked, setAllChecked] = useState(false);
+    const [totalPrice, setTotalPrice] = useState(0);
+    const [deliverPrice, setDeliverPrice] = useState(0);
+    const USERROLE = localStorage.getItem("USERROLE");
+
+    useEffect(() => {
+      if(USERROLE === "GUEST" || USERROLE === "ADMIN") {
+        alert("비정상적인 접근입니다.");
+        navigate("/");
+      } else {
+        axios.get(`${process.env.REACT_APP_BACKEND_SERVER_PORT}/cart/get-info`, {
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem("token")}`,
+            }
+        }).then((res) => {
+            const rescontent = resContent(res);
+            setCarts(rescontent);
+            setIsChecked(Array.from(rescontent, () => false));
+            setAllChecked(false);
+            console.log(rescontent);
+        }).catch((err) => {
+            alert(err);
+        })
+      }
+    }, [])
 
     const handlePayModal = () => 
     {
@@ -26,107 +55,112 @@ const UserCartComponent = () =>
                 <div className="box_User_Cart_SelectAll">
                     <input
                         type="checkbox"
-                        className="btn_User_Cart_SelectAll"/>
-                    전체 선택
+                        className="btn_User_Cart_SelectAll"
+                        checked={allChecked}
+                        onChange={(e) => {
+                          setAllChecked(e.target.checked);
+                          setIsChecked(Array.from(carts, () => e.target.checked));
+                          if(e.target.checked) {
+                            const price = carts.reduce((acc, cart) => (cart.item.price + cart.option.addPrice) * cart.amount + acc, 0);
+                            setTotalPrice(price);
+                            if(price >= 50000 || price === 0) {
+                              setDeliverPrice(0);
+                            } else if(price >= 30000) {
+                              setDeliverPrice(2500);
+                            } else if(price > 0) {
+                              setDeliverPrice(5000);
+                            }
+                          }
+                          else {
+                            setTotalPrice(0);
+                            setDeliverPrice(0);
+                          }
+                        }}
+                    />
+                    { allChecked ? "전체 선택 해제" : "전체 선택" }
                 </div>                
                 <div className="box_User_Cart_Item">
-                    <table>
-                        <tr>
-                            <td rowSpan={2}>
-                                <input
-                                    type="checkbox"
-                                    className="btn_User_Cart_Select"/>
-                            </td>
-                            <td rowSpan={2}>
-                                <input
-                                    type="image"
-                                    className="btn_User_Cart_Img"/>
-                            </td>
-                            <td colSpan={2}>
-                                물품 설명
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <button
-                                    className="btn_User_Cart_Opt_Modi"
-                                    onClick={() => handlePayModal()}>
-                                    옵션 수정
-                                </button>
-                            </td>
-                            <td>
-                                옵션
-                            </td>
-                            <td>
-                                개수
-                            </td>
-                            <td>
-                                가격
-                            </td>
-                        </tr>
-                    </table>
-                    <table>
-                        <tr>
-                            <td rowSpan={2}>
-                                <input
-                                    type="checkbox"
-                                    className="btn_User_Cart_Select"/>
-                            </td>
-                            <td rowSpan={2}>
-                                <input
-                                    type="image"
-                                    className="btn_User_Cart_Img"/>
-                            </td>
-                            <td colSpan={2}>
-                                물품 설명
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <button
-                                    className="btn_User_Cart_Opt_Modi"
-                                    onClick={() => handlePayModal()}>
-                                    옵션 수정
-                                </button>
-                            </td>
-                            <td>
-                                옵션
-                            </td>
-                            <td>
-                                개수
-                            </td>
-                            <td>
-                                가격
-                            </td>
-                        </tr>
-                    </table>
+                    {
+                        carts.map((cart, idx) => {
+                            return <div className="box_Cart_Item" key={`cart${idx}`}>
+                                <div className="box_Cart_CheckBox">
+                                    <input
+                                        type="checkbox"
+                                        className="btn_User_Cart_Select"
+                                        checked={isChecked[idx]}
+                                        onChange={(e) => {
+                                          let newIsChecked = [...isChecked];
+                                          newIsChecked[idx] = e.target.checked;
+                                          setIsChecked(newIsChecked);
+                                          const price = totalPrice +
+                                            (e.target.checked ?
+                                              (cart.item.price + cart.option.addPrice) * cart.amount :
+                                              - (cart.item.price + cart.option.addPrice) * cart.amount
+                                            );
+                                          setTotalPrice(price);
+                                          if(price >= 50000 || price === 0) {
+                                            setDeliverPrice(0);
+                                          } else if(price >= 30000) {
+                                            setDeliverPrice(2500);
+                                          } else if(price > 0) {
+                                            setDeliverPrice(5000);
+                                          }
+                                        }}
+                                    />
+                                </div>
+                                <div className="box_Cart_Img">
+                                    <img
+                                        src={`${process.env.REACT_APP_IMG_PUBLIC_URI}/03_upload/${cart.item.img.split("/")[0]}`}
+                                        className="btn_User_Cart_Img"
+                                        alt="물품 이미지"
+                                    />
+                                </div>
+                                <div className="box_Cart_Item_Info">
+                                    <div className="box_Cart_Item_Title" onClick={() => navigate("/user/item", {state: {itemPk: cart.item.id}})}>
+                                      {cart.item.title}
+                                    </div>
+                                    <div className="box_Cart_Item_Option">
+                                        <div className="cart_Item_Option">
+                                          {cart.option.optionInfo}
+                                        </div>
+                                        <div className="cart_Item_Amount">
+                                          {cart.amount}개
+                                        </div>
+                                        <div className="cart_Item_Price">
+                                          {(cart.item.price + cart.option.addPrice) * cart.amount}원
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>;
+                        })
+                    }
                 </div>
             </div>
             <div className="box_User_Cart_Info">
                 <table>
                     <tr>
                         <td>물품 가격</td>
-                        <td>1,150,000 원</td>
+                        <td>{totalPrice} 원</td>
                     </tr>
                     <tr>
                         <td>배송비</td>
-                        <td>3,000 원</td>
+                        <td>{deliverPrice} 원</td>
                     </tr>
                     <tr>
                         <td>결제 예상 금액</td>
-                        <td>1,153,000 원</td>
+                        <td>{totalPrice + deliverPrice} 원</td>
                     </tr>
                     <tr>
                         <td colSpan={2}>
                             <button
-                                onClick={() =>{navigate("/user/pay")}}>구매하기</button>
+                                onClick={() =>{navigate("/user/pay", {state: {carts: carts.filter((_, idx) => isChecked[idx])}})}}>구매하기</button>
                         </td>
                     </tr>                    
                 </table>
             </div>
         </div>
              
-        <Modal
+        {/* <Modal
             isOpen={optionModal}
             onRequestClose={handleCloseOptionModal}
             className="modal_User_Pay_Option"
@@ -159,7 +193,7 @@ const UserCartComponent = () =>
                         </td>
                     </tr>                    
                 </table>
-        </Modal>
+        </Modal> */}
     </>
 }
 

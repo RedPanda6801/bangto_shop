@@ -142,7 +142,6 @@ public class QNADAO {
 	
 	public ResponseDTO getQnaDetail(QNADTO qnaDTO) throws Exception{
 		try {
-			authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
 			Optional<QNAs> qnaOpt = qnaRepository.findById(qnaDTO.getId());
 			if(qnaOpt.isEmpty()) {
 				return null;
@@ -175,8 +174,6 @@ public class QNADAO {
 
 	public ResponseDTO getListByItem(Integer itemId, Integer page) throws Exception{
 		try {
-			authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
-
 			Pageable pageable = PageRequest.of(page-1, 10, Sort.by("id").ascending());
 			Page<QNAs> qnaList = qnaRepository.findAllByItemId(itemId,pageable);
 			List<QNADTO> dtos = new ArrayList<>();
@@ -184,7 +181,7 @@ public class QNADAO {
 				QNADTO dto = QNADTO.toDTO(qna);
 				dtos.add(dto);
 			}
-			return new ResponseDTO(dtos, null);
+			return new ResponseDTO(dtos, new PageDTO(qnaList.getSize(), qnaList.getTotalElements(), qnaList.getTotalPages()));
 		}catch(Exception e) {
 			throw e;
 		}

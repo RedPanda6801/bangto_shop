@@ -16,6 +16,18 @@
     }    
 }
 
+.box_Overflow_Hidden
+{
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.box_Fontweight_Bold
+{
+    font-weight: bold;
+}
+
 .box_User_Pay
 {    
     /* grid-column: 7 / 14; */
@@ -237,4 +249,33 @@
     font-weight: 600;
     cursor: pointer;
     margin: 0px 10px;
+}
+
+.box_User_Pay_Info
+{
+    display: flex;
+    flex-direction: column;
+    height: 100px;
+    width: 250px;
+    border: 1px solid grey;
+}
+
+.flex_Space_Between
+{
+    display: flex;
+    justify-content: space-between;
+    height: 50px;
+    align-items: center;
+    padding: 0 10px;
+}
+
+.border_Top_Grey
+{
+    border-top: 1px solid grey;
+}
+
+.box_User_Pay_Buttons
+{
+    display: flex;
+    margin: 20px 0 0;
 }

@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
 import './UserPayComponent.css';
+import { resContent } from './UtilComponent/ResponseData';
+import axios from 'axios';
 
 Modal.setAppElement('#root');
 
 const UserPayComponent = () => 
 {
     const navigate = useNavigate();
+    const location = useLocation();
+    const carts = location.state.carts;
     const [payModal, setPayModal] = useState(false);
     const [keyword, setKeyword] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
@@ -15,8 +19,17 @@ const UserPayComponent = () =>
     const [isAddressSearchOpen, setIsAddressSearchOpen] = useState(false);
     const [totalPage, setTotalPageNum] = useState(1);
     const [visiblePages, setPageNums] = useState([]);
+    const [roadAddress, setRoadAddress] = useState("");
     const [selectedAddress, setSelectedAddress] = useState("");
     const [detailAddr, setDetailAddr] = useState("");
+    const [zipNumber, setZipNumber] =  useState("");
+    const [myCash, setMyCash] = useState(0);
+    const [myCashBack, setMyCashBack] = useState(0);
+    const [payCashBack, setPayCashBack] = useState(0);
+    const price = carts.reduce((acc, cart) => cart.totalPrice * cart.amount + acc, 0);
+    const delivery = price >= 50000 ? 0 : (price >= 30000 ? 2500 : 5000);
+    const [totalPay, setTotalPay] = useState(price + delivery);
+    const USERROLE = localStorage.getItem("USERROLE");
 
     const handlePayModal = () => 
     {
@@ -26,6 +39,22 @@ const UserPayComponent = () =>
     const handleClosePayModal = () => 
     {
         setPayModal(false);
+    }
+
+    const handlePay = () => {
+        axios.post("http://localhost:9000/pay", {
+            cartPks : Array.from(carts, (cart) => cart.cartPk),
+            usingCashBack : payCashBack
+        }, { withCredentials : true,
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem("token")}`,
+            }
+        }).then(() => {
+            alert("결제에 성공하셨습니다.");
+            navigate("/user");
+        }).catch((err) => {
+            alert(err);
+        })
     }
 
     const getAddr = (page = 1) => 
@@ -119,57 +148,75 @@ const UserPayComponent = () =>
         }
         setPageNums(pages);
     };
+
+    useEffect(() => {
+        if(USERROLE === "GUEST" || USERROLE === "ADMIN") {
+            alert("비정상적인 접근입니다.");
+            navigate("/");
+        } else {
+            axios.get(`${process.env.REACT_APP_BACKEND_SERVER_PORT}/user/get-info`, {
+                headers: {
+                  "Authorization": `Bearer ${localStorage.getItem("token")}`,
+                }
+            }).then((res) => {
+                const addrcontent = resContent(res);
+                const addr = addrcontent.addr;
+                // console.log(addrcontent);
+                if(addr && addr.split("!!")[0] !== "undefined") {
+                    const addrSplit = addr.split("!!");
+                    setRoadAddress(addrSplit[0]);
+                    setDetailAddr(addrSplit[1]);
+                    setZipNumber(addrSplit[2]);
+                }
+                axios.get(`${process.env.REACT_APP_BACKEND_SERVER_PORT}/wallet/my/get-info`, {
+                    headers: {
+                      "Authorization": `Bearer ${localStorage.getItem("token")}`,
+                    }
+                }).then((res) => {
+                    const walletcontent = resContent(res);
+                    // console.log(walletcontent);
+                    setMyCash(walletcontent.cash);
+                    setMyCashBack(walletcontent.cashBack);
+                }).catch((err) => {
+                    alert(err);
+                })
+            }).catch((err) => {
+                alert(err);
+            })
+        }
+    }, [])
     
     return <><div className="layout_User_Pay">
             <div className="box_User_Pay"> 
-                <table className="box_User_Pay_Items">
-                    <tr>
-                        <td rowSpan={2}>
-                            <input
-                                type="image"
-                                className="btn_User_Pay_Img"/>
-                        </td>
-                        <td colSpan={2}>
-                            물품 설명
-                        </td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td>
-                            옵션
-                        </td>
-                        <td>
-                            개수
-                        </td>
-                        <td>
-                            가격
-                        </td>
-                    </tr>
-                </table>
-                <table className="box_User_Pay_Items">
-                    <tr>
-                        <td rowSpan={2}>
-                            <input
-                                type="image"
-                                className="btn_User_Pay_Img"/>
-                        </td>
-                        <td colSpan={2}>
-                            물품 설명
-                        </td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td>
-                            옵션
-                        </td>
-                        <td>
-                            개수
-                        </td>
-                        <td>
-                            가격
-                        </td>
-                    </tr>
-                </table>
+                {
+                    carts.map((cart, idx) => {
+                        return <table className="box_User_Pay_Items" key={`cart${idx}`}>
+                            <tr>
+                                <td rowSpan={2}>
+                                    <img
+                                        src={`${process.env.REACT_APP_IMG_PUBLIC_URI}/03_upload/${cart.item.img.split("/")[0]}`}
+                                        className="btn_User_Pay_Img"
+                                        alt="물품 이미지"/>
+                                </td>
+                                <td colSpan={2} className="box_Overflow_Hidden box_Fontweight_Bold">
+                                    {cart.item.title}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td className="box_Overflow_Hidden">
+                                    {cart.option.optionInfo}
+                                </td>
+                                <td className="box_Overflow_Hidden">
+                                    {cart.amount}개
+                                </td>
+                                <td className="box_Overflow_Hidden">
+                                    {cart.totalPrice}원
+                                </td>
+                            </tr>
+                        </table>;
+                    })
+                }
                 <line className="div_line"></line>
                 <div>
                     <input
@@ -191,7 +238,7 @@ const UserPayComponent = () =>
                             className="User_Pay_Addr_Road"
                             contentEditable={false}
                             tabindex="0">
-                            {selectedAddress ? selectedAddress.roadAddr : "도로명 주소"}
+                            {roadAddress ? roadAddress : (selectedAddress ? selectedAddress.roadAddr : "도로명 주소")}
                         </div>
                     </td>
                 </tr>
@@ -211,7 +258,7 @@ const UserPayComponent = () =>
                             className="User_Pay_Addr_Zip"
                             type="text"
                             placeholder="우편번호" 
-                            value={selectedAddress ? selectedAddress.zipNo : ""} 
+                            value={zipNumber ? zipNumber : (selectedAddress ? selectedAddress.zipNo : "")} 
                             readOnly/>
                     </td>
                 </tr>
@@ -221,10 +268,18 @@ const UserPayComponent = () =>
                     className="User_Pay_Cash">
                     <tr>
                         <td>
-                            현재 캐시백
+                            보유 캐시
                         </td>
                         <td>
-                            100,000 원
+                            {myCash} 원
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            보유 캐시백
+                        </td>
+                        <td>
+                            {myCashBack} 원
                         </td>
                     </tr>
                     <tr>
@@ -234,7 +289,14 @@ const UserPayComponent = () =>
                         <td>
                             <input
                                 className="User_Pay_Use_Cash"
-                                type="number"/>원
+                                type="number"
+                                value={payCashBack}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    setPayCashBack(value < 0 ? 0 : value);
+                                    setTotalPay(value < 0 ? price + delivery : price + delivery - value);
+                                }}
+                            />원
                         </td>
                     </tr>
                 </table>
@@ -245,15 +307,7 @@ const UserPayComponent = () =>
                             총 상품 가격
                         </td>
                         <td>
-                            123,000 원
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            캐시백 사용 금액
-                        </td>
-                        <td>
-                            1,000 원
+                            {price} 원
                         </td>
                     </tr>
                     <tr>
@@ -261,7 +315,7 @@ const UserPayComponent = () =>
                             배송비
                         </td>
                         <td>
-                            3,000 원
+                            {delivery} 원
                         </td>
                     </tr>
                     <tr>
@@ -269,7 +323,7 @@ const UserPayComponent = () =>
                             총 결제 금액
                         </td>
                         <td>
-                            125,000 원
+                            {totalPay} 원
                         </td>
                     </tr>
                 </table>
@@ -340,37 +394,28 @@ const UserPayComponent = () =>
             onRequestClose={handleClosePayModal}
             className="modal_User_Pay"
             overlayClassName="modal_User_Pay_Overlay">
-            <table
-                className="User_Pay_Cash">
-                <tr>
-                    <td>
+            <div class="box_User_Pay_Info">
+                <div class="flex_Space_Between">
+                    <div>
                         현재 보유 캐시
-                    </td>
-                    <td>
-                        123,000 원
-                    </td>
-                </tr>
-                <tr>
-                    <td>
+                    </div>
+                    <div>
+                        {myCash} 원
+                    </div>
+                </div>
+                <div className="flex_Space_Between border_Top_Grey">
+                    <div>
                         결제 후 캐시
-                    </td>
-                    <td>
-                        1,000 원
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        캐시백 포인트
-                    </td>
-                    <td>
-                        3,000 원
-                    </td>
-                </tr>
-            </table>
-            <div>
+                    </div>
+                    <div>
+                        {myCash - totalPay} 원
+                    </div>
+                </div>
+            </div>
+            <div class="box_User_Pay_Buttons">
                 <button 
                     className="btn_User_Pay"
-                    onClick={() => handlePayModal()}>
+                    onClick={() => handlePay()}>
                     결제완료
                 </button>
                 <button 
