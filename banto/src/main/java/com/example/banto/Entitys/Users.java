@@ -7,6 +7,7 @@ import java.util.List;
 import com.example.banto.DTOs.UserDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,7 +29,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@ToString(exclude = {"wallets", "sellers", "sellerAuths", "favorites", "carts", "soldItems", "groupItemPays", "comments","qnas" })
+@ToString(exclude = {"wallets", "sellers", "sellerAuths", "favorites", "carts", "soldItems", "groupItemPays", "comments", "qnas"})
 public class Users {
 
     @Id
@@ -94,6 +95,7 @@ public class Users {
     private List<Comments> comments;
 
     @JsonIgnore
+    @JsonManagedReference  // 이쪽만 JSON 변환 대상이 됨
     @OneToMany(mappedBy="user", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     private List<QNAs> qnas;
 

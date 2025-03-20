@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { resContent } from "../UtilComponent/ResponseData";
 import { DeliverType } from "../UtilComponent/DataFormat";
 import UserCommentAddComponent from "./UserCommentAddComponent";
+import "./UserPaylistComponent.css";
+
 const UserPayListComponent = () => {
   const [commentModal, setCommentModal] = useState(false);
   const [selectYear, setSelectYear] = useState({
@@ -16,11 +18,13 @@ const UserPayListComponent = () => {
   const [nowPage, setNowPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [payList, setPayList] = useState([]);
+  const [groupPayList, setGroupPayList] = useState([]);
   const [wallet, setWallet] = useState({});
   const [payId, setPayId] = useState("");
   const navigate = useNavigate();
   const [user, setUser] = useState("");
-
+  const [openOrder, setOpenOrder] = useState(true);
+  
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BACKEND_SERVER_PORT}/wallet/my/get-info`, {
@@ -43,6 +47,7 @@ const UserPayListComponent = () => {
 
   useEffect(() => {
     handleGetPayList();
+    hnadleGetGroupPayList();
   }, [year]);
 
   const handleGetPayList = async () => {
@@ -58,6 +63,30 @@ const UserPayListComponent = () => {
       if (response.status == 200) {
         setPayList(resContent(response));
         setTotalPage(resContent(response).totalPages);
+      }
+    } catch (err) {
+      console.log(err);
+      if (err.response.data == "결제 내역이 없습니다.") {
+        setPayList([]);
+      } else {
+        alert("결제 정보 불러오기 오류");
+      }
+    }
+  };
+
+  const hnadleGetGroupPayList = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_BACKEND_SERVER_PORT}/group-pay/my/get-list/${year}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      if (response.status == 200) {
+        console.log(response);
+        setGroupPayList(resContent(response));
       }
     } catch (err) {
       console.log(err);
@@ -107,8 +136,12 @@ const UserPayListComponent = () => {
           </table>
         </div>
       </div>
+      <div className="order_select_div">
+      <h2 className="order_select_button" onClick={()=> setOpenOrder(true)}>주문 내역</h2>
+      <h2 className="order_select_button" onClick={()=> setOpenOrder(false)}>공동 구매 주문 내역</h2>
+      </div>
+      <br></br>
       <div className="box_User_List">
-        <h2>주문 목록</h2>
         <button
           className={`btn_sort_list ${
             selectYear["2025"] ? "btn_sort_list_selected" : ""
@@ -142,39 +175,66 @@ const UserPayListComponent = () => {
           2022
         </button>
       </div>
-      <div className="box_User_Paid">
-        {payList && payList.length > 0 ? (
-          payList.map((pay) => (
-            <table className="table_User_Paid">
-              <tr>
-                <td colSpan={4}>{pay.soldDate}</td>
-                <td>{DeliverType[pay.deliverInfo]}</td>
-              </tr>
-              <tr>
-                <td colSpan={4}>{pay.itemTitle}</td>
-              </tr>
-              <tr>
-                <td>옵션 : {pay.optionInfo}</td>
-                <td>개수 : {pay.amount}</td>
-                <td>결제금액 : {pay.soldPrice} 원</td>
-                <td>
-                  <button onClick={() => handleOpenCommentModal(pay.id)}>
-                    후기작성
-                  </button>
-                </td>
-              </tr>
-            </table>
-          ))
-        ) : (
-          <div>결제 내역 없음.</div>
-        )}
-      </div>
-      <UserCommentAddComponent
-        modal={commentModal}
-        setModal={setCommentModal}
-        name={user}
-        id={payId}
-      ></UserCommentAddComponent>
+      <>
+      {openOrder? (
+         <div className="box_group_pay">
+           {payList && payList.length > 0 ? (
+             payList.map((pay) => (
+               <table className="table_User_Paid">
+                 <tr>
+                   <td colSpan={4}>{pay.soldDate}</td>
+                   <td>{DeliverType[pay.deliverInfo]}</td>
+                 </tr>
+                 <tr>
+                   <td colSpan={4}>{pay.itemTitle}</td>
+                 </tr>
+                 <tr>
+                   <td>옵션 : {pay.optionInfo}</td>
+                   <td>개수 : {pay.amount}</td>
+                   <td>결제금액 : {pay.soldPrice} 원</td>
+                   <td>
+                     <button onClick={() => handleOpenCommentModal(pay.id)}>
+                       후기작성
+                     </button>
+                   </td>
+                 </tr>
+               </table>
+             ))
+           ) : (
+             <div>결제 내역 없음.</div>
+           )}
+         <UserCommentAddComponent
+           modal={commentModal}
+           setModal={setCommentModal}
+           name={user}
+           id={payId}
+         ></UserCommentAddComponent>
+       </div>
+      ): (
+        <div className="box_group_pay">
+          {groupPayList && groupPayList.length > 0 ? (
+            groupPayList.map((pay) => (
+              <table className="table_User_Paid">
+                <tr>
+                  <td colSpan={4}>{pay.soldDate}</td>
+                  <td>{DeliverType[pay.deliverInfo]}</td>
+                </tr>
+                <tr>
+                  <td colSpan={4}>{pay.itemTitle}</td>
+                </tr>
+                <tr>
+                  <td>옵션 : {pay.optionInfo}</td>
+                  <td>개수 : {pay.amount}</td>
+                  <td>결제금액 : {pay.pay} 원</td>
+                </tr>
+              </table>
+            ))
+          ) : (
+            <div>결제 내역 없음.</div>
+          )}
+        </div>
+      )}
+      </>
     </>
   );
 };

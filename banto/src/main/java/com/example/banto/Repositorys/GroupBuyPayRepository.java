@@ -13,7 +13,7 @@ public interface GroupBuyPayRepository extends JpaRepository<GroupItemPays, Inte
 	@Query("SELECT p FROM GroupItemPays p WHERE p.item.id = :itemId")
 	public List<GroupItemPays> findByItemId(@Param("itemId") Integer itemId);
 
-	@Query("SELECT p FROM GroupItemPays p WHERE p.item.store.id = :storeId")
+	@Query("SELECT p FROM GroupItemPays p WHERE p.item.store.id = :storeId ORDER BY p.soldDate DESC")
 	public List<GroupItemPays> findByStoreId(@Param("storeId") Integer storeId);
 
 	@Query("SELECT p FROM GroupItemPays p WHERE p.user.id = :userId")

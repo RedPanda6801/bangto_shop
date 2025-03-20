@@ -15,22 +15,20 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString(exclude = {"stores"})
 public class Sellers {
 	 @Id
 	    @Column(name="ID")
 	    @GeneratedValue(strategy = GenerationType.AUTO)
 	    private Integer id;
-	    
+
 	    @OneToMany(mappedBy="seller", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	    private List<Stores> stores;
 	    

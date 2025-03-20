@@ -3,6 +3,7 @@ package com.example.banto.Entitys;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
@@ -12,10 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Data
@@ -39,8 +37,7 @@ public class QNAs {
     
     @Column(name="A_WRITE_DATE")
     private LocalDateTime aWriteDate;
-    
-    @JsonIgnore
+
     @ManyToOne
     @JoinColumn(name="WRITER_PK")
     private Users user;

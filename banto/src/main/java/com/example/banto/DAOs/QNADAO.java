@@ -57,6 +57,7 @@ public class QNADAO {
 				Page<QNAs> qnaList = qnaRepository.findAllByStore(qnaDTO.getStorePk(), pageable);
 				List<QNADTO> dtos = new ArrayList<>();
 				for(QNAs qna : qnaList) {
+					System.out.println(qna);
 					QNADTO dto = QNADTO.toDTO(qna);
 					dtos.add(dto);
 				}
@@ -82,6 +83,7 @@ public class QNADAO {
 					throw new Exception("판매자 본인 등록 불가");
 				}
 				else {
+					System.out.println(user);
 					QNAs qna = new QNAs();
 					qna.setUser(user);
 					qna.setQContent(qnaDTO.getQContent());
