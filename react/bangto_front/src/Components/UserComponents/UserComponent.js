@@ -9,7 +9,7 @@ import UserQNAInfoComponent from "./UserQNAInfoComponent";
 Modal.setAppElement("#root");
 
 const UserComponent = () => {
-  const [selectedMenu, setSelectedMenu] = useState("내 정보 조회");
+  const [selectedMenu, setSelectedMenu] = useState("주문 내역");
   const [isUserInfoOpen, setIsUserInfoOpen] = useState(false);
 
   const handleUserInfo = () => {
@@ -21,7 +21,7 @@ const UserComponent = () => {
       return <UserInfoComponent></UserInfoComponent>;
     } else if ("주문 내역" == menu) {
       return <UserPayListComponent></UserPayListComponent>;
-    } else if ("내 QNA" == menu) {
+    }else if ("내 QNA" == menu) {
       return <UserQNAInfoComponent></UserQNAInfoComponent>;
     } else {
       return <div>선택 메뉴 없음</div>;

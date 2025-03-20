@@ -35,14 +35,16 @@ const UserCommentAddComponent = (props) => {
           },
         }
       );
-      console.log(response);
       if (response.status == 200) {
         alert("후기 등록 완료");
         props.setModal(false);
       }
     } catch (err) {
-      console.log(err);
-      alert("후기 등록 실패");
+      if(err.response.data == "배송 완료된 물품만 후기를 작성할 수 있습니다."){
+        alert("배송 완료된 물품만 후기를 작성할 수 있습니다.");
+      }else{
+        alert("후기 등록 실패");
+      }
     }
   };
 

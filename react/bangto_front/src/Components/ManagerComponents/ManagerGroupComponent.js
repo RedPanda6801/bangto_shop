@@ -118,14 +118,14 @@ const ManagerGroupComponent = () => {
                                 <th>옵션 정보</th>
                                 <th>상품 가격</th>
                                 <th>인당 제한 개수</th>
-                                <th>최대 수량 / 현재 수량량</th>
+                                <th>최대 수량 / 현재 수량</th>
                             </tr>
                             { groupItemList && Array.isArray(groupItemList) ? 
                                 groupItemList.map((groupItem) => 
                                     <tr>
                                         <td>{groupItem.item.title}</td>
                                         <td>{CategoryType[groupItem.item.category]}</td>
-                                        <td><img style={{maxWidth : "100%"}} src={`${process.env.REACT_APP_IMG_PUBLIC_URI}/03_upload/${groupItem.item.img}`}/></td>
+                                        <td><img style={{maxWidth : "200px"}} src={`${process.env.REACT_APP_IMG_PUBLIC_URI}/03_upload/${groupItem.item.img.split("/")[0]}`}/></td>
                                         <td>{groupItem.option.optionInfo}</td>
                                         <td>{groupItem.item.price+groupItem.option.addPrice}</td>
                                         <td>{groupItem.limitPerBuyer}</td>

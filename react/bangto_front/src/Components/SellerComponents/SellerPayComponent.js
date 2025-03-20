@@ -10,9 +10,10 @@ const SellerPayComponent = (props) => {
   const [payObject, setPayObject] = useState({}); // [ soldDate1 : {}, soldDate2 : {}, ...]
   const [soldDate, setSoldDate] = useState([]);
   const navigate = useNavigate();
+
   useEffect(() => {
     handleGetPayList();
-  }, []);
+  }, [props.store]);
 
   const handleGetPayList = () => {
     console.log(props.store);
@@ -28,6 +29,7 @@ const SellerPayComponent = (props) => {
       )
       .then((res) => {
         const dataList = resContent(res);
+        if(dataList.length == 0){setPayObject([]); return;}
         const soldDateList = [];
         let newObj = payObject;
         if (Array.isArray(dataList)) {
@@ -41,10 +43,10 @@ const SellerPayComponent = (props) => {
           });
         }
         setPayObject(newObj);
-        setSoldDate((prev) => [...prev, ...soldDateList]);
+        setSoldDate([...soldDateList]);
         setTotalPage(resPage(res).totalPages);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {console.log(err)});
   };
 
   const handleDeilver = (payList, deliverInfo) => {

@@ -480,3 +480,13 @@
   font-size: 20px;
   font-weight: bold;
 }
+.cart_item_img{
+  width: 100%;
+  border-radius: 3px;
+}
+.cart_item_div{
+  padding: 5px 5px 3px 5px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  background-color: #f8e1e1;
+}

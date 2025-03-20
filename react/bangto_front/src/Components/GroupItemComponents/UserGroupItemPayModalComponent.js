@@ -1,12 +1,13 @@
 import { useEffect } from "react";
 import Modal from "react-modal";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 Modal.setAppElement("#root");
 
 const UserGroupItemPayModalComponent = (props) => {
   const params = new URLSearchParams(window.location.search);
   const amount = params.get("amount");
-
+  const navigate = useNavigate();
   useEffect(() => {
     console.log(props.payModal);
   }, [props.payModal]);
@@ -34,6 +35,7 @@ const UserGroupItemPayModalComponent = (props) => {
         if (response.status == 200) {
           alert("결제 성공");
           props.setPayModal(false);
+          navigate("/user");
         }
       } else {
         alert("주소 입력 오류");
@@ -63,23 +65,20 @@ const UserGroupItemPayModalComponent = (props) => {
           <td>결제 후 캐시</td>
           <td>{props.wallet.cash - props.totalCost}원</td>
         </tr>
-        <tr>
-          <td>예상 캐시백 포인트</td>
           {props.wallet.cash - props.totalCost > 0 ? (
-            <td>
-              50% 판매 시 {(props.wallet.cash - props.totalCost) * 0.1}
-              <br />
-              80% 판매 시 {(props.wallet.cash - props.totalCost) * 0.15}
-              <br />
-              100% 판매 시 {(props.wallet.cash - props.totalCost) * 0.2}
-              <br />
-            </td>
+            <tr>
+              <td>배송비 정보</td>
+              <td style={{display : "flex", flexDirection: "column"}}>
+                <div>기본 5000 원</div>
+                <div>30000원 이상 2500 원</div>
+                <div>50000원 이상 0 원</div>
+              </td>
+            </tr>
           ) : (
             <td>잔액이 부족합니다.</td>
           )}
-        </tr>
       </table>
-      <div>
+      <div style={{width : "100%"}}>
         <button className="btn_User_Pay" onClick={() => handlePayGroupItem()}>
           결제완료
         </button>

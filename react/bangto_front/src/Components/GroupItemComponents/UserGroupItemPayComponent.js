@@ -21,10 +21,10 @@ const UserGroupItemPayComponent = () => {
   const [wallet, setMyWallet] = useState({});
   const [payItem, setPayItem] = useState({});
   const [user, setUser] = useState({});
+  const [discount, setDiscount] = useState(0.9);
   const params = new URLSearchParams(window.location.search);
   const amount = params.get("amount");
   const itemId = params.get("itemid");
-  // /group-pay/pay
 
   useEffect(() => {
     const groupItem = JSON.parse(localStorage.getItem("group-item"));
@@ -40,8 +40,12 @@ const UserGroupItemPayComponent = () => {
         setMyWallet(wallet);
         setUser(wallet.user);
         const address = wallet.user.addr.split("!!");
-        console.log(address);
-        setSelectedAddress({ roadAddr: address[0], zipNo: address[2] });
+        setSelectedAddress({
+          roadAddr: address[0] == "undefined" ? null : address[0],
+          zipNo: address[2] == "undefined" ? null : address[2]
+        });
+        culDiscount();
+        
       })
       .catch((err) => {
         if (err.status == 401) {
@@ -51,6 +55,11 @@ const UserGroupItemPayComponent = () => {
       });
   }, [amount]);
 
+  const culDiscount = () => {
+    const limit = JSON.parse(localStorage.getItem("group-item")).limitPerBuyer;
+    if(limit > amount) setDiscount(0.9);
+    else setDiscount(0.75);
+  }
   const getAddr = (page = 1) => {
     const apiUrl = `https://business.juso.go.kr/addrlink/addrLinkApiJsonp.do?currentPage=${page}&countPerPage=10&keyword=${encodeURIComponent(
       keyword
@@ -150,7 +159,7 @@ const UserGroupItemPayComponent = () => {
   const handleTotalCost = () => {
     return (
       Math.round(
-        (payItem.item.price + payItem.option.addPrice) * 0.9 * amount
+        (payItem.item.price + payItem.option.addPrice) * discount * amount
       ) + handleDeliverCost()
     );
   };
@@ -246,46 +255,16 @@ const UserGroupItemPayComponent = () => {
               <line className="div_line"></line>
               {wallet != undefined || Object.keys(wallet).length > 0 ? (
                 <>
-                  {/* <table className="User_Pay_Cash">
-                            <tr>
-                                <td>
-                                    현재 캐시백
-                                </td>
-                                <td>
-                                    {wallet.cashBack} 포인트
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    사용 캐시백
-                                </td>
-                                <td>
-                                    <input
-                                        className="User_Pay_Use_Cash"
-                                        type="number"/>포인트
-                                </td>
-                            </tr>
-                        </table> */}
-
                   <table className="User_Pay_Cash">
                     <tr>
                       <td>총 상품 가격</td>
                       <td>
                         {`${Math.round(
                           (payItem.item.price + payItem.option.addPrice) *
-                            0.9 *
-                            amount
-                        )} 원 (공동구매 10% 할인)`}
+                            discount * amount
+                        )} 원 (공동구매 ${Math.round((1-discount) * 100)}% 할인)`}
                       </td>
                     </tr>
-                    {/* <tr>
-                                        <td>
-                                            캐시백 사용 금액
-                                        </td>
-                                        <td>
-                                            1,000 원
-                                        </td>
-                                    </tr> */}
                     <tr>
                       <td>배송비</td>
                       <td>{handleDeliverCost()}원</td>

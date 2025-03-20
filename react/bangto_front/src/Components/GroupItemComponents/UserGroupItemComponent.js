@@ -109,7 +109,7 @@ const UserGroupItemComponent = () => {
         ></UserGroupItemDetailComponent>
       ) : (
         <>
-          <h1>공동구매 페이지</h1>
+          <h1>방토샵 공동 구매</h1>
           <div className="box_Slide">
             <div className="box_item box_slider">
               <div
@@ -133,22 +133,30 @@ const UserGroupItemComponent = () => {
               </div>
             </div>
           </div>
+          <div className="box_Group_Guide">
+            <p>공동 구매 이용 안내</p>
+            <p>공동 구매는 기본적으로 대량 구매를 지향하기 위한 서비스입니다.<br></br>
+              공동 구매 물건은 기본적으로 10% 할인된 가격에 구매 가능합니다.<br></br>
+              단, 판매자가 설정한 1인 최소 개수를 초과할 시에 15% 추가 할인이 적용됩니다.
+            </p>
+          </div>
           <div>
+            <br />
+            <div className="text_Recommend">현재 공동 구매 물품 목록</div>
+            <div>
             {leftTime ? (
               <div style={{ textAlign: "center" }}>
                 <h3 style={{ color: "red", fontSize: "bold" }}>
                   {leftTime}까지!
                 </h3>
-                <>얼마 남지 않았어요!</>
+                <h5 style={{fontWeight : "bold"}}>얼마 남지 않았어요!</h5>
+                <br>
+                </br>
               </div>
             ) : (
               <div>현재 공동 구매 기간이 아닙니다.</div>
             )}
           </div>
-          <div className="box_Group_Guide">공동 구매 이용 안내 문구</div>
-          <div>
-            <br />
-            <div className="text_Recommend">현재 공동 구매 물품 목록</div>
             <div className="group_item_list">
               {groupItemList && groupItemList.length > 0 ? (
                 groupItemList.map((groupInfo) => (

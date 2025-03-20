@@ -14,16 +14,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString(exclude = {"store", "qnas" ,"options", "events", "comments", "favorites", "carts", "pays"})
 public class Items {
 
     @Id
@@ -45,13 +43,13 @@ public class Items {
     
     @Column(name="IMG")
     private String img;
-    
-    @JsonIgnore
+
     @ManyToOne
     @JoinColumn(name="STORE_PK")
     private Stores store;
 
     // 1:N Relation (cascade = remove)
+    @JsonIgnore
     @OneToMany(mappedBy="item", cascade = CascadeType.ALL)  // 추가: cascade 설정
     private List<QNAs> qnas;
     

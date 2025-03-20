@@ -91,17 +91,18 @@ public class GroupItemPayDAO {
 					throw new Exception("옵션 정보 오류");
 				}else if(dto.getAmount() - groupItem.getNowAmount() > 0){
 					throw new Exception("재고 소진");
-				}else if(dto.getAmount() > groupItem.getLimitPerBuyer()){
-					throw new Exception("제한 수량 초과");
-				}
-				else{
-					int price = (int) Math.round((item.getPrice() + selectedOption.getAddPrice()) * dto.getAmount() * 0.9);
-					// 10% 할인하여 결제함(반올림)
+				}else{
+					double price = (item.getPrice() + selectedOption.getAddPrice()) * dto.getAmount();
+					if(dto.getAmount() >= groupItem.getLimitPerBuyer()){
+						price = price * 0.75; // 최소 수량 초과에 한하여 25% 할인
+					}else{
+						price = price * 0.9; // 기본 10% 할인
+					}
 					if(wallet.getCash() < price){
 						throw new Exception("잔액 부족");
 					}
 					else{
-						wallet.setCash(wallet.getCash() - price);
+						wallet.setCash(wallet.getCash() - (int)price);
 						// 결제 내역 생성
 						GroupItemPays pay = new GroupItemPays();
 						pay.setItem(item);
@@ -112,7 +113,7 @@ public class GroupItemPayDAO {
 						pay.setDeliverInfo(DeliverType.Preparing);
 						pay.setGroupItemPk(groupItem.getId());
 						pay.setUser(user);
-						pay.setPay(price);
+						pay.setPay((int)price);
 						// 결제 추가
 						groupItemPayRepository.save(pay);
 						walletRepository.save(wallet);

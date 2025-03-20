@@ -17,13 +17,8 @@ const UserGroupItemDetailComponent = (props) => {
   const [payModal, setPayModal] = useState(false);
 
   const handleGroupPay = (item) => {
-    if (amount <= 0 || amount > item.limitPerBuyer) {
-      alert("개수를 확인해주세요.");
-      return;
-    } else {
-      localStorage.setItem("group-item", JSON.stringify(item));
-      navigate(`/group-item/pay?amount=${amount}`);
-    }
+    localStorage.setItem("group-item", JSON.stringify(item));
+    navigate(`/group-item/pay?amount=${amount}`);
   };
 
   return (
@@ -60,7 +55,7 @@ const UserGroupItemDetailComponent = (props) => {
                   &#10095;
                 </button>
               </div>
-              <div className="box_Item_Infobox">
+              <div className="box_group_Item_Infobox">
                 <div className="box_Item_Store">
                   {props.groupItem.item.store?.name}
                 </div>
@@ -69,21 +64,22 @@ const UserGroupItemDetailComponent = (props) => {
                 </div>
                 <div className="box_Item_Price">
                   <div style={{ display: "flex", flexDirection: "column" }}>
-                    가격 :
-                    <del style={{ fontSize: "15px" }}>
+                    <div style={{ fontSize: "15px" }}>
+                    <del>
                       {props.groupItem.item.price +
                         props.groupItem.option.addPrice}
                       원
-                    </del>
+                    </del> -25%
+                    </div>
                     <div style={{ color: "red" }}>
                       {Number(
                         (props.groupItem.item.price +
                           props.groupItem.option.addPrice) *
-                          0.9
+                          0.75
                       )}
                       원
                     </div>
-                    <br></br> 공동구매 10% 할인!
+                  <div className="box_Item_Amount">{props.groupItem.limitPerBuyer}개 이상 구매 시 25% 할인!</div>
                   </div>
                 </div>
                 <div className="box_Item_Amount">
@@ -96,7 +92,7 @@ const UserGroupItemDetailComponent = (props) => {
                 <div className="box_Item_Amount">
                   옵션 정보 : {props.groupItem.option.optionInfo}
                 </div>
-                <div>
+                <div className="box_pay_button">
                   <div className="text_Amount">
                     <input
                       type="number"
@@ -106,9 +102,7 @@ const UserGroupItemDetailComponent = (props) => {
                     />
                     개
                   </div>
-                  <div>
-                    최대 {props.groupItem.limitPerBuyer}개까지 구매 가능합니다.
-                  </div>
+                  <br></br>
                   <div
                     className="box_Item_Cart"
                     onClick={() => handleGroupPay(props.groupItem)}

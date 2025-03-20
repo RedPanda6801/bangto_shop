@@ -7,16 +7,14 @@ import com.example.banto.DTOs.StoreDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString(exclude = {"seller", "items"})
 public class Stores {
     @Id
     @Column(name="ID")
@@ -34,6 +32,7 @@ public class Stores {
     @JoinColumn(name="SELLER_PK")
     private Sellers seller;
 
+    @JsonIgnore
     @OneToMany(mappedBy="store", cascade = CascadeType.ALL, fetch = FetchType.LAZY)  // 'Items' 엔티티에서 'store' 필드를 기준으로 관계를 매핑
     private List<Items> items;
     

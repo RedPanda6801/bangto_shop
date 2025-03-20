@@ -49,7 +49,7 @@ public class QNADTO {
                 .qWriteDate(entity.getQWriteDate())
                 .aWriteDate(entity.getAWriteDate())
                 .itemTitle(entity.getItem().getTitle())
-                .userName(entity.getUser().getName())
+                .userName(entity.getUser() == null ? "삭제된 유저" : entity.getUser().getName())
                 .itemPk(entity.getItem().getId())
                 .build();
     }

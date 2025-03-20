@@ -10,9 +10,10 @@ const GroupItemPayListComponent = (props) => {
 
   useEffect(() => {
     handleGetPayList();
-  }, []);
+  }, [props.store]);
 
   const handleGetPayList = () => {
+    console.log(props.store);
     axios
       .get(
         `${process.env.REACT_APP_BACKEND_SERVER_PORT}/group-pay/store/get-list`,
@@ -113,63 +114,65 @@ const GroupItemPayListComponent = (props) => {
   return (
     <div className="box_Group_Detail">
       {payList && payList.length > 0 ? (
-        payList.map((pay) => (
-          <>
-            <table>
-              <tr>
-                <th>
-                  <div>{"상품명 (옵션정보)"}</div>
-                </th>
-                <th>선택</th>
-                <th>결제 비용</th>
-                <th>결제 날짜</th>
-                <th>배송지</th>
-                <th>배송 상태</th>
-                <th>단일 배송</th>
-                <th>배송 완료</th>
-              </tr>
-              <tr>
-                <td>
-                  <div className="checkbox">
-                    <input
-                      type="checkbox"
-                      checked={selectPayList.includes(pay.id)}
-                      onChange={(e) => handleSetSelectPayList(e, pay.id)}
-                    />
-                  </div>
-                </td>
-                <td>
-                  <div>{`${pay.itemTitle} - (${pay.optionInfo} / ${pay.amount}개)`}</div>
-                </td>
-                <td>{pay.pay}원</td>
-                <td>{pay.soldDate}</td>
-                <td>{pay.address}</td>
-                <td>{DeliverType[pay.deliverInfo]}</td>
-                <td>
-                  <button
-                    onClick={() => handleDeliveringSingle(pay.id)}
-                    disabled={pay.deliverInfo !== "Preparing"}
-                  >
-                    단일 배송
-                  </button>
-                </td>
-                <td>
-                  <button
-                    onClick={() => handleDeliveredSingle(pay.id)}
-                    disabled={pay.deliverInfo !== "Delivering"}
-                  >
-                    배송 완료
-                  </button>
-                </td>
-              </tr>
-            </table>
-            <br></br>
-            <button style={{ width: "100%" }} onClick={handleTotalPay}>
-              일괄 배송
-            </button>
-          </>
-        ))
-      ) : (
+        <>
+          <table>
+            <tr>
+              <th>
+                <div>{"상품명 (옵션정보)"}</div>
+              </th>
+              <th>선택</th>
+              <th>결제 비용</th>
+              <th>결제 날짜</th>
+              <th>배송지</th>
+              <th>배송 상태</th>
+              <th>단일 배송</th>
+              <th>배송 완료</th>
+            </tr>
+        {
+          payList.map((pay) => (
+                <tr>
+                  <td>
+                    <div className="checkbox">
+                      <input
+                        type="checkbox"
+                        checked={selectPayList.includes(pay.id)}
+                        onChange={(e) => handleSetSelectPayList(e, pay.id)}
+                      />
+                    </div>
+                  </td>
+                  <td>
+                    <div>{`${pay.itemTitle} - (${pay.optionInfo} / ${pay.amount}개)`}</div>
+                  </td>
+                  <td>{pay.pay}원</td>
+                  <td>{pay.soldDate}</td>
+                  <td>{pay.address}</td>
+                  <td>{DeliverType[pay.deliverInfo]}</td>
+                  <td>
+                    <button
+                      onClick={() => handleDeliveringSingle(pay.id)}
+                      disabled={pay.deliverInfo !== "Preparing"}
+                    >
+                      단일 배송
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      onClick={() => handleDeliveredSingle(pay.id)}
+                      disabled={pay.deliverInfo !== "Delivering"}
+                    >
+                      배송 완료
+                    </button>
+                  </td>
+                </tr>
+            ))}
+          </table>
+          <br/>
+          <button style={{ width: "100%" }} onClick={handleTotalPay}>
+            일괄 배송
+          </button>
+        </>
+      )
+      : (
         <div>결제 목록 없음.</div>
       )}
     </div>
