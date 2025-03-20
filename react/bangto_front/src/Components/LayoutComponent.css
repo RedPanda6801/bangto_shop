@@ -24,7 +24,7 @@
 	left: 0;
 	width: 100%;
 	/* min-width: 1500px; */
-	z-index: 9999;
+	z-index: 999999;
 	padding:10px 0px;
 	background-color: white;
 	border-bottom: 1px solid lightgray;
