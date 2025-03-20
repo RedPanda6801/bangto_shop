@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 
 const UserMainSearchComponent = () => {
   const [searchText, setSearchText] = useState("");
-  const navigate = useNavigate();
 
   return <div className="box">
     <div className="box_Category">

@@ -17,6 +17,7 @@ import com.example.banto.Services.GroupItemPayService;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
+@RequestMapping("/api")
 public class GroupItemPayController {
 	@Autowired
 	GroupItemPayService groupItemPayService;

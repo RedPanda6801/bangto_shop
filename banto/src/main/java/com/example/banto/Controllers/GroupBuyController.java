@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.banto.DAOs.AuthDAO;
 import com.example.banto.DTOs.GroupBuyDTO;
@@ -20,6 +21,7 @@ import com.example.banto.Services.GroupBuyService;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
+@RequestMapping("/api")
 public class GroupBuyController {
 	@Autowired
 	GroupBuyService groupBuyService;

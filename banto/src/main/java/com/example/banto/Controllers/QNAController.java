@@ -17,6 +17,7 @@ import com.example.banto.Services.QNAService;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
+@RequestMapping("/api")
 public class QNAController {
 	
 	@Autowired

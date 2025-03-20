@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.banto.DTOs.GroupBuyDTO;
 import com.example.banto.DTOs.GroupBuyItemDTO;
@@ -20,6 +21,7 @@ import com.example.banto.DTOs.ResponseDTO;
 import com.example.banto.Services.GroupBuyItemService;
 
 @Controller
+@RequestMapping("/api")
 public class GroupBuyItemController {
 	@Autowired
 	GroupBuyItemService groupBuyItemService;

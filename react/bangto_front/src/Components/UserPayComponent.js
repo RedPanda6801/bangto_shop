@@ -42,7 +42,7 @@ const UserPayComponent = () =>
     }
 
     const handlePay = () => {
-        axios.post("http://localhost:9000/pay", {
+        axios.post(`${process.env.REACT_APP_BACKEND_SERVER_PORT}/pay`, {
             cartPks : Array.from(carts, (cart) => cart.cartPk),
             usingCashBack : payCashBack
         }, { withCredentials : true,

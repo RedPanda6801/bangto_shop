@@ -16,7 +16,7 @@ const UserAuthComponent = (props) =>
   {
     try 
     {
-      const response = await axios.post("http://localhost:9000/login", 
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_SERVER_PORT}/login`, 
         {"email":email, "pw":password}, {withCredentials : true});
       
       localStorage.removeItem("token");
@@ -65,11 +65,11 @@ const UserAuthComponent = (props) =>
       const email = info.data.kakao_account.email;
       const name = info.data.kakao_account.profile.nickname
       const SnsSignCheck = await axios.get(
-        `http://localhost:9000/user/get-sns-signed/${email}`
+        `${process.env.REACT_APP_BACKEND_SERVER_PORT}/user/get-sns-signed/${email}`
       )
       const isSnsSigned = SnsSignCheck.data.content;
       if(isSnsSigned === -1) {
-        const signResponse = await axios.post("http://localhost:9000/sign", 
+        const signResponse = await axios.post(`${process.env.REACT_APP_BACKEND_SERVER_PORT}/sign`, 
           {email, name, "snsAuth": true}, {withCredentials : true});
         if (signResponse.status === 200) 
         {
@@ -81,7 +81,7 @@ const UserAuthComponent = (props) =>
         }
       } else if(isSnsSigned === 0) {
         if(window.confirm("이미 가입된 이메일입니다. 카카오톡 계정과 연동하시겠습니까?")) {
-          const signResponse = await axios.post("http://localhost:9000/sign", 
+          const signResponse = await axios.post(`${process.env.REACT_APP_BACKEND_SERVER_PORT}/sign`, 
             {email, name, "snsAuth": true}, {withCredentials : true});
           if (signResponse.status === 200) 
           {
@@ -96,7 +96,7 @@ const UserAuthComponent = (props) =>
           return;
         }
       }
-      const loginResponse = await axios.post("http://localhost:9000/login", 
+      const loginResponse = await axios.post(`${process.env.REACT_APP_BACKEND_SERVER_PORT}/login`, 
         {"email":email, "snsAuth":true}, {withCredentials : true});
       localStorage.removeItem("token");
       localStorage.setItem("token",resContent(loginResponse).token);
