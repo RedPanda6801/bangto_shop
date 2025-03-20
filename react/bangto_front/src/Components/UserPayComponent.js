@@ -274,31 +274,6 @@ const UserPayComponent = () =>
                             {myCash} 원
                         </td>
                     </tr>
-                    <tr>
-                        <td>
-                            보유 캐시백
-                        </td>
-                        <td>
-                            {myCashBack} 원
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            사용 캐시백
-                        </td>
-                        <td>
-                            <input
-                                className="User_Pay_Use_Cash"
-                                type="number"
-                                value={payCashBack}
-                                onChange={(e) => {
-                                    const value = e.target.value;
-                                    setPayCashBack(value < 0 ? 0 : value);
-                                    setTotalPay(value < 0 ? price + delivery : price + delivery - value);
-                                }}
-                            />원
-                        </td>
-                    </tr>
                 </table>
                 <table
                     className="User_Pay_Cash">

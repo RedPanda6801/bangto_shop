@@ -219,16 +219,11 @@ public class PayDAO {
 			Pageable pageable = PageRequest.of(page-1, 20, Sort.by("id").ascending());
 			Page<SoldItems> soldItems = payRepository.findAllByStoreId(storeId, pageable);
 			List<SoldItemDTO> soldItemList = new ArrayList<SoldItemDTO>();
-			if(soldItems.isEmpty()) {
-				throw new Exception("판매 내역이 없습니다.");
+			for(SoldItems soldItem : soldItems) {
+				SoldItemDTO dto = SoldItemDTO.toDTO(soldItem);
+				soldItemList.add(dto);
 			}
-			else {
-				for(SoldItems soldItem : soldItems) {
-					SoldItemDTO dto = SoldItemDTO.toDTO(soldItem);
-					soldItemList.add(dto);
-				}
-				return new ResponseDTO(soldItemList, new PageDTO(soldItems.getSize(), soldItems.getTotalElements(), soldItems.getTotalPages()));
-			}
+			return new ResponseDTO(soldItemList, new PageDTO(soldItems.getSize(), soldItems.getTotalElements(), soldItems.getTotalPages()));
 		}catch(Exception e) {
 			throw e;
 		}

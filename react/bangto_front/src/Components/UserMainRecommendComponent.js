@@ -107,8 +107,8 @@ const UserMainRecommendComponent = () => {
                       <div className="wishlist_Item_Container">
                           {wishlistItems
                               .slice(currentWishlist * itemsPerPage, (currentWishlist + 1) * itemsPerPage)
-                              .map((wishlistItem) => (
-                                  <div className="wishlist_Item_Card">
+                              .map((wishlistItem, idx) => (
+                                  <div className="wishlist_Item_Card" key={`wishlistItem${idx}`}>
                                       <img
                                           onClick={() => navigate("/user/item", {state: {itemPk: wishlistItem.item.id}})}
                                           className="wishlist_Item_Image"
@@ -141,8 +141,8 @@ const UserMainRecommendComponent = () => {
           추천상품
       </div>
       {recommendItems.length === 0 ? null:
-        recommendItems.map((recommendItem) => {
-            return <div className="table_Itemlist">
+        recommendItems.map((recommendItem, idx) => {
+            return <div className="table_Itemlist" key={`recommendItem${idx}`}>
                 <img
                     className="itemlist_Item_Image"
                     onClick={() => navigate("/user/item", {state: {itemPk: recommendItem.id}})}

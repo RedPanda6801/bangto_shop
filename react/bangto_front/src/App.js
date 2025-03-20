@@ -17,7 +17,7 @@ import ManagerItemInfoComponent from "./Components/ManagerItemInfoComponent";
 import UserGroupItemPayComponent from "./Components/GroupItemComponents/UserGroupItemPayComponent";
 import "./Components/LayoutComponent.css";
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { resContent } from "./Components/UtilComponent/ResponseData";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -32,6 +32,7 @@ function App() {
   );
   const [token, setToken] = useState(localStorage.getItem("token") || "");
   const navigate = useNavigate();
+  const userMainComponentRef = useRef();
 
   const rootEmail = process.env.REACT_APP_ROOT_EMAIL;
 
@@ -150,6 +151,9 @@ function App() {
               navigate("/manager");
             } else {
               navigate("/");
+              if(userMainComponentRef.current) {
+                userMainComponentRef.current.setCategory("Main");
+              }
             }
           }}
         >
@@ -162,13 +166,20 @@ function App() {
             </>
           ) : (
             <>
-              <div className="header_Menu">의류</div>
-              <div className="header_Menu">화장품</div>
-              <div className="header_Menu">전자기기</div>
-              <div className="header_Menu">가구</div>
-              <div className="header_Menu">식품</div>
-              <div className="header_Menu">스포츠용품</div>
-              <div className="header_Menu">도서</div>
+              <div className="header_Menu"
+              onClick={() => userMainComponentRef.current.setCategory("Clothing")}>의류</div>
+              <div className="header_Menu"
+              onClick={() => userMainComponentRef.current.setCategory("Cosmetics")}>화장품</div>
+              <div className="header_Menu"
+              onClick={() => userMainComponentRef.current.setCategory("Electronics")}>전자기기</div>
+              <div className="header_Menu"
+              onClick={() => userMainComponentRef.current.setCategory("Furnitures")}>가구</div>
+              <div className="header_Menu"
+              onClick={() => userMainComponentRef.current.setCategory("Foods")}>식품</div>
+              <div className="header_Menu"
+              onClick={() => userMainComponentRef.current.setCategory("Sports")}>스포츠용품</div>
+              <div className="header_Menu"
+              onClick={() => userMainComponentRef.current.setCategory("Books")}>도서</div>
               <div
                 className="header_Menu"
                 onClick={() => navigate("/user/groupitem")}
@@ -179,13 +190,20 @@ function App() {
           )
         ) : (
           <>
-            <div className="header_Menu">의류</div>
-            <div className="header_Menu">화장품</div>
-            <div className="header_Menu">전자기기</div>
-            <div className="header_Menu">가구</div>
-            <div className="header_Menu">식품</div>
-            <div className="header_Menu">스포츠용품</div>
-            <div className="header_Menu">도서</div>
+            <div className="header_Menu"
+            onClick={() => userMainComponentRef.current.setCategory("Clothing")}>의류</div>
+            <div className="header_Menu"
+            onClick={() => userMainComponentRef.current.setCategory("Cosmetics")}>화장품</div>
+            <div className="header_Menu"
+            onClick={() => userMainComponentRef.current.setCategory("Electronics")}>전자기기</div>
+            <div className="header_Menu"
+            onClick={() => userMainComponentRef.current.setCategory("Furnitures")}>가구</div>
+            <div className="header_Menu"
+            onClick={() => userMainComponentRef.current.setCategory("Foods")}>식품</div>
+            <div className="header_Menu"
+            onClick={() => userMainComponentRef.current.setCategory("Sports")}>스포츠용품</div>
+            <div className="header_Menu"
+            onClick={() => userMainComponentRef.current.setCategory("Books")}>도서</div>
             <div
               className="header_Menu"
               onClick={() => navigate("/user/groupitem")}
@@ -251,7 +269,7 @@ function App() {
       <ScrollToTop />
       <Routes>
         <Route path="/manager" element={<ManagerComponent />} />
-        <Route path="/" element={<UserMainComponent />} />
+        <Route path="/" element={<UserMainComponent ref={userMainComponentRef} />} />
         <Route
           path="/login"
           element={<UserAuthComponent setToken={setToken} />}

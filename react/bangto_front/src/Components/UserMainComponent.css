@@ -442,3 +442,41 @@
   font-weight: bold;
   margin-top: 10px;
 }
+
+.sort-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.sort-button {
+  padding: 10px 15px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 5px;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.sort-button.asc {
+  background: #4caf50;
+  color: white;
+}
+
+.sort-button.desc {
+  background: #f44336;
+  color: white;
+}
+
+.sort-button:hover {
+  opacity: 0.8;
+  transform: scale(1.05);
+}
+
+.box_No_Result
+{
+  height: 400px;
+  padding: 150px 0px;
+  font-size: 20px;
+  font-weight: bold;
+}

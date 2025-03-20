@@ -84,7 +84,7 @@ const UserItemDetailComponent = () =>
             if(response.status === 200) {
                 const rescontent = resContent(response);
                 const respage = resPage(response);
-                console.log(response);
+                // console.log(response);
                 setQnas(rescontent);
                 setCurrentQnaPage(currentQnaPage);
                 setTotalQnaPage(respage.totalPages);
