@@ -32,9 +32,13 @@ const UserCartComponent = () =>
             setCarts(rescontent);
             setIsChecked(Array.from(rescontent, () => false));
             setAllChecked(false);
-            console.log(rescontent);
+            // console.log(rescontent);
         }).catch((err) => {
-            alert(err);
+            if(err.response.data === "장바구니가 비었습니다.") {
+              setCarts(null);
+            } else {
+              alert(err);
+            }
         })
       }
     }, [])
@@ -51,91 +55,99 @@ const UserCartComponent = () =>
 
     return <>
         <div className="layout_User_Cart">
-            <div className="box_User_Cart">
-                <div className="box_User_Cart_SelectAll">
-                    <input
-                        type="checkbox"
-                        className="btn_User_Cart_SelectAll"
-                        checked={allChecked}
-                        onChange={(e) => {
-                          setAllChecked(e.target.checked);
-                          setIsChecked(Array.from(carts, () => e.target.checked));
-                          if(e.target.checked) {
-                            const price = carts.reduce((acc, cart) => (cart.item.price + cart.option.addPrice) * cart.amount + acc, 0);
-                            setTotalPrice(price);
-                            if(price >= 50000 || price === 0) {
-                              setDeliverPrice(0);
-                            } else if(price >= 30000) {
-                              setDeliverPrice(2500);
-                            } else if(price > 0) {
-                              setDeliverPrice(5000);
+            
+                {
+                  carts === null ?
+                  <div className="box_No_Item">
+                      장바구니가 비었습니다.
+                  </div>:
+                  <div className="box_User_Cart">
+                  <div className="box_User_Cart_SelectAll">
+                      <input
+                          type="checkbox"
+                          className="btn_User_Cart_SelectAll"
+                          checked={allChecked}
+                          onChange={(e) => {
+                            setAllChecked(e.target.checked);
+                            setIsChecked(Array.from(carts, () => e.target.checked));
+                            if(e.target.checked) {
+                              const price = carts.reduce((acc, cart) => (cart.item.price + cart.option.addPrice) * cart.amount + acc, 0);
+                              setTotalPrice(price);
+                              if(price >= 50000 || price === 0) {
+                                setDeliverPrice(0);
+                              } else if(price >= 30000) {
+                                setDeliverPrice(2500);
+                              } else if(price > 0) {
+                                setDeliverPrice(5000);
+                              }
                             }
-                          }
-                          else {
-                            setTotalPrice(0);
-                            setDeliverPrice(0);
-                          }
-                        }}
-                    />
-                    { allChecked ? "전체 선택 해제" : "전체 선택" }
-                </div>                
-                <div className="box_User_Cart_Item">
-                    {
-                        carts.map((cart, idx) => {
-                            return <div className="box_Cart_Item" key={`cart${idx}`}>
-                                <div className="box_Cart_CheckBox">
-                                    <input
-                                        type="checkbox"
-                                        className="btn_User_Cart_Select"
-                                        checked={isChecked[idx]}
-                                        onChange={(e) => {
-                                          let newIsChecked = [...isChecked];
-                                          newIsChecked[idx] = e.target.checked;
-                                          setIsChecked(newIsChecked);
-                                          const price = totalPrice +
-                                            (e.target.checked ?
-                                              (cart.item.price + cart.option.addPrice) * cart.amount :
-                                              - (cart.item.price + cart.option.addPrice) * cart.amount
-                                            );
-                                          setTotalPrice(price);
-                                          if(price >= 50000 || price === 0) {
-                                            setDeliverPrice(0);
-                                          } else if(price >= 30000) {
-                                            setDeliverPrice(2500);
-                                          } else if(price > 0) {
-                                            setDeliverPrice(5000);
-                                          }
-                                        }}
-                                    />
-                                </div>
-                                <div className="box_Cart_Img">
-                                    <img
-                                        src={`${process.env.REACT_APP_IMG_PUBLIC_URI}/03_upload/${cart.item.img.split("/")[0]}`}
-                                        className="btn_User_Cart_Img"
-                                        alt="물품 이미지"
-                                    />
-                                </div>
-                                <div className="box_Cart_Item_Info">
-                                    <div className="box_Cart_Item_Title" onClick={() => navigate("/user/item", {state: {itemPk: cart.item.id}})}>
-                                      {cart.item.title}
-                                    </div>
-                                    <div className="box_Cart_Item_Option">
-                                        <div className="cart_Item_Option">
-                                          {cart.option.optionInfo}
-                                        </div>
-                                        <div className="cart_Item_Amount">
-                                          {cart.amount}개
-                                        </div>
-                                        <div className="cart_Item_Price">
-                                          {(cart.item.price + cart.option.addPrice) * cart.amount}원
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>;
-                        })
-                    }
-                </div>
-            </div>
+                            else {
+                              setTotalPrice(0);
+                              setDeliverPrice(0);
+                            }
+                          }}
+                      />
+                      { allChecked ? "전체 선택 해제" : "전체 선택" }
+                  </div>
+                  <div className="box_User_Cart_Item">
+                      {
+                          carts.map((cart, idx) => {
+                              return <div className="box_Cart_Item" key={`cart${idx}`}>
+                                  <div className="box_Cart_CheckBox">
+                                      <input
+                                          type="checkbox"
+                                          className="btn_User_Cart_Select"
+                                          checked={isChecked[idx]}
+                                          onChange={(e) => {
+                                            let newIsChecked = [...isChecked];
+                                            newIsChecked[idx] = e.target.checked;
+                                            setIsChecked(newIsChecked);
+                                            const price = totalPrice +
+                                              (e.target.checked ?
+                                                (cart.item.price + cart.option.addPrice) * cart.amount :
+                                                - (cart.item.price + cart.option.addPrice) * cart.amount
+                                              );
+                                            setTotalPrice(price);
+                                            if(price >= 50000 || price === 0) {
+                                              setDeliverPrice(0);
+                                            } else if(price >= 30000) {
+                                              setDeliverPrice(2500);
+                                            } else if(price > 0) {
+                                              setDeliverPrice(5000);
+                                            }
+                                          }}
+                                      />
+                                  </div>
+                                  <div className="box_Cart_Img">
+                                      <img
+                                          src={`${process.env.REACT_APP_IMG_PUBLIC_URI}/03_upload/${cart.item.img.split("/")[0]}`}
+                                          className="btn_User_Cart_Img"
+                                          alt="물품 이미지"
+                                      />
+                                  </div>
+                                  <div className="box_Cart_Item_Info">
+                                      <div className="box_Cart_Item_Title" onClick={() => navigate("/user/item", {state: {itemPk: cart.item.id}})}>
+                                        {cart.item.title}
+                                      </div>
+                                      <div className="box_Cart_Item_Option">
+                                          <div className="cart_Item_Option">
+                                            {cart.option.optionInfo}
+                                          </div>
+                                          <div className="cart_Item_Amount">
+                                            {cart.amount}개
+                                          </div>
+                                          <div className="cart_Item_Price">
+                                            {(cart.item.price + cart.option.addPrice) * cart.amount}원
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>;
+                          })
+                      }
+                  </div>
+                  </div>
+                }
+            
             <div className="box_User_Cart_Info">
                 <table>
                     <tr>
