@@ -1,6 +1,5 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import './UserMainComponent.css';
-import UserMainSearchComponent from "./UserMainSearchComponent";
 import UserMainRecommendComponent from "./UserMainRecommendComponent";
 import UserCartListComponent from "./UserCartListComponent"
 import axios from "axios";

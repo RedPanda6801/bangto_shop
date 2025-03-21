@@ -17,8 +17,10 @@ import com.example.banto.Services.SellerService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
+@RequestMapping("/api")
 public class SellerController {
 	@Autowired
 	SellerService sellerService;

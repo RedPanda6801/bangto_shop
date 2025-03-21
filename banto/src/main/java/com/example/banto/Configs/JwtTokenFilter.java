@@ -51,24 +51,42 @@ public class JwtTokenFilter extends OncePerRequestFilter{
 	public boolean requiresAuthentication(HttpServletRequest request) {
 		String path = request.getRequestURI();
 		// 토큰이 필요없는 모든 URL들 등록
-		return !(path.startsWith("/group-buy/current-event")
-				|| path.startsWith("/group-buy/item/current-list")
-				|| path.startsWith("/group-item/event/get-list")
-				|| path.startsWith("/item/get-all-list")
-				|| path.startsWith("/item/get-itemlist")
-				|| path.startsWith("/item/get-detail")
-				|| path.startsWith("/sign")
-				|| path.startsWith("/login")
-				|| path.startsWith("/user/get-sns-signed")
+		return !(path.startsWith("/api/group-buy/current-event")
+				|| path.startsWith("/api/group-buy/item/current-list")
+				|| path.startsWith("/api/group-item/event/get-list")
+				|| path.startsWith("/api/item/get-all-list")
+				|| path.startsWith("/api/item/get-itemlist")
+				|| path.startsWith("/api/item/get-detail")
+				|| path.startsWith("/api/sign")
+				|| path.startsWith("/api/login")
+				|| path.startsWith("/api/user/get-sns-signed")
 				//|| path.startsWith("/user/get-info")
-				|| path.startsWith("/comment/item")
-				|| path.startsWith("/comment/get")
-				|| path.startsWith("/item/get-by-title")
-				|| path.startsWith("/item/get-by-store-name")
-				|| path.startsWith("/item/get-by-category")
-				|| path.startsWith("/item/get-filtered-list")
-				|| path.startsWith("/item/get-recommend-list")
-				|| path.startsWith("/qna/item/get-list"));
+				|| path.startsWith("/api/comment/item")
+				|| path.startsWith("/api/comment/get")
+				|| path.startsWith("/api/item/get-by-title")
+				|| path.startsWith("/api/item/get-by-store-name")
+				|| path.startsWith("/api/item/get-by-category")
+				|| path.startsWith("/api/item/get-filtered-list")
+				|| path.startsWith("/api/item/get-recommend-list")
+				|| path.startsWith("/api/qna/item/get-list")
+				|| path.equals("/")
+				|| path.equals("/manager")
+				|| path.equals("/login")
+				|| path.equals("/sign")
+				|| path.equals("/seller/apply")
+				|| path.equals("/user/cart")
+				|| path.equals("/user/pay")
+				|| path.equals("/manager/store/info")
+				|| path.equals("/qna/detail")
+				|| path.equals("/user")
+				|| path.equals("/user/review")
+				|| path.equals("/user/groupitem")
+				|| path.equals("/user/item")
+				|| path.equals("/user/gorupitem/detail")
+				|| path.equals("/user/item/qna")
+				|| path.equals("/group-item/pay")
+				|| path.startsWith("/static")
+				|| path.startsWith("/images"));
 	}
 	
 	@Override
@@ -78,7 +96,7 @@ public class JwtTokenFilter extends OncePerRequestFilter{
 				filterChain.doFilter(request, response);
 				return;
 			}
-			
+
 			String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 			if(authorizationHeader == null) {
 				response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "토큰이 필요합니다.");

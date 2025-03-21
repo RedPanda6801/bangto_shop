@@ -41,7 +41,7 @@ const UserSignComponent = () => {
         console.log(addr);
       }
 
-      const response = await axios.post("http://localhost:9000/sign", 
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_SERVER_PORT}/sign`, 
         {email, pw, name, addr, phone, snsAuth : false}, {withCredentials : true});
       if (response.status == 200) 
       {

@@ -42,94 +42,94 @@ public class SecurityConfig {
 				.cors(cors -> cors.configurationSource(corsConfigurationSource()))
 				.httpBasic(AbstractHttpConfigurer::disable)
 				.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
 				.authorizeHttpRequests(
 				request -> request
 				// 관리자만 허용된 URL
 				.requestMatchers(
-						new AntPathRequestMatcher("/apply/modify"),
-						new AntPathRequestMatcher("/apply/get-list/**"),
-						new AntPathRequestMatcher("/apply/get-info/**"),
-						new AntPathRequestMatcher("/manager/**"),
-						new AntPathRequestMatcher("/pay/get-user-info/**"),
-						new AntPathRequestMatcher("/pay/get-store-info/**"),
-						new AntPathRequestMatcher("/seller/delete/**"),
-						new AntPathRequestMatcher("/wallet/manager")
+						new AntPathRequestMatcher("/api/apply/modify"),
+						new AntPathRequestMatcher("/api/apply/get-list/**"),
+						new AntPathRequestMatcher("/api/apply/get-info/**"),
+						new AntPathRequestMatcher("/api/manager/**"),
+						new AntPathRequestMatcher("/api/pay/get-user-info/**"),
+						new AntPathRequestMatcher("/api/pay/get-store-info/**"),
+						new AntPathRequestMatcher("/api/seller/delete/**"),
+						new AntPathRequestMatcher("/api/wallet/manager")
 						).hasAuthority("ADMIN")
 				// 판매자만 허용된 URL
 				.requestMatchers(
-						new AntPathRequestMatcher("/item/add-item"),
-						new AntPathRequestMatcher("/item/modify"),
-						new AntPathRequestMatcher("/item/option/modify"),
-						new AntPathRequestMatcher("/pay/modify"),
-						new AntPathRequestMatcher("/pay/get-my-store-info/**"),
-						new AntPathRequestMatcher("/qna/store/get-list/**"),
-						new AntPathRequestMatcher("/qna/add-answer"),
-						new AntPathRequestMatcher("/store/**"),
-						new AntPathRequestMatcher("/seller/get-info"),
-						new AntPathRequestMatcher("/seller/delete-me"),
-						new AntPathRequestMatcher("/group-item/delete"),
-						new AntPathRequestMatcher("/group-item/modify"),
-						new AntPathRequestMatcher("/group-item/add"),
-						new AntPathRequestMatcher("/group-pay/store/get-list")
+						new AntPathRequestMatcher("/api/item/add-item"),
+						new AntPathRequestMatcher("/api/item/modify"),
+						new AntPathRequestMatcher("/api/item/option/modify"),
+						new AntPathRequestMatcher("/api/pay/modify"),
+						new AntPathRequestMatcher("/api/pay/get-my-store-info/**"),
+						new AntPathRequestMatcher("/api/qna/store/get-list/**"),
+						new AntPathRequestMatcher("/api/qna/add-answer"),
+						new AntPathRequestMatcher("/api/store/**"),
+						new AntPathRequestMatcher("/api/seller/get-info"),
+						new AntPathRequestMatcher("/api/seller/delete-me"),
+						new AntPathRequestMatcher("/api/group-item/delete"),
+						new AntPathRequestMatcher("/api/group-item/modify"),
+						new AntPathRequestMatcher("/api/group-item/add"),
+						new AntPathRequestMatcher("/api/group-pay/store/get-list")
 						).hasAuthority("SELLER")
 				// 구매자만 허용된 URL
 				.requestMatchers(
-						new AntPathRequestMatcher("/apply")
+						new AntPathRequestMatcher("/api/apply")
 						).hasAuthority("BUYER")
 				// 관리자, 판매자 둘 다에게 허용된 URL
 				.requestMatchers(
-						new AntPathRequestMatcher("/group-buy/get-list")
+						new AntPathRequestMatcher("/api/group-buy/get-list")
 						).hasAnyAuthority("ADMIN", "SELLER")
 				// 관리자, 구매자 둘 다에게 허용된 URL
 				.requestMatchers(
-						new AntPathRequestMatcher("/qna/delete"),
-						new AntPathRequestMatcher("/comment/delete")
+						new AntPathRequestMatcher("/api/qna/delete"),
+						new AntPathRequestMatcher("/api/comment/delete")
 						).hasAnyAuthority("ADMIN", "BUYER")
 				// 판매자, 구매자 둘 다에게 허용된 URL
 				.requestMatchers(
-						new AntPathRequestMatcher("/apply/my-info"),
-						new AntPathRequestMatcher("/cart/**"),
-						new AntPathRequestMatcher("/favorite/**"),
-						new AntPathRequestMatcher("/qna/my-list/**"),
-						new AntPathRequestMatcher("/qna/add"),
-						new AntPathRequestMatcher("/pay"),
-						new AntPathRequestMatcher("/pay/get-info/**"),
-						new AntPathRequestMatcher("/qna/get-detail"),
-						new AntPathRequestMatcher("/user/modify"),
-						new AntPathRequestMatcher("/user/delete-me"),
-						new AntPathRequestMatcher("/wallet/my"),
-						new AntPathRequestMatcher("/comment/write"),
-						new AntPathRequestMatcher("/comment/get-my/**")
+						new AntPathRequestMatcher("/api/apply/my-info"),
+						new AntPathRequestMatcher("/api/cart/**"),
+						new AntPathRequestMatcher("/api/favorite/**"),
+						new AntPathRequestMatcher("/api/qna/my-list/**"),
+						new AntPathRequestMatcher("/api/qna/add"),
+						new AntPathRequestMatcher("/api/pay"),
+						new AntPathRequestMatcher("/api/pay/get-info/**"),
+						new AntPathRequestMatcher("/api/qna/get-detail"),
+						new AntPathRequestMatcher("/api/user/modify"),
+						new AntPathRequestMatcher("/api/user/delete-me"),
+						new AntPathRequestMatcher("/api/wallet/my"),
+						new AntPathRequestMatcher("/api/comment/write"),
+						new AntPathRequestMatcher("/api/comment/get-my/**")
 						).hasAnyAuthority("SELLER", "BUYER")
 				// 관리자, 판매자, 구매자 셋 다에게 허용된 URL
 				.requestMatchers(
-						new AntPathRequestMatcher("/user/get-info")
+						new AntPathRequestMatcher("/api/user/get-info")
 						).hasAnyAuthority("ADMIN", "SELLER", "BUYER")
 				// 모두에게 허용된 URL
 				.requestMatchers(
-						new AntPathRequestMatcher("/group-buy/current-event"),
-						new AntPathRequestMatcher("/group-buy/item/current-list"),
-						new AntPathRequestMatcher("/group-item/event/get-list"),
-						new AntPathRequestMatcher("/item/get-all-list/**"),
-						new AntPathRequestMatcher("/item/get-itemlist/**"),
-						new AntPathRequestMatcher("/item/get-detail/**"),
-						new AntPathRequestMatcher("/sign"),
-						new AntPathRequestMatcher("/login"),
-						new AntPathRequestMatcher("/user/get-sns-signed/**"),
+						new AntPathRequestMatcher("/api/group-buy/current-event"),
+						new AntPathRequestMatcher("/api/group-buy/item/current-list"),
+						new AntPathRequestMatcher("/api/group-item/event/get-list"),
+						new AntPathRequestMatcher("/api/item/get-all-list/**"),
+						new AntPathRequestMatcher("/api/item/get-itemlist/**"),
+						new AntPathRequestMatcher("/api/item/get-detail/**"),
+						new AntPathRequestMatcher("/api/sign"),
+						new AntPathRequestMatcher("/api/login"),
+						new AntPathRequestMatcher("/api/user/get-sns-signed/**"),
 						//new AntPathRequestMatcher("/user/get-info"),
-						new AntPathRequestMatcher("/comment/item/**"),
-						new AntPathRequestMatcher("/comment/get/**"),
-						new AntPathRequestMatcher("/item/get-by-title/**"),
-						new AntPathRequestMatcher("/item/get-by-store-name/**"),
-						new AntPathRequestMatcher("/item/get-by-category/**"),
-						new AntPathRequestMatcher("/item/get-filtered-list/**"),
-						new AntPathRequestMatcher("/item/get-recommend-list"),
-						new AntPathRequestMatcher("/qna/item/get-list/**")
+						new AntPathRequestMatcher("/api/comment/item/**"),
+						new AntPathRequestMatcher("/api/comment/get/**"),
+						new AntPathRequestMatcher("/api/item/get-by-title/**"),
+						new AntPathRequestMatcher("/api/item/get-by-store-name/**"),
+						new AntPathRequestMatcher("/api/item/get-by-category/**"),
+						new AntPathRequestMatcher("/api/item/get-filtered-list/**"),
+						new AntPathRequestMatcher("/api/item/get-recommend-list"),
+						new AntPathRequestMatcher("/api/qna/item/get-list/**")
 						).permitAll()
 				// 그 외 모든 요청 허용
 				.anyRequest().permitAll()
 				)
+				.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
 				.csrf(csrf -> csrf.disable())
 				.build();
 	}

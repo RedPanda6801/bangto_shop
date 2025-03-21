@@ -40,7 +40,7 @@ const ManagerStoreComponent = () => {
 
     const handleStoreDel = async(storeId) => {
         try {
-            const response = await axios.post(`http://localhost:9000/manager/store/delete`, {id : storeId}, {
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_SERVER_PORT}/manager/store/delete`, {id : storeId}, {
                 withCredentials : true,
                 headers: { "Authorization": `Bearer ${localStorage.getItem("token")}`}});
             if (response.status == 200) {
@@ -62,7 +62,7 @@ const ManagerStoreComponent = () => {
 
     const handleStoreUpdate = async (storeId) => {
         try {
-            const response = await axios.post(`http://localhost:9000/manager/store/modify`, 
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_SERVER_PORT}/manager/store/modify`, 
                 { "id": storeId, "name":editStoreName, busiNum }, 
                 {headers: { "Authorization": `Bearer ${localStorage.getItem("token")}`}}
             );

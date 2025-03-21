@@ -100,7 +100,7 @@ const UserItemDetailComponent = () =>
             alert("찜은 최대 20개까지 할 수 있습니다.");
             return;
         }
-        axios.post("http://localhost:9000/favorite/add", {
+        axios.post(`${process.env.REACT_APP_BACKEND_SERVER_PORT}/favorite/add`, {
             id : itemPk
         }, { withCredentials : true,
             headers: {
@@ -114,7 +114,7 @@ const UserItemDetailComponent = () =>
     }
 
     const handleUnwishlist = () => {
-        axios.post("http://localhost:9000/favorite/delete", {
+        axios.post(`${process.env.REACT_APP_BACKEND_SERVER_PORT}/favorite/delete`, {
             id : itemPk
         }, { withCredentials : true,
             headers: {
@@ -127,7 +127,7 @@ const UserItemDetailComponent = () =>
     }
 
     const handleCart = () => {
-        axios.post("http://localhost:9000/cart/add", {
+        axios.post(`${process.env.REACT_APP_BACKEND_SERVER_PORT}/cart/add`, {
             optionPk : selectedOption.id,
             amount
         }, { withCredentials : true,
@@ -159,7 +159,7 @@ const UserItemDetailComponent = () =>
 
     const handleQna = () => {
         if(window.confirm("해당 내용으로 문의하시겠습니까?")) {   
-            axios.post("http://localhost:9000/qna/add", {
+            axios.post(`${process.env.REACT_APP_BACKEND_SERVER_PORT}/qna/add`, {
                 itemPk,
                 qcontent: qnaWrite
             }, { withCredentials : true,
