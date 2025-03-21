@@ -141,7 +141,7 @@ public class PayDAO {
 			Page<SoldItems> soldItems = payRepository.findAllByUserIdAndYear(user.getId(), year, pageable);
 			List<SoldItemDTO> soldItemList = new ArrayList<SoldItemDTO>();
 			if(soldItems.isEmpty()) {
-				throw new Exception("결제 내역이 없습니다.");
+				return new ResponseDTO(soldItemList, new PageDTO(0, 0, 0));
 			}
 			else {
 				for(SoldItems soldItem : soldItems) {

@@ -44,7 +44,8 @@ public class UserDAO {
 	JwtUtil jwtUtil;
 	@Autowired
 	PayRepository payRepository;
-	
+	@Autowired
+	EnvConfig envConfig;
 
 	public BCryptPasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
@@ -53,6 +54,9 @@ public class UserDAO {
 	@Transactional
 	public void sign(UserDTO dto) throws Exception{
 		try {
+			System.out.println(envConfig.get("ROOT_EMAIL"));
+			System.out.println(envConfig.get("JWT_SECRET"));
+			System.out.println(envConfig.get("FRONTEND_UPLOAD_ADDRESS"));
 			Optional<Users> userOpt = userRepository.findByEmail(dto.getEmail());
 			Users user = null;
 			if(dto.getSnsAuth() == false) {					
