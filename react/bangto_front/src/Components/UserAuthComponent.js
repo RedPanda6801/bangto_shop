@@ -22,7 +22,7 @@ const UserAuthComponent = (props) =>
       localStorage.removeItem("token");
       localStorage.setItem("token", resContent(response).token);
       props.setToken(resContent(response).token);
-      navigate("/");
+      navigate("/", { state: { category: "Main" } });
     } 
     catch (error) 
     {
@@ -102,7 +102,7 @@ const UserAuthComponent = (props) =>
       localStorage.setItem("token",resContent(loginResponse).token);
       props.setToken(resContent(loginResponse).token);
       localStorage.setItem("kakaoAccessToken", accessToken);
-      navigate("/");
+      navigate("/", { state: { category: "Main" } });
     }
     catch (error) {
       if(error.status === 400){

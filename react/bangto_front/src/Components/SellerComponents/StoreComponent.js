@@ -51,10 +51,10 @@ const StoreComponent = (props) => {
       .catch((err) => {
         if (err.status == 403) alert("판매자 인증이 필요합니다.");
         else alert("매장 인증 에러");
-        localStorage.removeItem("token");
-        localStorage.removeItem("USEREMAIL");
-        localStorage.removeItem("USERNAME");
-        localStorage.removeItem("USEREROLE");
+        // localStorage.removeItem("token");
+        // localStorage.removeItem("USEREMAIL");
+        // localStorage.removeItem("USERNAME");
+        // localStorage.removeItem("USEREROLE");
         console.log(err);
       });
   }, []);

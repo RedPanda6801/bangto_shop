@@ -69,6 +69,7 @@ public class JwtTokenFilter extends OncePerRequestFilter{
 				|| path.startsWith("/api/item/get-filtered-list")
 				|| path.startsWith("/api/item/get-recommend-list")
 				|| path.startsWith("/api/qna/item/get-list")
+				|| path.equals("/index.html")
 				|| path.equals("/")
 				|| path.equals("/manager")
 				|| path.equals("/login")

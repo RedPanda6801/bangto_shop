@@ -55,7 +55,7 @@ const UserInfoComponent = () => {
         if (response.status == 200) {
           localStorage.clear();
           alert("탈퇴 완료");
-          navigate("/");
+          navigate("/", { state: { category: "Main" } });
         }
       } catch (err) {
         alert("회원탈퇴 실패");

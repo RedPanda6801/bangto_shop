@@ -413,7 +413,6 @@ const UserItemDetailComponent = () =>
                         </div>
                     </div>
                 </div>
-                <UserCartListComponent />
             </div>
         
     );
