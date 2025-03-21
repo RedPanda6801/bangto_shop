@@ -53,7 +53,7 @@ const SellerPayComponent = (props) => {
     try {
       if (Array.isArray(payList)) {
         payList.forEach(async (pay) => {
-          const response = await axios.post(
+          await axios.post(
             `${process.env.REACT_APP_BACKEND_SERVER_PORT}/pay/modify`,
             { id: pay.id, deliverInfo },
             {
@@ -63,15 +63,19 @@ const SellerPayComponent = (props) => {
             }
           );
 
-          if (response.status == 200) {
-            alert("배송 처리 완료");
-            navigate(0);
-          }
+          // if (response.status == 200) {
+          //   alert("배송 처리 완료");
+          //   navigate(0);
+          // }
         });
+        alert("배송 처리 완료");
+        navigate(0);
       }
     } catch (err) {
       alert("배송 처리 실패");
-      navigate(0);
+      // navigate(0);
+      console.log("에러 발생");
+      console.log(err);
     }
   };
 

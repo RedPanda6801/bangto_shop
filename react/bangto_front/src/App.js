@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import ManagerComponent from "./Components/ManagerComponents/ManagerComponent";
 import UserMainComponent from "./Components/UserMainComponent";
 import UserAuthComponent from "./Components/UserAuthComponent";
@@ -32,6 +32,7 @@ function App() {
   );
   const [token, setToken] = useState(localStorage.getItem("token") || "");
   const navigate = useNavigate();
+  const location = useLocation();
   const userMainComponentRef = useRef();
 
   const rootEmail = process.env.REACT_APP_ROOT_EMAIL;
@@ -87,7 +88,7 @@ function App() {
           localStorage.removeItem("USEREMAIL");
           setUserEmail("");
           setUserName("");
-          navigate("/");
+          navigate("/", { state: { category: "Main" } });
         });
     }
   }, [token]);
@@ -96,6 +97,10 @@ function App() {
     setUserName(localStorage.getItem("USERNAME") || "");
     setUserEmail(localStorage.getItem("USEREMAIL") || "");
   }, []);
+
+  useEffect(() => {
+    userMainComponentRef.current?.setCategory(location.state?.category);
+  }, [location.state?.category])
 
   const logout = () => {
     //카카오톡 소셜 로그인 사용자일 경우
@@ -135,10 +140,84 @@ function App() {
     localStorage.removeItem("token");
     localStorage.removeItem("USERNAME");
     localStorage.setItem("USERROLE", "GUEST");
-    navigate("/");
+    navigate("/", { state: { category: "Main" } });
     setUserEmail("");
     setUserName("");
     setToken("");
+  };
+
+  const menuBar = () => {
+    return <>
+    <div className="header_Menu"
+      onClick={() => {
+        if (location.pathname !== "/") {
+          navigate("/", { state: { category: "Clothing" } });
+        }
+        if(userMainComponentRef.current) {
+          userMainComponentRef.current.setCategory("Clothing");
+        }
+      }}>의류</div>
+      <div className="header_Menu"
+      onClick={() => {
+        if (location.pathname !== "/") {
+          navigate("/", { state: { category: "Cosmetics" } });
+        }
+        if(userMainComponentRef.current) {
+          userMainComponentRef.current.setCategory("Cosmetics");
+        }}
+      }>화장품</div>
+      <div className="header_Menu"
+      onClick={() => {
+        if (location.pathname !== "/") {
+          navigate("/", { state: { category: "Electronics" } });
+        }
+        if(userMainComponentRef.current) {
+          userMainComponentRef.current.setCategory("Electronics");
+        }
+      }}>전자기기</div>
+      <div className="header_Menu"
+      onClick={() => {
+        if (location.pathname !== "/") {
+          navigate("/", { state: { category: "Furnitures" } });
+        }
+        if(userMainComponentRef.current) {
+          userMainComponentRef.current.setCategory("Furnitures");
+        }
+      }}>가구</div>
+      <div className="header_Menu"
+      onClick={() => {
+        if (location.pathname !== "/") {
+          navigate("/", { state: { category: "Foods" } });
+        }
+        if(userMainComponentRef.current) {
+          userMainComponentRef.current.setCategory("Foods");
+        }
+      }}>식품</div>
+      <div className="header_Menu"
+      onClick={() => {
+        if (location.pathname !== "/") {
+          navigate("/", { state: { category: "Sports" } });
+        }
+        if(userMainComponentRef.current) {
+          userMainComponentRef.current.setCategory("Sports");
+        }
+      }}>스포츠용품</div>
+      <div className="header_Menu"
+      onClick={() => {
+        if (location.pathname !== "/") {
+          navigate("/", { state: { category: "Books" } });
+        }
+        if(userMainComponentRef.current) {
+          userMainComponentRef.current.setCategory("Books");
+        }
+      }}>도서</div>
+      <div
+        className="header_Menu"
+        onClick={() => navigate("/user/groupitem")}
+      >
+        공동구매
+      </div>
+    </>;
   };
 
   return (
@@ -150,7 +229,7 @@ function App() {
             if (userEmail === rootEmail) {
               navigate("/manager");
             } else {
-              navigate("/");
+              navigate("/", { state: { category: "Main" } });
               if(userMainComponentRef.current) {
                 userMainComponentRef.current.setCategory("Main");
               }
@@ -165,52 +244,10 @@ function App() {
               <div className="header_Manager">관리자 메뉴</div>
             </>
           ) : (
-            <>
-              <div className="header_Menu"
-              onClick={() => userMainComponentRef.current.setCategory("Clothing")}>의류</div>
-              <div className="header_Menu"
-              onClick={() => userMainComponentRef.current.setCategory("Cosmetics")}>화장품</div>
-              <div className="header_Menu"
-              onClick={() => userMainComponentRef.current.setCategory("Electronics")}>전자기기</div>
-              <div className="header_Menu"
-              onClick={() => userMainComponentRef.current.setCategory("Furnitures")}>가구</div>
-              <div className="header_Menu"
-              onClick={() => userMainComponentRef.current.setCategory("Foods")}>식품</div>
-              <div className="header_Menu"
-              onClick={() => userMainComponentRef.current.setCategory("Sports")}>스포츠용품</div>
-              <div className="header_Menu"
-              onClick={() => userMainComponentRef.current.setCategory("Books")}>도서</div>
-              <div
-                className="header_Menu"
-                onClick={() => navigate("/user/groupitem")}
-              >
-                공동구매
-              </div>
-            </>
+            menuBar()
           )
         ) : (
-          <>
-            <div className="header_Menu"
-            onClick={() => userMainComponentRef.current.setCategory("Clothing")}>의류</div>
-            <div className="header_Menu"
-            onClick={() => userMainComponentRef.current.setCategory("Cosmetics")}>화장품</div>
-            <div className="header_Menu"
-            onClick={() => userMainComponentRef.current.setCategory("Electronics")}>전자기기</div>
-            <div className="header_Menu"
-            onClick={() => userMainComponentRef.current.setCategory("Furnitures")}>가구</div>
-            <div className="header_Menu"
-            onClick={() => userMainComponentRef.current.setCategory("Foods")}>식품</div>
-            <div className="header_Menu"
-            onClick={() => userMainComponentRef.current.setCategory("Sports")}>스포츠용품</div>
-            <div className="header_Menu"
-            onClick={() => userMainComponentRef.current.setCategory("Books")}>도서</div>
-            <div
-              className="header_Menu"
-              onClick={() => navigate("/user/groupitem")}
-            >
-              공동구매
-            </div>
-          </>
+          menuBar()
         )}
         {token !== "" ? (
           userEmail === rootEmail ? (

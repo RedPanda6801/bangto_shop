@@ -53,7 +53,7 @@ const ManagerGroupComponent = () => {
         catch (error) {
             if(error.status == 401){
                 alert("토큰 만료");
-                navigate("/");
+                navigate("/", { state: { category: "Main" } });
             } else console.error("공동 구매 기간 가져오기 오류:", error);
         }
     }
@@ -77,7 +77,7 @@ const ManagerGroupComponent = () => {
         catch (error) {
             if(error.status == 401){
                 alert("토큰 만료");
-                navigate("/");
+                navigate("/", { state: { category: "Main" } });
             } else console.error("공동 구매 기간 가져오기 오류:", error);
         }
     }

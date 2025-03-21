@@ -85,23 +85,18 @@ public class CartDAO {
 			// 인증 유효 확인
 			Users user = authDAO.auth(SecurityContextHolder.getContext().getAuthentication());
 			List<Carts> carts = cartRepository.findAllByUserId(user.getId());
-			if(carts.isEmpty()) {
-				throw new Exception("장바구니가 비었습니다.");
+			List<CartDTO> cartList = new ArrayList<CartDTO>();
+			for(Carts cart : carts) {
+				CartDTO dto = new CartDTO();
+				dto.setAmount(cart.getAmount());
+				dto.setCartPk(cart.getId());
+				dto.setItem(cart.getItem());
+				dto.setOption(cart.getOption());
+				dto.setUser(cart.getUser());
+				dto.setTotalPrice((cart.getItem().getPrice() + cart.getOption().getAddPrice()) * cart.getAmount());
+				cartList.add(dto);
 			}
-			else {
-				List<CartDTO> cartList = new ArrayList<CartDTO>();
-				for(Carts cart : carts) {
-					CartDTO dto = new CartDTO();
-					dto.setAmount(cart.getAmount());
-					dto.setCartPk(cart.getId());
-					dto.setItem(cart.getItem());
-					dto.setOption(cart.getOption());
-					dto.setUser(cart.getUser());
-					dto.setTotalPrice((cart.getItem().getPrice() + cart.getOption().getAddPrice()) * cart.getAmount());
-					cartList.add(dto);
-				}
-				return new ResponseDTO(cartList, null);
-			}
+			return new ResponseDTO(cartList, null);
 		}catch(Exception e) {
 			throw e;
 		}

@@ -31,7 +31,7 @@ const ManagerUserComponent = () => {
         }).catch((error) => {
             if(error.status === 401){
                 alert("토큰 만료 오류 : 다시 로그인하세요.");
-                navigate("/");
+                navigate("/", { state: { category: "Main" } });
             }
             console.error("회원 정보 가져오기 오류:", error);
         })

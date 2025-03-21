@@ -4,7 +4,7 @@ import UserMainRecommendComponent from "./UserMainRecommendComponent";
 import UserCartListComponent from "./UserCartListComponent"
 import axios from "axios";
 import { resContent, resPage } from "./UtilComponent/ResponseData";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import PagenationComponent from "./UtilComponent/PagenationComponent";
 
 const UserMainComponent = forwardRef((props, ref) => 
@@ -76,7 +76,10 @@ const UserMainComponent = forwardRef((props, ref) =>
                     <div className="list_Category">
                         <button
                             className="btn_Main_Category"
-                            onClick={() => {setSelectedCategory("Clothing"); setPriceSort("");}}>
+                            onClick={() => {
+                                setSelectedCategory("Clothing");
+                                setPriceSort("");
+                            }}>
                             의류
                         </button>
                         <button
@@ -145,7 +148,7 @@ const UserMainComponent = forwardRef((props, ref) =>
                 </div>
             </div>
             {
-                selectedCategory === "Main" ?
+                selectedCategory === "Main" || selectedCategory === undefined?
                 <UserMainRecommendComponent /> :
                 (items.length === 0 ? 
                     <div className="box_No_Result">

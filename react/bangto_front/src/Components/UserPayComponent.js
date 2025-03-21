@@ -53,6 +53,7 @@ const UserPayComponent = () =>
             alert("결제에 성공하셨습니다.");
             navigate("/user");
         }).catch((err) => {
+            console.log(err.response);
             alert(err);
         })
     }
@@ -152,7 +153,7 @@ const UserPayComponent = () =>
     useEffect(() => {
         if(USERROLE === "GUEST" || USERROLE === "ADMIN") {
             alert("비정상적인 접근입니다.");
-            navigate("/");
+            navigate("/", { state: { category: "Main" } });
         } else {
             axios.get(`${process.env.REACT_APP_BACKEND_SERVER_PORT}/user/get-info`, {
                 headers: {

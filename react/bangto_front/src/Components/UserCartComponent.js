@@ -21,7 +21,7 @@ const UserCartComponent = () =>
     useEffect(() => {
       if(USERROLE === "GUEST" || USERROLE === "ADMIN") {
         alert("비정상적인 접근입니다.");
-        navigate("/");
+        navigate("/", { state: { category: "Main" } });
       } else {
         axios.get(`${process.env.REACT_APP_BACKEND_SERVER_PORT}/cart/get-info`, {
             headers: {
@@ -34,11 +34,7 @@ const UserCartComponent = () =>
             setAllChecked(false);
             // console.log(rescontent);
         }).catch((err) => {
-            if(err.response.data === "장바구니가 비었습니다.") {
-              setCarts(null);
-            } else {
-              alert(err);
-            }
+            alert(err);
         })
       }
     }, [])
@@ -53,11 +49,24 @@ const UserCartComponent = () =>
         setOptionModal(false);
     }
 
+    const handleDelete = (cartPk) => {
+      if(window.confirm("장바구니를 삭제하시겠습니까?")) {
+        axios.post(`${process.env.REACT_APP_BACKEND_SERVER_PORT}/cart/delete`, {
+          cartPk
+        }, { withCredentials : true,
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem("token")}`,
+            }
+        });
+        navigate(0);
+      }
+    }
+
     return <>
         <div className="layout_User_Cart">
             
                 {
-                  carts === null ?
+                  carts === null || carts.length === 0 ?
                   <div className="box_No_Item">
                       장바구니가 비었습니다.
                   </div>:
@@ -93,6 +102,12 @@ const UserCartComponent = () =>
                       {
                           carts.map((cart, idx) => {
                               return <div className="box_Cart_Item" key={`cart${idx}`}>
+                                  <div
+                                    className="box_Cart_Delete"
+                                    onClick={() => handleDelete(cart.cartPk)}
+                                  >
+                                    X
+                                  </div>
                                   <div className="box_Cart_CheckBox">
                                       <input
                                           type="checkbox"

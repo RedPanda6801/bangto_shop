@@ -97,6 +97,16 @@
     margin: 5px 0;
     width: 100%;
     align-items: center;
+    position: relative;
+}
+
+.box_Cart_Delete
+{
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    font-weight: bold;
+    cursor: pointer;
 }
 
 .box_Cart_CheckBox,
