@@ -14,9 +14,10 @@ public class WebConfig implements WebMvcConfigurer {
              .allowedMethods("GET", "POST") // 허용할 HTTP method
              .allowCredentials(true); // 쿠키 인증 요청 허용
  }
- 
+
+// 배포용 정적 파일 위치
  @Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-	 	registry.addResourceHandler("/upload/**").addResourceLocations("file:///home/lab05/mydir/upload/");
+	 	registry.addResourceHandler("/images/**").addResourceLocations("file:/home/lab06/mydir/public/images");
 	}
 }

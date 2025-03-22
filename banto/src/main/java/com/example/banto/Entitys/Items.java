@@ -4,16 +4,7 @@ import java.util.List;
 import com.example.banto.DTOs.ItemDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -22,11 +13,15 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @ToString(exclude = {"store", "qnas" ,"options", "events", "comments", "favorites", "carts", "pays"})
+@SequenceGenerator(
+        name = "item_seq",
+        sequenceName = "item_seq",
+        allocationSize = 1
+)
 public class Items {
-
     @Id
     @Column(name="ID")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "item_seq")
     private Integer id;
     
     @Column(name="TITLE", nullable=false)

@@ -27,7 +27,7 @@ const StoreAddComponent = (props) => {
         isStoreValid = true;
 
       const response = await axios.post(
-        "http://localhost:9000/store/add",
+        `${process.env.REACT_APP_BACKEND_SERVER_PORT}/store/add`,
         {
           busiNum,
           name,
