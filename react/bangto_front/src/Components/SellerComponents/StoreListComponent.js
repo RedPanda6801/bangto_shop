@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
 import "../StoreComponent.css";
 import { useNavigate } from "react-router-dom";
-import { resContent } from "../UtilComponent/ResponseData";
+import { resContent, resPage } from "../UtilComponent/ResponseData";
 import axios from "axios";
 import StoreModiComponent from "./StoreModiComponent";
 import StoreItemRegisterComponent from "./StoreItemRegisterComponent";
 import StoreAddComponent from "./StoreAddComponent";
 import { CategoryType } from "../UtilComponent/DataFormat";
 import StoreGroupItemRegisterComponent from "./StoreGroupItemRegisterComponent";
+import PagenationComponent from "../UtilComponent/PagenationComponent";
 
 const StoreListComponent = (props) => {
   const [storeInfo, setStoreInfo] = useState({});
-  const [itemPage, setItmePage] = useState(1);
+  const [itemPage, setItemPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
   const [itemlist, setItemlist] = useState([]);
   const [modiModal, setModiModal] = useState(false);
   const [groupItemModal, setGroupItemModal] = useState(false);
@@ -27,7 +29,7 @@ const StoreListComponent = (props) => {
 
   useEffect(() => {
     handleItemList();
-  }, [props.storeInfo]);
+  }, [props.storeInfo, itemPage]);
 
   const handleItemDelete = async (id) => {
     if (window.confirm("물품을 삭제하시겠습니까?")) {
@@ -65,6 +67,7 @@ const StoreListComponent = (props) => {
           }
         );
         setItemlist(resContent(itemResponse));
+        setTotalPage(resPage(itemResponse).totalPages);
       }
     } catch (error) {
       console.log(error);
@@ -267,6 +270,7 @@ const StoreListComponent = (props) => {
             <div style={{ textAlign: "center" }}>물건이 없습니다.</div>
           )}
         </div>
+        <PagenationComponent page={itemPage} setPage={setItemPage} totalPage={totalPage}/>
       </div>
       <StoreGroupItemRegisterComponent
         modal={groupItemModal}

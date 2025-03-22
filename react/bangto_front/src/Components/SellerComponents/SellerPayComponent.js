@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { data, Navigate, useNavigate } from "react-router-dom";
 import { resContent, resPage } from "../UtilComponent/ResponseData";
 import { DeliverType } from "../UtilComponent/DataFormat";
+import PagenationComponent from "../UtilComponent/PagenationComponent";
 
 const SellerPayComponent = (props) => {
   const [page, setPage] = useState(1);
@@ -13,7 +14,7 @@ const SellerPayComponent = (props) => {
 
   useEffect(() => {
     handleGetPayList();
-  }, [props.store]);
+  }, [props.store, page]);
 
   const handleGetPayList = () => {
     console.log(props.store);
@@ -149,6 +150,7 @@ const SellerPayComponent = (props) => {
       ) : (
         <div>판매 정보 없음</div>
       )}
+      <PagenationComponent page={page} setPage={setPage} totalPage={totalPage}/>
     </div>
   );
 };

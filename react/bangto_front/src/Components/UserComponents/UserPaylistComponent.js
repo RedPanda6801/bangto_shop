@@ -5,6 +5,7 @@ import { resContent } from "../UtilComponent/ResponseData";
 import { DeliverType } from "../UtilComponent/DataFormat";
 import UserCommentAddComponent from "./UserCommentAddComponent";
 import "./UserPaylistComponent.css";
+import PagenationComponent from "../UtilComponent/PagenationComponent";
 
 const UserPayListComponent = () => {
   const [commentModal, setCommentModal] = useState(false);
@@ -203,6 +204,7 @@ const UserPayListComponent = () => {
            ) : (
              <div>결제 내역 없음.</div>
            )}
+          <PagenationComponent page={nowPage} setPage={setNowPage} totalPage={totalPage}/>
          <UserCommentAddComponent
            modal={commentModal}
            setModal={setCommentModal}

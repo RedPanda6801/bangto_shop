@@ -27,7 +27,7 @@ const UserInfoComponent = () => {
         setEmail(user.email);
         setName(user.name);
         setPhone(user.phone);
-        if (user.addr !== "undefined!!!!undefined") {
+        if (user.addr !== "undefined!!!!undefined" && user.addr !== null) {
           const addrList = user.addr.split("!!");
           setMainAddr(addrList[0]);
           setDetailAddr(addrList[1]);

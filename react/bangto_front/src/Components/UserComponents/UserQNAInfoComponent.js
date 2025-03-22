@@ -1,9 +1,10 @@
 import "../UserComponent.css";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { resContent } from "../UtilComponent/ResponseData";
+import { resContent, resPage } from "../UtilComponent/ResponseData";
 import { useNavigate } from "react-router-dom";
 import { TimeStamp } from "../UtilComponent/DataFormat";
+import PagenationComponent from "../UtilComponent/PagenationComponent";
 const UserQNAInfoComponent = () => {
   const [nowPage, setNowPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
@@ -24,6 +25,7 @@ const UserQNAInfoComponent = () => {
         const qna = resContent(res);
         console.log(qna);
         setQnaList(qna);
+        setTotalPage(resPage(res).totalPages);
       })
       .catch((err) => {
         alert("로그인 오류");
@@ -54,6 +56,7 @@ const UserQNAInfoComponent = () => {
         ) : (
           <tr>문의 사항이 없습니다.</tr>
         )}
+        <PagenationComponent page={nowPage} setPage={setNowPage} totalPage={totalPage}/>
       </table>
     </div>
   );
