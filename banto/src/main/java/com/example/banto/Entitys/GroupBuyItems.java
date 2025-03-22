@@ -5,13 +5,7 @@ import java.util.ArrayList;
 
 import com.example.banto.DTOs.GroupBuyItemDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,10 +16,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@SequenceGenerator(
+		name = "group_item_seq",
+		sequenceName = "group_item_seq",
+		allocationSize = 1
+)
 public class GroupBuyItems {
 	@Id
 	@Column(name="ID")
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "group_item_seq")
 	private Integer id;
 	
 	@Column(name="LIMIT_PER_BUYER", nullable=false)

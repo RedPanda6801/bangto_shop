@@ -3,14 +3,7 @@ package com.example.banto.Entitys;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,10 +14,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@SequenceGenerator(
+		name = "comment_seq",
+		sequenceName = "comment_seq",
+		allocationSize = 1
+)
 public class Comments {
 	@Id
 	@Column(name="ID")
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "comment_seq")
 	private Integer id;
 	
 	@Column(name="CONTENT", nullable=false)

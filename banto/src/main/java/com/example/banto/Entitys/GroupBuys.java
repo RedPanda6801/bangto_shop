@@ -18,10 +18,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@SequenceGenerator(
+		name = "group_buy_seq",
+		sequenceName = "group_buy_seq",
+		allocationSize = 1
+)
 public class GroupBuys {
 	@Id
 	@Column(name="ID")
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "group_buy_seq")
 	private Integer id;
 	
 	@Column(name = "START_DATE", nullable=false)

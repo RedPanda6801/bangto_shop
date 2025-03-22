@@ -81,7 +81,7 @@ const StoreItemModifyComponent = (props) => {
         formData.append("files", file);
       });
       const response = await axios.post(
-        "http://localhost:9000/item/add-item",
+        `${process.env.REACT_APP_BACKEND_SERVER_PORT}/item/add-item`,
         formData,
         {
           withCredentials: true,

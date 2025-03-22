@@ -20,7 +20,7 @@ const StoreModiComponent = (props) => {
         isStoreValid = true;
 
       const response = await axios.post(
-        "http://localhost:9000/store/modify",
+        `${process.env.REACT_APP_BACKEND_SERVER_PORT}/store/modify`,
         {
           id: props.store.id,
           sellerName: props.sellerName,

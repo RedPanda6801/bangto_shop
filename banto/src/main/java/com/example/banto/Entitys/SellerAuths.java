@@ -6,16 +6,7 @@ import java.util.ArrayList;
 import com.example.banto.DTOs.ApplyDTO;
 import com.example.banto.DTOs.StoreDTO;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,10 +17,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@SequenceGenerator(
+        name = "seller_auth_seq",
+        sequenceName = "seller_auth_seq",
+        allocationSize = 1
+)
 public class SellerAuths {
     @Id
     @Column(name="ID")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seller_auth_seq")
     private Integer id;
     
     @Column(name="AUTH", nullable=false)

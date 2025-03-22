@@ -1,12 +1,6 @@
 package com.example.banto.Entitys;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,11 +13,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@SequenceGenerator(
+        name = "group_pay_seq",
+        sequenceName = "group_pay_seq",
+        allocationSize = 1
+)
 public class GroupItemPays {
-
     @Id
     @Column(name="ID")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "group_pay_seq")
     private Integer id;
 
     @Column(name="ITEM_TITLE")
