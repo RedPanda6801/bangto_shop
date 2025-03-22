@@ -15,7 +15,6 @@ const StoreComponent = (props) => {
   const [store, setStore] = useState("");
   const [busi, setBusi] = useState("");
   const [storelist, setStorelist] = useState([]);
-  const [page, setPage] = useState(1);
   const [selectedMenu, setSelectedMenu] = useState("매장 인증");
   const [selectedSubmenu, setSelectedSubmenu] = useState(null);
   const [sellerName, setSellerName] = useState("");
