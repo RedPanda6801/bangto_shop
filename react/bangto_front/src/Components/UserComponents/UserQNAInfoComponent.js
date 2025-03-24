@@ -25,9 +25,10 @@ const UserQNAInfoComponent = () => {
         const qna = resContent(res);
         console.log(qna);
         setQnaList(qna);
-        setTotalPage(resPage(res).totalPages);
+        setTotalPage(resPage(res) ? resPage(res).totalPages : 1);
       })
       .catch((err) => {
+        console.log(err);
         alert("로그인 오류");
         navigate(-1);
       });
@@ -56,8 +57,8 @@ const UserQNAInfoComponent = () => {
         ) : (
           <tr>문의 사항이 없습니다.</tr>
         )}
-        <PagenationComponent page={nowPage} setPage={setNowPage} totalPage={totalPage}/>
       </table>
+        <PagenationComponent page={nowPage} setPage={setNowPage} totalPage={totalPage}/>
     </div>
   );
 };

@@ -12,7 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@ToString(exclude = {"stores"})
 @SequenceGenerator(
 		name = "seller_seq",
 		sequenceName = "seller_seq",
@@ -24,12 +23,13 @@ public class Sellers {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seller_seq")
 	private Integer id;
 
+	@ToString.Exclude  // 필드에 적용
 	@OneToMany(mappedBy="seller", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<Stores> stores;
 
 	@JsonIgnore
 	@EqualsAndHashCode.Exclude
-    @ToString.Exclude
+	@ToString.Exclude  // 필드에 적용
 	@OneToOne
 	@JoinColumn(name = "USER_PK")
 	private Users user;
