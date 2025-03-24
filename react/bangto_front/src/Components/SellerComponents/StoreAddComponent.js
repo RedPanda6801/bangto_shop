@@ -97,7 +97,7 @@ const StoreAddComponent = (props) => {
             <input
               className="btn_Store_Modi"
               type="button"
-              value="수정"
+              value="추가"
               disabled={!isStoreValid}
               onClick={handleStoreAuth}
             />
