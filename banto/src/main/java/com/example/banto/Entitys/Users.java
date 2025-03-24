@@ -1,27 +1,19 @@
 package com.example.banto.Entitys;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.example.banto.DTOs.UserDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@ToString(exclude = {"wallets", "sellers", "sellerAuths", "favorites", "carts", "soldItems", "groupItemPays", "comments", "qnas"})
 @SequenceGenerator(
         name = "user_seq",
         sequenceName = "user_seq",
@@ -69,34 +61,41 @@ public class Users {
     @OneToOne(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Sellers sellers;
 
-    // 1 : N Relation(Cascade = REMOVE)
+    // 1 : N Relation (Cascade = REMOVE)
     @JsonIgnore
+    @ToString.Exclude
     @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<SellerAuths> sellerAuths;
-    
+
     @JsonIgnore
+    @ToString.Exclude
     @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Favorites> favorites;
-    
+
     @JsonIgnore
+    @ToString.Exclude
     @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Carts> carts;
 
-    // 1 : N Relation(Cascade = null)
+    // 1 : N Relation (Cascade = null)
     @JsonIgnore
+    @ToString.Exclude
     @OneToMany(mappedBy="user", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     private List<SoldItems> soldItems;
 
     @JsonIgnore
+    @ToString.Exclude
     @OneToMany(mappedBy="user", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     private List<GroupItemPays> groupItemPays;
 
     @JsonIgnore
+    @ToString.Exclude
     @OneToMany(mappedBy="user", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     private List<Comments> comments;
 
     @JsonIgnore
     @JsonManagedReference  // 이쪽만 JSON 변환 대상이 됨
+    @ToString.Exclude
     @OneToMany(mappedBy="user", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     private List<QNAs> qnas;
 
@@ -112,14 +111,4 @@ public class Users {
                 .snsAuth(dto.getSnsAuth())
                 .build();
     }
-//
-//    public Users setSeller(int id, String email, String name, String addr, String phone) {
-//    	return Users.builder()
-//    			.id(id)
-//    			.email(email)
-//    			.name(name)
-//    			.addr(addr)
-//    			.phone(phone)
-//    			.build();
-//    }
 }
