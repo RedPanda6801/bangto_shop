@@ -1,6 +1,8 @@
 package com.example.banto.Entitys;
 
 import com.example.banto.DTOs.WalletDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,6 +29,8 @@ public class Wallets {
     private Integer cashBack;
 
     @OneToOne
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @JoinColumn(name = "OWNER_PK")
     private Users user;
 

@@ -25,7 +25,13 @@ const ManagerUserComponent = () => {
             withCredentials : true,
             headers: { "Authorization": `Bearer ${localStorage.getItem("token")}`,
         }}).then((res)=> {
-            setUserlist(resContent(res));
+            const rescontent = resContent(res);
+            for(const content of rescontent) {
+                if(content["addr"] !== null && content["addr"].split("!!")[0] !== "undefined") {
+                    content["addr"] = content["addr"].replaceAll("!!", " ");
+                }
+            }
+            setUserlist(rescontent);
             setUserPage(userPage);
             setUserTotalPage(resPage(res) ? resPage(res).totalPages : 1);
         }).catch((error) => {

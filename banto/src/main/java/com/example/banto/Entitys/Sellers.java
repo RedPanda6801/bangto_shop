@@ -28,6 +28,8 @@ public class Sellers {
 	private List<Stores> stores;
 
 	@JsonIgnore
+	@EqualsAndHashCode.Exclude
+    @ToString.Exclude
 	@OneToOne
 	@JoinColumn(name = "USER_PK")
 	private Users user;

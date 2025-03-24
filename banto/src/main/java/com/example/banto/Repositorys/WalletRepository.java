@@ -2,9 +2,7 @@ package com.example.banto.Repositorys;
 
 import java.util.Optional;
 
-import org.apache.ibatis.annotations.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 import com.example.banto.Entitys.Wallets;
 
